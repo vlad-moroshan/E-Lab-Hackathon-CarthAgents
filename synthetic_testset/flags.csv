@@ -1,0 +1,2146 @@
+doc_id,split,flag,detail
+dev_001,dev,document_type,Anlagenspiegel
+dev_001,dev,format,outline
+dev_001,dev,orientation,landscape
+dev_001,dev,columns,"15 columns (12 amounts): asset_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+dev_001,dev,column_blocks_reordered,ahk > bw > afa
+dev_001,dev,book_value_columns_swapped,prior year before current year
+dev_001,dev,header_lines,2
+dev_001,dev,number_style,"(1.234,56) for negatives"
+dev_001,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_001,dev,zero_shown_as,-
+dev_001,dev,date_style,iso
+dev_001,dev,font,Times-Roman
+dev_001,dev,class_headings,no
+dev_001,dev,subtotal_rows,account subtotal: Summe <class name>
+dev_001,dev,pages,1
+dev_002,dev,document_type,Anlagengitter
+dev_002,dev,format,pdf
+dev_002,dev,orientation,landscape
+dev_002,dev,columns,"14 columns (12 amounts): code, name, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev, ahk_open, zugang, abgang, umbuchung, ahk_close"
+dev_002,dev,column_blocks_reordered,afa > bw > ahk
+dev_002,dev,header_lines,3 incl. spanning group header
+dev_002,dev,number_style,"1.234,56- (trailing minus)"
+dev_002,dev,sign_convention,disposals printed negative
+dev_002,dev,zero_shown_as,-
+dev_002,dev,font,Narrow
+dev_002,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_002,dev,pages,2
+dev_002,dev,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+dev_002,dev,problem_noise_page_blank,ignore this page; it holds no schedule rows
+dev_003,dev,document_type,Anlagenspiegel (netto)
+dev_003,dev,format,outline
+dev_003,dev,orientation,portrait
+dev_003,dev,columns,"12 columns (7 amounts): asset_no, sub_no, name, acq_date, nd_years, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_003,dev,sub_numbers,separate sub-number column
+dev_003,dev,header_lines,3 incl. spanning group header
+dev_003,dev,font,Narrow
+dev_003,dev,class_headings,no
+dev_003,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_003,dev,no_grand_total,
+dev_003,dev,pages,1
+dev_003,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 100,00"
+dev_004,dev,document_type,Anlagengitter
+dev_004,dev,format,outline
+dev_004,dev,orientation,landscape
+dev_004,dev,columns,"13 columns (11 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_004,dev,book_value_columns_swapped,prior year before current year
+dev_004,dev,zero_columns_left_out,zuschreibung
+dev_004,dev,header_lines,3 incl. spanning group header
+dev_004,dev,zero_shown_as,-
+dev_004,dev,font,Times-Roman
+dev_004,dev,position_subtotals,** <position>
+dev_004,dev,pages,1
+dev_005,dev,document_type,Anlagenspiegel (netto)
+dev_005,dev,format,scan
+dev_005,dev,orientation,portrait
+dev_005,dev,columns,"12 columns (7 amounts): asset_no, sub_no, name, acq_date, nd_years, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_005,dev,sub_numbers,separate sub-number column
+dev_005,dev,header_lines,3 incl. spanning group header
+dev_005,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_005,dev,zero_shown_as,blank
+dev_005,dev,date_style,iso
+dev_005,dev,font,Narrow
+dev_005,dev,class_headings,yes
+dev_005,dev,subtotal_rows,account subtotal: Zwischensumme <class no.>
+dev_005,dev,position_subtotals,** <position>
+dev_005,dev,pages,2
+dev_005,dev,scan_severity,heavy
+dev_005,dev,scan_quality,"120 dpi, skew up to 1.1 deg, noise 0.049, fax"
+dev_005,dev,tick_marks,13
+dev_005,dev,highlight_marks,1
+dev_005,dev,stamp_marks,2
+dev_005,dev,uneven_lighting,
+dev_005,dev,edge_shadow,
+dev_005,dev,values_obscured_by_marks,19
+dev_005,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -9,00"
+dev_006,dev,document_type,Anlagenspiegel
+dev_006,dev,format,xlsx
+dev_006,dev,orientation,landscape
+dev_006,dev,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_006,dev,header_lines,2
+dev_006,dev,sign_convention,disposals printed negative
+dev_006,dev,zero_shown_as,blank
+dev_006,dev,font,Times-Roman
+dev_006,dev,class_headings,yes
+dev_006,dev,subtotal_rows,account subtotal: Zwischensumme <class no.>
+dev_006,dev,no_grand_total,
+dev_006,dev,xlsx_table_offset,"starts 2 rows down, 1 columns right"
+dev_006,dev,xlsx_sheet,Anlagenspiegel
+dev_007,dev,document_type,Anlagenverzeichnis
+dev_007,dev,format,scan
+dev_007,dev,orientation,landscape
+dev_007,dev,columns,"13 columns (8 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+dev_007,dev,header_lines,2
+dev_007,dev,number_style,"1.234,56- (trailing minus)"
+dev_007,dev,date_style,de_short
+dev_007,dev,font,Narrow
+dev_007,dev,class_headings,yes
+dev_007,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_007,dev,pages,3
+dev_007,dev,scan_severity,heavy
+dev_007,dev,scan_quality,"150 dpi, skew up to 2.21 deg, noise 0.049, fax"
+dev_007,dev,page_rotated,page 2 by 270 deg
+dev_007,dev,tick_marks,7
+dev_007,dev,highlight_marks,1
+dev_007,dev,stamp_marks,2
+dev_007,dev,uneven_lighting,
+dev_007,dev,edge_shadow,
+dev_007,dev,values_obscured_by_marks,32
+dev_007,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_007,dev,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+dev_007,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_008,dev,document_type,Anlagenverzeichnis
+dev_008,dev,format,xlsx
+dev_008,dev,orientation,landscape
+dev_008,dev,columns,"16 columns (10 amounts): asset_no, sub_no, name, acq_date, nd_years, method, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close"
+dev_008,dev,sub_numbers,separate sub-number column
+dev_008,dev,header_lines,2
+dev_008,dev,number_style,"1,234.56 (English)"
+dev_008,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_008,dev,zero_shown_as,blank
+dev_008,dev,date_style,de_short
+dev_008,dev,class_headings,no
+dev_008,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_008,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_008,dev,xlsx_table_offset,"starts 1 rows down, 2 columns right"
+dev_008,dev,xlsx_sheet,AV
+dev_009,dev,document_type,Anlagenverzeichnis
+dev_009,dev,format,pdf
+dev_009,dev,orientation,landscape
+dev_009,dev,font_shrunk_to_fit,Times-Roman 6.0 pt
+dev_009,dev,columns,"16 columns (11 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_009,dev,header_lines,3 incl. spanning group header
+dev_009,dev,number_style,"1234,56"
+dev_009,dev,sign_convention,disposals printed negative
+dev_009,dev,zero_shown_as,blank
+dev_009,dev,date_style,iso
+dev_009,dev,font,Times-Roman
+dev_009,dev,class_headings,yes
+dev_009,dev,subtotal_rows,class subtotal: Summe <class no.> <class name>
+dev_009,dev,pages,2
+dev_009,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_009,dev,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+dev_010,dev,document_type,Anlagengitter
+dev_010,dev,format,xlsx
+dev_010,dev,orientation,landscape
+dev_010,dev,columns,"14 columns (12 amounts): code, name, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+dev_010,dev,column_blocks_reordered,bw > afa > ahk
+dev_010,dev,book_value_columns_swapped,prior year before current year
+dev_010,dev,header_lines,2
+dev_010,dev,number_style,"1,234.56 (English)"
+dev_010,dev,zero_shown_as,blank
+dev_010,dev,font,Courier
+dev_010,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_010,dev,xlsx_table_offset,"starts 3 rows down, 1 columns right"
+dev_010,dev,xlsx_sheet,AV
+dev_011,dev,document_type,Anlagenspiegel (netto)
+dev_011,dev,format,scan
+dev_011,dev,orientation,portrait
+dev_011,dev,columns,"9 columns (7 amounts): name, asset_no, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_011,dev,id_column_not_first,name > asset_no
+dev_011,dev,header_lines,3 incl. spanning group header
+dev_011,dev,number_style,"1234,56"
+dev_011,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_011,dev,zero_shown_as,blank
+dev_011,dev,font,Times-Roman
+dev_011,dev,class_headings,no
+dev_011,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_011,dev,position_subtotals,Summe <position>
+dev_011,dev,pages,1
+dev_011,dev,scan_severity,heavy
+dev_011,dev,scan_quality,"100 dpi, skew up to 1.39 deg, noise 0.036, fax"
+dev_011,dev,tick_marks,10
+dev_011,dev,highlight_marks,2
+dev_011,dev,stamp_marks,1
+dev_011,dev,uneven_lighting,
+dev_011,dev,edge_shadow,
+dev_011,dev,values_obscured_by_marks,21
+dev_012,dev,document_type,Anlagengitter
+dev_012,dev,format,xlsx
+dev_012,dev,orientation,landscape
+dev_012,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_012,dev,book_value_columns_swapped,prior year before current year
+dev_012,dev,header_lines,2
+dev_012,dev,number_style,"1234,56"
+dev_012,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_012,dev,zero_shown_as,-
+dev_012,dev,font,Narrow
+dev_012,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_012,dev,xlsx_table_offset,"starts 2 rows down, 2 columns right"
+dev_012,dev,xlsx_sheet,Export
+dev_013,dev,document_type,Anlagenspiegel
+dev_013,dev,format,scan
+dev_013,dev,orientation,landscape
+dev_013,dev,font_shrunk_to_fit,Narrow 6.0 pt
+dev_013,dev,columns,"17 columns (12 amounts): asset_no, sub_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+dev_013,dev,column_blocks_reordered,ahk > bw > afa
+dev_013,dev,book_value_columns_swapped,prior year before current year
+dev_013,dev,sub_numbers,separate sub-number column
+dev_013,dev,header_lines,2
+dev_013,dev,sign_convention,disposals printed negative
+dev_013,dev,zero_shown_as,blank
+dev_013,dev,date_style,iso
+dev_013,dev,font,Narrow
+dev_013,dev,class_headings,no
+dev_013,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_013,dev,pages,3
+dev_013,dev,scan_severity,medium
+dev_013,dev,scan_quality,"200 dpi, skew up to 0.67 deg, noise 0.033, JPEG q50"
+dev_013,dev,tick_marks,10
+dev_013,dev,highlight_marks,3
+dev_013,dev,edge_shadow,
+dev_013,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+dev_013,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_014,dev,document_type,Anlagenspiegel
+dev_014,dev,format,pdf
+dev_014,dev,orientation,landscape
+dev_014,dev,font_shrunk_to_fit,Helvetica 6.0 pt
+dev_014,dev,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_014,dev,book_value_columns_swapped,prior year before current year
+dev_014,dev,header_lines,2
+dev_014,dev,zero_shown_as,blank
+dev_014,dev,date_style,de_short
+dev_014,dev,no_ruled_lines,no lines under the header or above sums
+dev_014,dev,class_headings,yes
+dev_014,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_014,dev,position_subtotals,Summe <position name>
+dev_014,dev,pages,2
+dev_014,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 1.000,00"
+dev_015,dev,document_type,Anlagengitter
+dev_015,dev,format,pdf
+dev_015,dev,orientation,landscape
+dev_015,dev,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_015,dev,header_lines,3 incl. spanning group header
+dev_015,dev,zero_shown_as,blank
+dev_015,dev,font,Times-Roman
+dev_015,dev,no_ruled_lines,no lines under the header or above sums
+dev_015,dev,two_years,"2023, 2024"
+dev_015,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_015,dev,pages,4
+dev_015,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -2.000,00"
+dev_015,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_016,dev,document_type,Anlagenverzeichnis
+dev_016,dev,format,xlsx
+dev_016,dev,orientation,landscape
+dev_016,dev,columns,"11 columns (7 amounts): name, asset_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, bw_close"
+dev_016,dev,id_column_not_first,name > asset_no > acq_date > nd_years
+dev_016,dev,header_lines,3 incl. spanning group header
+dev_016,dev,number_style,"1,234.56 (English)"
+dev_016,dev,zero_shown_as,blank
+dev_016,dev,class_headings,yes
+dev_016,dev,subtotal_rows,class subtotal: Summe <class no.> <class name>
+dev_016,dev,position_subtotals,Zwischensumme <position>
+dev_016,dev,no_grand_total,
+dev_016,dev,xlsx_table_offset,"starts 1 rows down, 1 columns right"
+dev_016,dev,xlsx_sheet,Export
+dev_017,dev,document_type,Anlagenspiegel
+dev_017,dev,format,pdf
+dev_017,dev,orientation,portrait
+dev_017,dev,columns,"12 columns (10 amounts): name, asset_no, ahk_open, zugang, abgang, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_017,dev,book_value_columns_swapped,prior year before current year
+dev_017,dev,zero_columns_left_out,"umbuchung, zuschreibung"
+dev_017,dev,id_column_not_first,name > asset_no
+dev_017,dev,header_lines,3 incl. spanning group header
+dev_017,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_017,dev,zero_shown_as,blank
+dev_017,dev,font,Narrow
+dev_017,dev,class_headings,no
+dev_017,dev,subtotal_rows,class subtotal: Summe Konto <account>
+dev_017,dev,pages,1
+dev_018,dev,document_type,Anlagenspiegel (netto)
+dev_018,dev,format,outline
+dev_018,dev,orientation,portrait
+dev_018,dev,columns,"9 columns (7 amounts): name, asset_no, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_018,dev,id_column_not_first,name > asset_no
+dev_018,dev,header_lines,2
+dev_018,dev,font,Narrow
+dev_018,dev,class_headings,yes
+dev_018,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_018,dev,pages,2
+dev_019,dev,document_type,Anlagengitter
+dev_019,dev,format,outline
+dev_019,dev,orientation,landscape
+dev_019,dev,font_shrunk_to_fit,Courier 6.0 pt
+dev_019,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_019,dev,book_value_columns_swapped,prior year before current year
+dev_019,dev,header_lines,2
+dev_019,dev,number_style,"1,234.56 (English)"
+dev_019,dev,zero_shown_as,blank
+dev_019,dev,font,Courier
+dev_019,dev,pages,1
+dev_020,dev,document_type,Anlagenspiegel
+dev_020,dev,format,scan
+dev_020,dev,orientation,landscape
+dev_020,dev,font_shrunk_to_fit,Courier 5.5 pt
+dev_020,dev,columns,"15 columns (12 amounts): name, asset_no, sub_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_020,dev,id_column_not_first,name > asset_no > sub_no
+dev_020,dev,sub_numbers,separate sub-number column
+dev_020,dev,header_lines,3 incl. spanning group header
+dev_020,dev,number_style,"(1.234,56) for negatives"
+dev_020,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_020,dev,zero_shown_as,blank
+dev_020,dev,font,Courier
+dev_020,dev,no_ruled_lines,no lines under the header or above sums
+dev_020,dev,class_headings,yes
+dev_020,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_020,dev,pages,2
+dev_020,dev,scan_severity,heavy
+dev_020,dev,scan_quality,"150 dpi, skew up to 1.02 deg, noise 0.056, JPEG q25"
+dev_020,dev,page_rotated,page 2 by 270 deg
+dev_020,dev,tick_marks,14
+dev_020,dev,highlight_marks,2
+dev_020,dev,stamp_marks,2
+dev_020,dev,uneven_lighting,
+dev_020,dev,edge_shadow,
+dev_020,dev,values_obscured_by_marks,38
+dev_020,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+dev_020,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_021,dev,document_type,Anlagenverzeichnis
+dev_021,dev,format,pdf
+dev_021,dev,orientation,landscape
+dev_021,dev,columns,"16 columns (11 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_021,dev,header_lines,2
+dev_021,dev,number_style,"1234,56"
+dev_021,dev,font,Times-Roman
+dev_021,dev,class_headings,yes
+dev_021,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_021,dev,pages,1
+dev_022,dev,document_type,Anlagenspiegel (netto)
+dev_022,dev,format,outline
+dev_022,dev,orientation,portrait
+dev_022,dev,columns,"9 columns (7 amounts): name, asset_no, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_022,dev,id_column_not_first,name > asset_no
+dev_022,dev,header_lines,3 incl. spanning group header
+dev_022,dev,number_style,"1.234,56- (trailing minus)"
+dev_022,dev,zero_shown_as,-
+dev_022,dev,font,Times-Roman
+dev_022,dev,no_ruled_lines,no lines under the header or above sums
+dev_022,dev,class_headings,no
+dev_022,dev,subtotal_rows,class subtotal: * <class name>
+dev_022,dev,pages,1
+dev_023,dev,document_type,Anlagenspiegel
+dev_023,dev,format,xlsx
+dev_023,dev,orientation,portrait
+dev_023,dev,columns,"13 columns (10 amounts): asset_no, name, acq_date, ahk_open, zugang, abgang, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_023,dev,book_value_columns_swapped,prior year before current year
+dev_023,dev,zero_columns_left_out,"umbuchung, zuschreibung"
+dev_023,dev,header_lines,3 incl. spanning group header
+dev_023,dev,number_style,"1,234.56 (English)"
+dev_023,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_023,dev,zero_shown_as,-
+dev_023,dev,font,Narrow
+dev_023,dev,class_headings,yes
+dev_023,dev,subtotal_rows,account subtotal: * <class name>
+dev_023,dev,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+dev_023,dev,xlsx_sheet,AV
+dev_024,dev,document_type,Anlagenspiegel
+dev_024,dev,format,outline
+dev_024,dev,orientation,landscape
+dev_024,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_024,dev,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_024,dev,header_lines,2
+dev_024,dev,number_style,"1234,56"
+dev_024,dev,zero_shown_as,blank
+dev_024,dev,font,CourierNew
+dev_024,dev,class_headings,no
+dev_024,dev,subtotal_rows,account subtotal: <class name> gesamt
+dev_024,dev,pages,3
+dev_024,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -90,00"
+dev_024,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_024,dev,problem_noise_page_unrelated,ignore this page; it holds no schedule rows
+dev_025,dev,document_type,Anlagenverzeichnis
+dev_025,dev,format,xlsx
+dev_025,dev,orientation,landscape
+dev_025,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_025,dev,columns,"15 columns (10 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close"
+dev_025,dev,header_lines,3 incl. spanning group header
+dev_025,dev,number_style,"(1.234,56) for negatives"
+dev_025,dev,sign_convention,disposals printed negative
+dev_025,dev,zero_shown_as,blank
+dev_025,dev,date_style,de_short
+dev_025,dev,font,CourierNew
+dev_025,dev,class_headings,yes
+dev_025,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_025,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_025,dev,xlsx_table_offset,"starts 1 rows down, 1 columns right"
+dev_025,dev,xlsx_sheet,Tabelle1
+dev_026,dev,document_type,Anlagenspiegel
+dev_026,dev,format,scan
+dev_026,dev,orientation,landscape
+dev_026,dev,font_shrunk_to_fit,CourierNew 5.5 pt
+dev_026,dev,columns,"16 columns (12 amounts): asset_no, sub_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+dev_026,dev,column_blocks_reordered,ahk > bw > afa
+dev_026,dev,book_value_columns_swapped,prior year before current year
+dev_026,dev,sub_numbers,separate sub-number column
+dev_026,dev,header_lines,3 incl. spanning group header
+dev_026,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_026,dev,zero_shown_as,blank
+dev_026,dev,date_style,iso
+dev_026,dev,font,CourierNew
+dev_026,dev,class_headings,yes
+dev_026,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_026,dev,position_subtotals,Zwischensumme <position>
+dev_026,dev,pages,3
+dev_026,dev,scan_severity,medium
+dev_026,dev,scan_quality,"200 dpi, skew up to 0.71 deg, noise 0.023, JPEG q40"
+dev_026,dev,tick_marks,9
+dev_026,dev,highlight_marks,2
+dev_026,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_026,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_026,dev,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+dev_027,dev,document_type,Anlagenverzeichnis
+dev_027,dev,format,xlsx
+dev_027,dev,orientation,landscape
+dev_027,dev,font_shrunk_to_fit,Courier 6.0 pt
+dev_027,dev,columns,"14 columns (8 amounts): asset_no, sub_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+dev_027,dev,sub_numbers,separate sub-number column
+dev_027,dev,header_lines,3 incl. spanning group header
+dev_027,dev,number_style,"1.234,56- (trailing minus)"
+dev_027,dev,zero_shown_as,-
+dev_027,dev,font,Courier
+dev_027,dev,no_ruled_lines,no lines under the header or above sums
+dev_027,dev,class_headings,no
+dev_027,dev,subtotal_rows,account subtotal: * <class name>
+dev_027,dev,xlsx_table_offset,"starts 2 rows down, 2 columns right"
+dev_027,dev,xlsx_sheet,Anlagenspiegel
+dev_028,dev,document_type,Anlagenspiegel (netto)
+dev_028,dev,format,pdf
+dev_028,dev,orientation,portrait
+dev_028,dev,columns,"9 columns (7 amounts): asset_no, name, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_028,dev,header_lines,3 incl. spanning group header
+dev_028,dev,number_style,"1,234.56 (English)"
+dev_028,dev,zero_shown_as,-
+dev_028,dev,font,Times-Roman
+dev_028,dev,class_headings,no
+dev_028,dev,subtotal_rows,class subtotal: <class name> gesamt
+dev_028,dev,pages,2
+dev_028,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 90,00"
+dev_028,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_029,dev,document_type,Anlagengitter
+dev_029,dev,format,pdf
+dev_029,dev,orientation,landscape
+dev_029,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_029,dev,header_lines,3 incl. spanning group header
+dev_029,dev,zero_shown_as,blank
+dev_029,dev,font,Narrow
+dev_029,dev,position_subtotals,** <position>
+dev_029,dev,pages,1
+dev_030,dev,document_type,Anlagenspiegel
+dev_030,dev,format,scan
+dev_030,dev,orientation,landscape
+dev_030,dev,font_shrunk_to_fit,Helvetica 6.0 pt
+dev_030,dev,columns,"15 columns (11 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+dev_030,dev,zero_columns_left_out,zuschreibung
+dev_030,dev,header_lines,3 incl. spanning group header
+dev_030,dev,number_style,"(1.234,56) for negatives"
+dev_030,dev,zero_shown_as,blank
+dev_030,dev,class_headings,yes
+dev_030,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_030,dev,position_subtotals,** <position>
+dev_030,dev,two_years,"2024, 2025"
+dev_030,dev,pages,2
+dev_030,dev,scan_severity,medium
+dev_030,dev,scan_quality,"200 dpi, skew up to 0.5 deg, noise 0.031, JPEG q40"
+dev_030,dev,tick_marks,4
+dev_030,dev,highlight_marks,3
+dev_030,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+dev_031,dev,document_type,Anlagenverzeichnis
+dev_031,dev,format,scan
+dev_031,dev,orientation,landscape
+dev_031,dev,font_shrunk_to_fit,Narrow 6.0 pt
+dev_031,dev,columns,"14 columns (8 amounts): asset_no, sub_no, acq_date, name, nd_months, method, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+dev_031,dev,sub_numbers,separate sub-number column
+dev_031,dev,header_lines,3 incl. spanning group header
+dev_031,dev,number_style,"1,234.56 (English)"
+dev_031,dev,zero_shown_as,blank
+dev_031,dev,font,Narrow
+dev_031,dev,class_headings,no
+dev_031,dev,subtotal_rows,class subtotal: * <class name>
+dev_031,dev,position_subtotals,Summe <position>
+dev_031,dev,pages,3
+dev_031,dev,scan_severity,heavy
+dev_031,dev,scan_quality,"120 dpi, skew up to 1.49 deg, noise 0.05, fax"
+dev_031,dev,tick_marks,7
+dev_031,dev,highlight_marks,2
+dev_031,dev,stamp_marks,1
+dev_031,dev,uneven_lighting,
+dev_031,dev,edge_shadow,
+dev_031,dev,values_obscured_by_marks,15
+dev_031,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -100,00"
+dev_032,dev,document_type,Anlagenspiegel
+dev_032,dev,format,xlsx
+dev_032,dev,orientation,landscape
+dev_032,dev,columns,"16 columns (12 amounts): asset_no, sub_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_032,dev,sub_numbers,separate sub-number column
+dev_032,dev,header_lines,2
+dev_032,dev,number_style,"(1.234,56) for negatives"
+dev_032,dev,zero_shown_as,blank
+dev_032,dev,date_style,de_short
+dev_032,dev,font,Narrow
+dev_032,dev,class_headings,yes
+dev_032,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_032,dev,position_subtotals,Zwischensumme <position>
+dev_032,dev,xlsx_table_offset,"starts 1 rows down, 2 columns right"
+dev_032,dev,xlsx_sheet,Tabelle1
+dev_033,dev,document_type,Anlagengitter
+dev_033,dev,format,scan
+dev_033,dev,orientation,landscape
+dev_033,dev,font_shrunk_to_fit,Courier 6.0 pt
+dev_033,dev,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_033,dev,book_value_columns_swapped,prior year before current year
+dev_033,dev,header_lines,3 incl. spanning group header
+dev_033,dev,number_style,"(1.234,56) for negatives"
+dev_033,dev,sign_convention,disposals printed negative
+dev_033,dev,font,Courier
+dev_033,dev,no_ruled_lines,no lines under the header or above sums
+dev_033,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_033,dev,pages,1
+dev_033,dev,scan_severity,medium
+dev_033,dev,scan_quality,"150 dpi, skew up to 0.79 deg, noise 0.021, JPEG q50"
+dev_033,dev,tick_marks,9
+dev_033,dev,highlight_marks,3
+dev_034,dev,document_type,Anlagenverzeichnis
+dev_034,dev,format,pdf
+dev_034,dev,orientation,landscape
+dev_034,dev,columns,"13 columns (8 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+dev_034,dev,header_lines,2
+dev_034,dev,number_style,"1,234.56 (English)"
+dev_034,dev,zero_shown_as,blank
+dev_034,dev,date_style,de_short
+dev_034,dev,font,Courier
+dev_034,dev,class_headings,no
+dev_034,dev,subtotal_rows,class subtotal: Zwischensumme <class no.>
+dev_034,dev,position_subtotals,Summe <position name>
+dev_034,dev,pages,3
+dev_034,dev,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+dev_034,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_034,dev,problem_noise_page_unrelated,ignore this page; it holds no schedule rows
+dev_035,dev,document_type,Anlagenverzeichnis
+dev_035,dev,format,scan
+dev_035,dev,orientation,landscape
+dev_035,dev,columns,"14 columns (8 amounts): asset_no, sub_no, name, acq_date, method, nd_years, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+dev_035,dev,sub_numbers,separate sub-number column
+dev_035,dev,header_lines,2
+dev_035,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_035,dev,zero_shown_as,-
+dev_035,dev,date_style,de_short
+dev_035,dev,class_headings,yes
+dev_035,dev,subtotal_rows,class subtotal: * <class name>
+dev_035,dev,position_subtotals,Zwischensumme <position>
+dev_035,dev,pages,3
+dev_035,dev,scan_severity,light
+dev_035,dev,scan_quality,"200 dpi, skew up to 0.14 deg, noise 0.013, JPEG q75"
+dev_035,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+dev_035,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_036,dev,document_type,Anlagengitter
+dev_036,dev,format,scan
+dev_036,dev,orientation,landscape
+dev_036,dev,columns,"14 columns (12 amounts): code, name, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_close, bw_prev"
+dev_036,dev,column_blocks_reordered,afa > ahk > bw
+dev_036,dev,header_lines,2
+dev_036,dev,sign_convention,disposals printed negative
+dev_036,dev,zero_shown_as,blank
+dev_036,dev,font,CourierNew
+dev_036,dev,pages,1
+dev_036,dev,scan_severity,light
+dev_036,dev,scan_quality,"300 dpi, skew up to 0.1 deg, noise 0.012, JPEG q75"
+dev_037,dev,document_type,Anlagenverzeichnis
+dev_037,dev,format,pdf
+dev_037,dev,orientation,landscape
+dev_037,dev,font_shrunk_to_fit,Courier 5.5 pt
+dev_037,dev,columns,"15 columns (11 amounts): name, asset_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_037,dev,id_column_not_first,name > asset_no > acq_date > nd_years
+dev_037,dev,header_lines,3 incl. spanning group header
+dev_037,dev,number_style,"1.234,56- (trailing minus)"
+dev_037,dev,sign_convention,disposals printed negative
+dev_037,dev,date_style,de_short
+dev_037,dev,font,Courier
+dev_037,dev,class_headings,no
+dev_037,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_037,dev,position_subtotals,Zwischensumme <position>
+dev_037,dev,pages,2
+dev_037,dev,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+dev_038,dev,document_type,Anlagenspiegel
+dev_038,dev,format,outline
+dev_038,dev,orientation,landscape
+dev_038,dev,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_038,dev,header_lines,3 incl. spanning group header
+dev_038,dev,number_style,"1.234,56- (trailing minus)"
+dev_038,dev,zero_shown_as,-
+dev_038,dev,date_style,iso
+dev_038,dev,font,Narrow
+dev_038,dev,no_ruled_lines,no lines under the header or above sums
+dev_038,dev,class_headings,no
+dev_038,dev,subtotal_rows,account subtotal: Summe <class name>
+dev_038,dev,pages,3
+dev_038,dev,problem_noise_page_blank,ignore this page; it holds no schedule rows
+dev_039,dev,document_type,Anlagengitter
+dev_039,dev,format,scan
+dev_039,dev,orientation,landscape
+dev_039,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_039,dev,book_value_columns_swapped,prior year before current year
+dev_039,dev,header_lines,3 incl. spanning group header
+dev_039,dev,font,CourierNew
+dev_039,dev,position_subtotals,Summe <position>
+dev_039,dev,pages,1
+dev_039,dev,scan_severity,light
+dev_039,dev,scan_quality,"200 dpi, skew up to 0.03 deg, noise 0.014, JPEG q60"
+dev_040,dev,document_type,Anlagenverzeichnis
+dev_040,dev,format,xlsx
+dev_040,dev,orientation,landscape
+dev_040,dev,columns,"11 columns (6 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, ahk_close, afa_gj, bw_close"
+dev_040,dev,header_lines,3 incl. spanning group header
+dev_040,dev,zero_shown_as,blank
+dev_040,dev,font,Narrow
+dev_040,dev,class_headings,no
+dev_040,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_040,dev,xlsx_table_offset,"starts 2 rows down, 2 columns right"
+dev_040,dev,xlsx_sheet,Export
+dev_041,dev,document_type,Anlagengitter
+dev_041,dev,format,scan
+dev_041,dev,orientation,landscape
+dev_041,dev,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_041,dev,header_lines,2
+dev_041,dev,number_style,"1.234,56- (trailing minus)"
+dev_041,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_041,dev,position_subtotals,** <position>
+dev_041,dev,pages,1
+dev_041,dev,scan_severity,light
+dev_041,dev,scan_quality,"200 dpi, skew up to 0.36 deg, noise 0.013, JPEG q60"
+dev_042,dev,document_type,Anlagenspiegel
+dev_042,dev,format,xlsx
+dev_042,dev,orientation,landscape
+dev_042,dev,columns,"15 columns (12 amounts): name, asset_no, sub_no, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+dev_042,dev,column_blocks_reordered,afa > bw > ahk
+dev_042,dev,book_value_columns_swapped,prior year before current year
+dev_042,dev,id_column_not_first,name > asset_no > sub_no
+dev_042,dev,sub_numbers,separate sub-number column
+dev_042,dev,header_lines,3 incl. spanning group header
+dev_042,dev,number_style,"1234,56"
+dev_042,dev,sign_convention,disposals printed negative
+dev_042,dev,zero_shown_as,blank
+dev_042,dev,class_headings,no
+dev_042,dev,subtotal_rows,account subtotal: Zwischensumme <class no.>
+dev_042,dev,two_years,"2024, 2025"
+dev_042,dev,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+dev_042,dev,xlsx_sheet,Tabelle1
+dev_042,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -9,00"
+dev_043,dev,document_type,Anlagengitter
+dev_043,dev,format,xlsx
+dev_043,dev,orientation,landscape
+dev_043,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_043,dev,header_lines,2
+dev_043,dev,sign_convention,disposals printed negative
+dev_043,dev,zero_shown_as,blank
+dev_043,dev,font,Narrow
+dev_043,dev,no_ruled_lines,no lines under the header or above sums
+dev_043,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_043,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_043,dev,xlsx_table_offset,"starts 1 rows down, 0 columns right"
+dev_043,dev,xlsx_sheet,Sheet1
+dev_043,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -10.000,00"
+dev_044,dev,document_type,Anlagengitter
+dev_044,dev,format,scan
+dev_044,dev,orientation,landscape
+dev_044,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_044,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_044,dev,header_lines,2
+dev_044,dev,number_style,"1.234,56- (trailing minus)"
+dev_044,dev,sign_convention,disposals printed negative
+dev_044,dev,zero_shown_as,blank
+dev_044,dev,font,CourierNew
+dev_044,dev,position_subtotals,Summe <position>
+dev_044,dev,pages,1
+dev_044,dev,scan_severity,medium
+dev_044,dev,scan_quality,"150 dpi, skew up to 0.66 deg, noise 0.025, JPEG q50"
+dev_044,dev,tick_marks,9
+dev_044,dev,highlight_marks,1
+dev_045,dev,document_type,Anlagenspiegel
+dev_045,dev,format,pdf
+dev_045,dev,orientation,landscape
+dev_045,dev,font_shrunk_to_fit,CourierNew 5.5 pt
+dev_045,dev,columns,"15 columns (12 amounts): name, asset_no, sub_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_045,dev,book_value_columns_swapped,prior year before current year
+dev_045,dev,id_column_not_first,name > asset_no > sub_no
+dev_045,dev,sub_numbers,separate sub-number column
+dev_045,dev,header_lines,3 incl. spanning group header
+dev_045,dev,zero_shown_as,blank
+dev_045,dev,font,CourierNew
+dev_045,dev,class_headings,no
+dev_045,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_045,dev,two_years,"2024, 2025"
+dev_045,dev,pages,4
+dev_045,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+dev_046,dev,document_type,Anlagengitter
+dev_046,dev,format,scan
+dev_046,dev,orientation,landscape
+dev_046,dev,columns,"12 columns (11 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_046,dev,book_value_columns_swapped,prior year before current year
+dev_046,dev,zero_columns_left_out,zuschreibung
+dev_046,dev,header_lines,2
+dev_046,dev,number_style,"1234,56"
+dev_046,dev,zero_shown_as,blank
+dev_046,dev,font,Courier
+dev_046,dev,two_years,"2023, 2024"
+dev_046,dev,pages,2
+dev_046,dev,scan_severity,heavy
+dev_046,dev,scan_quality,"100 dpi, skew up to 1.41 deg, noise 0.058, JPEG q32"
+dev_046,dev,page_rotated,page 1 by 90 deg
+dev_046,dev,tick_marks,16
+dev_046,dev,highlight_marks,2
+dev_046,dev,stamp_marks,2
+dev_046,dev,uneven_lighting,
+dev_046,dev,edge_shadow,
+dev_046,dev,values_obscured_by_marks,42
+dev_047,dev,document_type,Anlagengitter
+dev_047,dev,format,pdf
+dev_047,dev,orientation,landscape
+dev_047,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_047,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_047,dev,header_lines,3 incl. spanning group header
+dev_047,dev,number_style,"(1.234,56) for negatives"
+dev_047,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_047,dev,zero_shown_as,blank
+dev_047,dev,font,CourierNew
+dev_047,dev,unit_teur,"amounts in thousand euro, rounded one by one"
+dev_047,dev,pages,1
+dev_048,dev,document_type,Anlagenspiegel (netto)
+dev_048,dev,format,scan
+dev_048,dev,orientation,portrait
+dev_048,dev,columns,"10 columns (7 amounts): asset_no, name, acq_date, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_048,dev,header_lines,3 incl. spanning group header
+dev_048,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_048,dev,zero_shown_as,blank
+dev_048,dev,font,Narrow
+dev_048,dev,class_headings,yes
+dev_048,dev,subtotal_rows,class subtotal: * <class name>
+dev_048,dev,pages,3
+dev_048,dev,scan_severity,light
+dev_048,dev,scan_quality,"300 dpi, skew up to 0.42 deg, noise 0.02, JPEG q75"
+dev_048,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+dev_048,dev,problem_noise_page_blank,ignore this page; it holds no schedule rows
+dev_049,dev,document_type,Anlagenspiegel
+dev_049,dev,format,scan
+dev_049,dev,orientation,landscape
+dev_049,dev,columns,"13 columns (11 amounts): name, asset_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_049,dev,book_value_columns_swapped,prior year before current year
+dev_049,dev,zero_columns_left_out,zuschreibung
+dev_049,dev,id_column_not_first,name > asset_no
+dev_049,dev,header_lines,2
+dev_049,dev,zero_shown_as,blank
+dev_049,dev,no_ruled_lines,no lines under the header or above sums
+dev_049,dev,class_headings,yes
+dev_049,dev,subtotal_rows,class subtotal: Summe Konto <account>
+dev_049,dev,position_subtotals,Summe <position name>
+dev_049,dev,pages,2
+dev_049,dev,scan_severity,medium
+dev_049,dev,scan_quality,"200 dpi, skew up to 0.34 deg, noise 0.028, JPEG q40"
+dev_049,dev,tick_marks,10
+dev_049,dev,highlight_marks,3
+dev_049,dev,edge_shadow,
+dev_049,dev,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+dev_050,dev,document_type,Anlagenspiegel (netto)
+dev_050,dev,format,outline
+dev_050,dev,orientation,portrait
+dev_050,dev,columns,"10 columns (7 amounts): asset_no, name, acq_date, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_050,dev,header_lines,3 incl. spanning group header
+dev_050,dev,number_style,"1234,56"
+dev_050,dev,no_ruled_lines,no lines under the header or above sums
+dev_050,dev,class_headings,yes
+dev_050,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_050,dev,position_subtotals,Summe <position>
+dev_050,dev,pages,2
+dev_051,dev,document_type,Anlagengitter
+dev_051,dev,format,pdf
+dev_051,dev,orientation,landscape
+dev_051,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_051,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_051,dev,book_value_columns_swapped,prior year before current year
+dev_051,dev,header_lines,3 incl. spanning group header
+dev_051,dev,number_style,"1234,56"
+dev_051,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_051,dev,zero_shown_as,-
+dev_051,dev,font,CourierNew
+dev_051,dev,position_subtotals,** <position>
+dev_051,dev,pages,1
+dev_051,dev,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+dev_052,dev,document_type,Anlagenspiegel
+dev_052,dev,format,scan
+dev_052,dev,orientation,landscape
+dev_052,dev,columns,"13 columns (11 amounts): name, asset_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+dev_052,dev,zero_columns_left_out,zuschreibung
+dev_052,dev,id_column_not_first,name > asset_no
+dev_052,dev,header_lines,3 incl. spanning group header
+dev_052,dev,number_style,"1,234.56 (English)"
+dev_052,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_052,dev,font,Times-Roman
+dev_052,dev,no_ruled_lines,no lines under the header or above sums
+dev_052,dev,class_headings,no
+dev_052,dev,subtotal_rows,class subtotal: Summe Konto <account>
+dev_052,dev,position_subtotals,Summe <position>
+dev_052,dev,pages,3
+dev_052,dev,scan_severity,medium
+dev_052,dev,scan_quality,"200 dpi, skew up to 0.84 deg, noise 0.026, JPEG q40"
+dev_052,dev,tick_marks,10
+dev_052,dev,highlight_marks,3
+dev_052,dev,edge_shadow,
+dev_052,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+dev_052,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_052,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_053,dev,document_type,Anlagenspiegel
+dev_053,dev,format,xlsx
+dev_053,dev,orientation,landscape
+dev_053,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_053,dev,columns,"14 columns (10 amounts): asset_no, sub_no, name, acq_date, ahk_open, zugang, abgang, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+dev_053,dev,zero_columns_left_out,"umbuchung, zuschreibung"
+dev_053,dev,sub_numbers,separate sub-number column
+dev_053,dev,header_lines,2
+dev_053,dev,number_style,"1,234.56 (English)"
+dev_053,dev,sign_convention,disposals printed negative
+dev_053,dev,zero_shown_as,blank
+dev_053,dev,font,CourierNew
+dev_053,dev,no_ruled_lines,no lines under the header or above sums
+dev_053,dev,class_headings,yes
+dev_053,dev,subtotal_rows,class subtotal: Zwischensumme <class no.>
+dev_053,dev,no_grand_total,
+dev_053,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_053,dev,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+dev_053,dev,xlsx_sheet,Sheet1
+dev_054,dev,document_type,Anlagengitter
+dev_054,dev,format,xlsx
+dev_054,dev,orientation,landscape
+dev_054,dev,columns,"13 columns (11 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+dev_054,dev,zero_columns_left_out,zuschreibung
+dev_054,dev,header_lines,2
+dev_054,dev,zero_shown_as,-
+dev_054,dev,two_years,"2024, 2025"
+dev_054,dev,xlsx_table_offset,"starts 0 rows down, 1 columns right"
+dev_054,dev,xlsx_sheet,Export
+dev_054,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 100,00"
+dev_055,dev,document_type,Anlagenverzeichnis
+dev_055,dev,format,outline
+dev_055,dev,orientation,landscape
+dev_055,dev,font_shrunk_to_fit,Courier 5.5 pt
+dev_055,dev,columns,"15 columns (11 amounts): name, asset_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_055,dev,id_column_not_first,name > asset_no > acq_date > nd_years
+dev_055,dev,header_lines,3 incl. spanning group header
+dev_055,dev,zero_shown_as,blank
+dev_055,dev,date_style,iso
+dev_055,dev,font,Courier
+dev_055,dev,class_headings,no
+dev_055,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_055,dev,pages,2
+dev_055,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_055,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_056,dev,document_type,Anlagenverzeichnis
+dev_056,dev,format,pdf
+dev_056,dev,orientation,portrait
+dev_056,dev,columns,"10 columns (5 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, kum_afa_close, bw_close, afa_gj, zuschreibung"
+dev_056,dev,header_lines,2
+dev_056,dev,number_style,"(1.234,56) for negatives"
+dev_056,dev,zero_shown_as,-
+dev_056,dev,font,Narrow
+dev_056,dev,class_headings,yes
+dev_056,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_056,dev,pages,2
+dev_056,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+dev_057,dev,document_type,Anlagenverzeichnis
+dev_057,dev,format,pdf
+dev_057,dev,orientation,landscape
+dev_057,dev,font_shrunk_to_fit,Helvetica 6.0 pt
+dev_057,dev,columns,"16 columns (11 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_057,dev,header_lines,3 incl. spanning group header
+dev_057,dev,sign_convention,disposals printed negative
+dev_057,dev,zero_shown_as,blank
+dev_057,dev,no_ruled_lines,no lines under the header or above sums
+dev_057,dev,class_headings,yes
+dev_057,dev,subtotal_rows,account subtotal: Summe <class name>
+dev_057,dev,position_subtotals,Summe <position>
+dev_057,dev,pages,3
+dev_057,dev,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+dev_058,dev,document_type,Anlagenspiegel
+dev_058,dev,format,pdf
+dev_058,dev,orientation,landscape
+dev_058,dev,font_shrunk_to_fit,Times-Roman 6.0 pt
+dev_058,dev,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_058,dev,book_value_columns_swapped,prior year before current year
+dev_058,dev,header_lines,2
+dev_058,dev,number_style,"(1.234,56) for negatives"
+dev_058,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_058,dev,zero_shown_as,-
+dev_058,dev,font,Times-Roman
+dev_058,dev,class_headings,no
+dev_058,dev,subtotal_rows,class subtotal: Zwischensumme <class no.>
+dev_058,dev,position_subtotals,Summe <position>
+dev_058,dev,no_grand_total,
+dev_058,dev,pages,3
+dev_058,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_058,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_059,dev,document_type,Anlagenverzeichnis
+dev_059,dev,format,scan
+dev_059,dev,orientation,landscape
+dev_059,dev,columns,"13 columns (8 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+dev_059,dev,header_lines,2
+dev_059,dev,zero_shown_as,blank
+dev_059,dev,class_headings,no
+dev_059,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_059,dev,pages,4
+dev_059,dev,scan_severity,heavy
+dev_059,dev,scan_quality,"100 dpi, skew up to 1.06 deg, noise 0.044, JPEG q32"
+dev_059,dev,page_rotated,page 4 by 270 deg
+dev_059,dev,tick_marks,8
+dev_059,dev,highlight_marks,1
+dev_059,dev,stamp_marks,1
+dev_059,dev,uneven_lighting,
+dev_059,dev,edge_shadow,
+dev_059,dev,values_obscured_by_marks,7
+dev_059,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 90,00"
+dev_059,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_060,dev,document_type,Anlagenverzeichnis
+dev_060,dev,format,pdf
+dev_060,dev,orientation,landscape
+dev_060,dev,columns,"13 columns (8 amounts): asset_no, name, acq_date, nd_years, method, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+dev_060,dev,header_lines,2
+dev_060,dev,number_style,"(1.234,56) for negatives"
+dev_060,dev,zero_shown_as,blank
+dev_060,dev,font,Times-Roman
+dev_060,dev,class_headings,yes
+dev_060,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_060,dev,position_subtotals,** <position>
+dev_060,dev,pages,2
+dev_061,dev,document_type,Anlagenspiegel
+dev_061,dev,format,pdf
+dev_061,dev,orientation,landscape
+dev_061,dev,columns,"14 columns (12 amounts): asset_no, name, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_close, bw_prev"
+dev_061,dev,column_blocks_reordered,afa > ahk > bw
+dev_061,dev,header_lines,2
+dev_061,dev,number_style,"1,234.56 (English)"
+dev_061,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_061,dev,class_headings,no
+dev_061,dev,subtotal_rows,account subtotal: Summe <class name>
+dev_061,dev,pages,1
+dev_062,dev,document_type,Anlagengitter
+dev_062,dev,format,pdf
+dev_062,dev,orientation,landscape
+dev_062,dev,columns,"13 columns (11 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_062,dev,book_value_columns_swapped,prior year before current year
+dev_062,dev,zero_columns_left_out,zuschreibung
+dev_062,dev,header_lines,3 incl. spanning group header
+dev_062,dev,sign_convention,disposals printed negative
+dev_062,dev,no_ruled_lines,no lines under the header or above sums
+dev_062,dev,pages,1
+dev_063,dev,document_type,Anlagenspiegel (netto)
+dev_063,dev,format,pdf
+dev_063,dev,orientation,landscape
+dev_063,dev,columns,"11 columns (7 amounts): asset_no, name, acq_date, nd_years, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_063,dev,header_lines,2
+dev_063,dev,number_style,"1.234,56- (trailing minus)"
+dev_063,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_063,dev,date_style,iso
+dev_063,dev,font,CourierNew
+dev_063,dev,class_headings,no
+dev_063,dev,subtotal_rows,class subtotal: Summe <class name>
+dev_063,dev,pages,2
+dev_064,dev,document_type,Anlagengitter
+dev_064,dev,format,scan
+dev_064,dev,orientation,landscape
+dev_064,dev,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_064,dev,book_value_columns_swapped,prior year before current year
+dev_064,dev,header_lines,3 incl. spanning group header
+dev_064,dev,number_style,"1234,56"
+dev_064,dev,zero_shown_as,-
+dev_064,dev,font,CourierNew
+dev_064,dev,pages,3
+dev_064,dev,scan_severity,medium
+dev_064,dev,scan_quality,"200 dpi, skew up to 0.36 deg, noise 0.029, JPEG q50"
+dev_064,dev,tick_marks,5
+dev_064,dev,highlight_marks,2
+dev_064,dev,edge_shadow,
+dev_064,dev,problem_noise_page_unrelated,ignore this page; it holds no schedule rows
+dev_065,dev,document_type,Anlagengitter
+dev_065,dev,format,xlsx
+dev_065,dev,orientation,landscape
+dev_065,dev,font_shrunk_to_fit,CourierNew 6.0 pt
+dev_065,dev,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+dev_065,dev,book_value_columns_swapped,prior year before current year
+dev_065,dev,header_lines,3 incl. spanning group header
+dev_065,dev,font,CourierNew
+dev_065,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_065,dev,xlsx_table_offset,"starts 1 rows down, 2 columns right"
+dev_065,dev,xlsx_sheet,AV
+dev_065,dev,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+dev_066,dev,document_type,Anlagenspiegel
+dev_066,dev,format,outline
+dev_066,dev,orientation,landscape
+dev_066,dev,columns,"14 columns (11 amounts): asset_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_prev, bw_close"
+dev_066,dev,book_value_columns_swapped,prior year before current year
+dev_066,dev,zero_columns_left_out,zuschreibung
+dev_066,dev,header_lines,2
+dev_066,dev,number_style,"1234,56"
+dev_066,dev,zero_shown_as,blank
+dev_066,dev,font,Courier
+dev_066,dev,class_headings,yes
+dev_066,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_066,dev,position_subtotals,** <position>
+dev_066,dev,pages,1
+dev_067,dev,document_type,Anlagenverzeichnis
+dev_067,dev,format,outline
+dev_067,dev,orientation,landscape
+dev_067,dev,columns,"10 columns (5 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, kum_afa_close, bw_close, afa_gj, zuschreibung"
+dev_067,dev,header_lines,3 incl. spanning group header
+dev_067,dev,number_style,"1,234.56 (English)"
+dev_067,dev,sign_convention,disposals printed negative
+dev_067,dev,zero_shown_as,blank
+dev_067,dev,class_headings,no
+dev_067,dev,subtotal_rows,account subtotal: Zwischensumme <class no.>
+dev_067,dev,position_subtotals,Zwischensumme <position>
+dev_067,dev,pages,2
+dev_067,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_068,dev,document_type,Anlagenverzeichnis
+dev_068,dev,format,pdf
+dev_068,dev,orientation,landscape
+dev_068,dev,font_shrunk_to_fit,Courier 5.5 pt
+dev_068,dev,columns,"15 columns (10 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close"
+dev_068,dev,header_lines,2
+dev_068,dev,zero_shown_as,blank
+dev_068,dev,date_style,de_short
+dev_068,dev,font,Courier
+dev_068,dev,class_headings,yes
+dev_068,dev,subtotal_rows,account subtotal: Summe Konto <account>
+dev_068,dev,position_subtotals,Summe <position name>
+dev_068,dev,pages,2
+dev_068,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_068,dev,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+dev_069,dev,document_type,Anlagenverzeichnis
+dev_069,dev,format,pdf
+dev_069,dev,orientation,landscape
+dev_069,dev,columns,"16 columns (11 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+dev_069,dev,header_lines,3 incl. spanning group header
+dev_069,dev,sign_convention,SAP signs (disposals and depreciation negative)
+dev_069,dev,font,Narrow
+dev_069,dev,no_ruled_lines,no lines under the header or above sums
+dev_069,dev,class_headings,yes
+dev_069,dev,subtotal_rows,account subtotal: Summe <class no.> <class name>
+dev_069,dev,position_subtotals,Zwischensumme <position>
+dev_069,dev,pages,3
+dev_069,dev,problem_noise_page_cover,ignore this page; it holds no schedule rows
+dev_070,dev,document_type,Anlagenspiegel (netto)
+dev_070,dev,format,scan
+dev_070,dev,orientation,portrait
+dev_070,dev,columns,"9 columns (7 amounts): asset_no, name, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+dev_070,dev,header_lines,3 incl. spanning group header
+dev_070,dev,number_style,"1.234,56- (trailing minus)"
+dev_070,dev,sign_convention,disposals printed negative
+dev_070,dev,zero_shown_as,blank
+dev_070,dev,font,Narrow
+dev_070,dev,class_headings,no
+dev_070,dev,subtotal_rows,class subtotal: <class name> gesamt
+dev_070,dev,pages,1
+dev_070,dev,scan_severity,light
+dev_070,dev,scan_quality,"300 dpi, skew up to 0.4 deg, noise 0.008, JPEG q75"
+dev_070,dev,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+dev_071,dev,document_type,Anlagenspiegel
+dev_071,dev,format,scan
+dev_071,dev,orientation,landscape
+dev_071,dev,font_shrunk_to_fit,Helvetica 6.0 pt
+dev_071,dev,columns,"15 columns (12 amounts): asset_no, sub_no, name, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+dev_071,dev,column_blocks_reordered,bw > ahk > afa
+dev_071,dev,book_value_columns_swapped,prior year before current year
+dev_071,dev,sub_numbers,separate sub-number column
+dev_071,dev,header_lines,2
+dev_071,dev,zero_shown_as,-
+dev_071,dev,class_headings,yes
+dev_071,dev,subtotal_rows,account subtotal: Zwischensumme <class no.>
+dev_071,dev,pages,2
+dev_071,dev,scan_severity,light
+dev_071,dev,scan_quality,"200 dpi, skew up to 0.33 deg, noise 0.011, JPEG q60"
+dev_072,dev,document_type,Anlagenspiegel
+dev_072,dev,format,xlsx
+dev_072,dev,orientation,landscape
+dev_072,dev,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+dev_072,dev,header_lines,3 incl. spanning group header
+dev_072,dev,zero_shown_as,blank
+dev_072,dev,font,Times-Roman
+dev_072,dev,class_headings,no
+dev_072,dev,subtotal_rows,account subtotal: <class name> gesamt
+dev_072,dev,no_grand_total,
+dev_072,dev,xlsx_numbers_as_text,amount cells hold German-format text
+dev_072,dev,xlsx_table_offset,"starts 2 rows down, 1 columns right"
+dev_072,dev,xlsx_sheet,Export
+holdout_001,holdout,document_type,Anlagenverzeichnis
+holdout_001,holdout,format,scan
+holdout_001,holdout,orientation,landscape
+holdout_001,holdout,columns,"11 columns (7 amounts): name, asset_no, acq_date, nd_years, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, bw_close"
+holdout_001,holdout,id_column_not_first,name > asset_no > acq_date > nd_years
+holdout_001,holdout,header_lines,3 incl. spanning group header
+holdout_001,holdout,number_style,"(1.234,56) for negatives"
+holdout_001,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_001,holdout,zero_shown_as,blank
+holdout_001,holdout,class_headings,yes
+holdout_001,holdout,subtotal_rows,class subtotal: Summe <class name>
+holdout_001,holdout,position_subtotals,Summe <position name>
+holdout_001,holdout,pages,3
+holdout_001,holdout,scan_severity,light
+holdout_001,holdout,scan_quality,"300 dpi, skew up to 0.29 deg, noise 0.006, JPEG q60"
+holdout_001,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_002,holdout,document_type,Anlagenspiegel
+holdout_002,holdout,format,scan
+holdout_002,holdout,orientation,landscape
+holdout_002,holdout,columns,"14 columns (12 amounts): name, asset_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_002,holdout,id_column_not_first,name > asset_no
+holdout_002,holdout,header_lines,3 incl. spanning group header
+holdout_002,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_002,holdout,sign_convention,disposals printed negative
+holdout_002,holdout,font,Narrow
+holdout_002,holdout,class_headings,no
+holdout_002,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_002,holdout,pages,2
+holdout_002,holdout,scan_severity,light
+holdout_002,holdout,scan_quality,"200 dpi, skew up to 0.19 deg, noise 0.01, JPEG q75"
+holdout_002,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_003,holdout,document_type,Anlagenverzeichnis
+holdout_003,holdout,format,pdf
+holdout_003,holdout,orientation,landscape
+holdout_003,holdout,font_shrunk_to_fit,CourierNew 6.0 pt
+holdout_003,holdout,columns,"13 columns (8 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+holdout_003,holdout,header_lines,3 incl. spanning group header
+holdout_003,holdout,zero_shown_as,blank
+holdout_003,holdout,font,CourierNew
+holdout_003,holdout,class_headings,no
+holdout_003,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_003,holdout,position_subtotals,Summe <position>
+holdout_003,holdout,no_grand_total,
+holdout_003,holdout,pages,2
+holdout_003,holdout,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+holdout_003,holdout,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+holdout_004,holdout,document_type,Anlagenverzeichnis
+holdout_004,holdout,format,scan
+holdout_004,holdout,orientation,landscape
+holdout_004,holdout,columns,"12 columns (8 amounts): name, asset_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+holdout_004,holdout,id_column_not_first,name > asset_no > acq_date > nd_years
+holdout_004,holdout,header_lines,3 incl. spanning group header
+holdout_004,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_004,holdout,class_headings,no
+holdout_004,holdout,subtotal_rows,account subtotal: Summe Konto <account>
+holdout_004,holdout,pages,1
+holdout_004,holdout,scan_severity,heavy
+holdout_004,holdout,scan_quality,"100 dpi, skew up to 1.45 deg, noise 0.059, JPEG q32"
+holdout_004,holdout,tick_marks,8
+holdout_004,holdout,highlight_marks,2
+holdout_004,holdout,stamp_marks,2
+holdout_004,holdout,uneven_lighting,
+holdout_004,holdout,edge_shadow,
+holdout_004,holdout,values_obscured_by_marks,28
+holdout_004,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 1.000,00"
+holdout_004,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_005,holdout,document_type,Anlagenspiegel
+holdout_005,holdout,format,xlsx
+holdout_005,holdout,orientation,landscape
+holdout_005,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_005,holdout,columns,"14 columns (12 amounts): asset_no, name, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_005,holdout,column_blocks_reordered,bw > afa > ahk
+holdout_005,holdout,book_value_columns_swapped,prior year before current year
+holdout_005,holdout,header_lines,3 incl. spanning group header
+holdout_005,holdout,number_style,"(1.234,56) for negatives"
+holdout_005,holdout,font,Courier
+holdout_005,holdout,class_headings,yes
+holdout_005,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_005,holdout,position_subtotals,Summe <position>
+holdout_005,holdout,two_years,"2023, 2024"
+holdout_005,holdout,xlsx_table_offset,"starts 3 rows down, 0 columns right"
+holdout_005,holdout,xlsx_sheet,Export
+holdout_005,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 90,00"
+holdout_006,holdout,document_type,Anlagenspiegel
+holdout_006,holdout,format,xlsx
+holdout_006,holdout,orientation,landscape
+holdout_006,holdout,font_shrunk_to_fit,CourierNew 6.0 pt
+holdout_006,holdout,columns,"14 columns (11 amounts): asset_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+holdout_006,holdout,zero_columns_left_out,zuschreibung
+holdout_006,holdout,header_lines,3 incl. spanning group header
+holdout_006,holdout,zero_shown_as,-
+holdout_006,holdout,font,CourierNew
+holdout_006,holdout,class_headings,no
+holdout_006,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_006,holdout,position_subtotals,Zwischensumme <position>
+holdout_006,holdout,xlsx_table_offset,"starts 3 rows down, 0 columns right"
+holdout_006,holdout,xlsx_sheet,Tabelle1
+holdout_007,holdout,document_type,Anlagenspiegel
+holdout_007,holdout,format,scan
+holdout_007,holdout,orientation,landscape
+holdout_007,holdout,columns,"12 columns (10 amounts): asset_no, name, ahk_open, zugang, abgang, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+holdout_007,holdout,zero_columns_left_out,"umbuchung, zuschreibung"
+holdout_007,holdout,header_lines,3 incl. spanning group header
+holdout_007,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_007,holdout,zero_shown_as,blank
+holdout_007,holdout,font,CourierNew
+holdout_007,holdout,class_headings,no
+holdout_007,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_007,holdout,pages,2
+holdout_007,holdout,scan_severity,medium
+holdout_007,holdout,scan_quality,"200 dpi, skew up to 0.41 deg, noise 0.023, JPEG q40"
+holdout_007,holdout,page_rotated,page 1 by 180 deg
+holdout_007,holdout,tick_marks,7
+holdout_007,holdout,highlight_marks,1
+holdout_007,holdout,edge_shadow,
+holdout_007,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_008,holdout,document_type,Anlagenverzeichnis
+holdout_008,holdout,format,pdf
+holdout_008,holdout,orientation,landscape
+holdout_008,holdout,columns,"12 columns (7 amounts): name, asset_no, sub_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, bw_close"
+holdout_008,holdout,id_column_not_first,name > asset_no > sub_no > acq_date > nd_years
+holdout_008,holdout,sub_numbers,separate sub-number column
+holdout_008,holdout,header_lines,2
+holdout_008,holdout,zero_shown_as,blank
+holdout_008,holdout,class_headings,yes
+holdout_008,holdout,subtotal_rows,account subtotal: Zwischensumme <class no.>
+holdout_008,holdout,pages,2
+holdout_008,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_009,holdout,document_type,Anlagenspiegel
+holdout_009,holdout,format,scan
+holdout_009,holdout,orientation,landscape
+holdout_009,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_009,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_009,holdout,book_value_columns_swapped,prior year before current year
+holdout_009,holdout,header_lines,3 incl. spanning group header
+holdout_009,holdout,number_style,"1234,56"
+holdout_009,holdout,sign_convention,disposals printed negative
+holdout_009,holdout,zero_shown_as,-
+holdout_009,holdout,font,Courier
+holdout_009,holdout,class_headings,no
+holdout_009,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_009,holdout,pages,2
+holdout_009,holdout,scan_severity,medium
+holdout_009,holdout,scan_quality,"150 dpi, skew up to 0.58 deg, noise 0.03, JPEG q50"
+holdout_009,holdout,page_rotated,page 1 by 180 deg
+holdout_009,holdout,tick_marks,7
+holdout_009,holdout,highlight_marks,2
+holdout_009,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_010,holdout,document_type,Anlagenverzeichnis
+holdout_010,holdout,format,pdf
+holdout_010,holdout,orientation,landscape
+holdout_010,holdout,columns,"13 columns (8 amounts): name, asset_no, sub_no, acq_date, nd_years, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+holdout_010,holdout,id_column_not_first,name > asset_no > sub_no > acq_date > nd_years
+holdout_010,holdout,sub_numbers,separate sub-number column
+holdout_010,holdout,header_lines,2
+holdout_010,holdout,sign_convention,disposals printed negative
+holdout_010,holdout,zero_shown_as,blank
+holdout_010,holdout,font,Courier
+holdout_010,holdout,class_headings,no
+holdout_010,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_010,holdout,pages,2
+holdout_010,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 90,00"
+holdout_010,holdout,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+holdout_010,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_011,holdout,document_type,Anlagenspiegel (netto)
+holdout_011,holdout,format,scan
+holdout_011,holdout,orientation,landscape
+holdout_011,holdout,columns,"12 columns (7 amounts): asset_no, sub_no, name, acq_date, nd_years, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_011,holdout,sub_numbers,separate sub-number column
+holdout_011,holdout,header_lines,2
+holdout_011,holdout,number_style,"1234,56"
+holdout_011,holdout,zero_shown_as,-
+holdout_011,holdout,font,Times-Roman
+holdout_011,holdout,class_headings,yes
+holdout_011,holdout,subtotal_rows,account subtotal: <class name> gesamt
+holdout_011,holdout,position_subtotals,Summe <position>
+holdout_011,holdout,pages,1
+holdout_011,holdout,scan_severity,heavy
+holdout_011,holdout,scan_quality,"150 dpi, skew up to 1.48 deg, noise 0.048, JPEG q25"
+holdout_011,holdout,tick_marks,8
+holdout_011,holdout,highlight_marks,1
+holdout_011,holdout,stamp_marks,2
+holdout_011,holdout,uneven_lighting,
+holdout_011,holdout,edge_shadow,
+holdout_011,holdout,values_obscured_by_marks,3
+holdout_011,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -90,00"
+holdout_011,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_012,holdout,document_type,Anlagengitter
+holdout_012,holdout,format,outline
+holdout_012,holdout,orientation,landscape
+holdout_012,holdout,columns,"14 columns (12 amounts): code, name, bw_close, bw_prev, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_012,holdout,column_blocks_reordered,bw > afa > ahk
+holdout_012,holdout,header_lines,2
+holdout_012,holdout,number_style,"1234,56"
+holdout_012,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_012,holdout,font,Narrow
+holdout_012,holdout,two_years,"2024, 2025"
+holdout_012,holdout,pages,2
+holdout_013,holdout,document_type,Anlagenspiegel
+holdout_013,holdout,format,xlsx
+holdout_013,holdout,orientation,landscape
+holdout_013,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_013,holdout,columns,"14 columns (11 amounts): asset_no, sub_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+holdout_013,holdout,zero_columns_left_out,zuschreibung
+holdout_013,holdout,sub_numbers,separate sub-number column
+holdout_013,holdout,header_lines,3 incl. spanning group header
+holdout_013,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_013,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_013,holdout,zero_shown_as,-
+holdout_013,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_013,holdout,class_headings,no
+holdout_013,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_013,holdout,position_subtotals,Zwischensumme <position>
+holdout_013,holdout,xlsx_table_offset,"starts 1 rows down, 2 columns right"
+holdout_013,holdout,xlsx_sheet,Anlagenspiegel
+holdout_014,holdout,document_type,Anlagengitter
+holdout_014,holdout,format,pdf
+holdout_014,holdout,orientation,landscape
+holdout_014,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+holdout_014,holdout,column_blocks_reordered,ahk > bw > afa
+holdout_014,holdout,book_value_columns_swapped,prior year before current year
+holdout_014,holdout,header_lines,3 incl. spanning group header
+holdout_014,holdout,number_style,"1234,56"
+holdout_014,holdout,font,Courier
+holdout_014,holdout,pages,2
+holdout_014,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_015,holdout,document_type,Anlagengitter
+holdout_015,holdout,format,outline
+holdout_015,holdout,orientation,landscape
+holdout_015,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_015,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+holdout_015,holdout,column_blocks_reordered,ahk > bw > afa
+holdout_015,holdout,book_value_columns_swapped,prior year before current year
+holdout_015,holdout,header_lines,3 incl. spanning group header
+holdout_015,holdout,zero_shown_as,blank
+holdout_015,holdout,position_subtotals,Summe <position name>
+holdout_015,holdout,pages,2
+holdout_015,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_016,holdout,document_type,Anlagenspiegel
+holdout_016,holdout,format,pdf
+holdout_016,holdout,orientation,landscape
+holdout_016,holdout,columns,"14 columns (12 amounts): name, asset_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_016,holdout,id_column_not_first,name > asset_no
+holdout_016,holdout,header_lines,2
+holdout_016,holdout,sign_convention,disposals printed negative
+holdout_016,holdout,zero_shown_as,blank
+holdout_016,holdout,font,Narrow
+holdout_016,holdout,class_headings,no
+holdout_016,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_016,holdout,pages,2
+holdout_016,holdout,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+holdout_017,holdout,document_type,Anlagenverzeichnis
+holdout_017,holdout,format,xlsx
+holdout_017,holdout,orientation,portrait
+holdout_017,holdout,columns,"10 columns (4 amounts): asset_no, sub_no, name, acq_date, nd_years, method, ahk_close, kum_afa_close, bw_close, afa_gj"
+holdout_017,holdout,sub_numbers,separate sub-number column
+holdout_017,holdout,header_lines,2
+holdout_017,holdout,number_style,"(1.234,56) for negatives"
+holdout_017,holdout,date_style,iso
+holdout_017,holdout,font,Courier
+holdout_017,holdout,class_headings,no
+holdout_017,holdout,subtotal_rows,account subtotal: Summe Konto <account>
+holdout_017,holdout,xlsx_table_offset,"starts 1 rows down, 2 columns right"
+holdout_017,holdout,xlsx_sheet,Sheet1
+holdout_018,holdout,document_type,Anlagenspiegel (netto)
+holdout_018,holdout,format,scan
+holdout_018,holdout,orientation,landscape
+holdout_018,holdout,columns,"10 columns (7 amounts): asset_no, name, acq_date, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_018,holdout,header_lines,3 incl. spanning group header
+holdout_018,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_018,holdout,zero_shown_as,-
+holdout_018,holdout,date_style,iso
+holdout_018,holdout,font,Courier
+holdout_018,holdout,class_headings,no
+holdout_018,holdout,subtotal_rows,account subtotal: * <class name>
+holdout_018,holdout,position_subtotals,Summe <position name>
+holdout_018,holdout,no_grand_total,
+holdout_018,holdout,pages,2
+holdout_018,holdout,scan_severity,heavy
+holdout_018,holdout,scan_quality,"120 dpi, skew up to 1.1 deg, noise 0.05, fax"
+holdout_018,holdout,page_rotated,page 1 by 90 deg
+holdout_018,holdout,tick_marks,15
+holdout_018,holdout,stamp_marks,1
+holdout_018,holdout,uneven_lighting,
+holdout_018,holdout,edge_shadow,
+holdout_018,holdout,values_obscured_by_marks,18
+holdout_018,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_019,holdout,document_type,Anlagenverzeichnis
+holdout_019,holdout,format,pdf
+holdout_019,holdout,orientation,landscape
+holdout_019,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_019,holdout,columns,"15 columns (10 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close"
+holdout_019,holdout,header_lines,3 incl. spanning group header
+holdout_019,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_019,holdout,zero_shown_as,-
+holdout_019,holdout,date_style,de_short
+holdout_019,holdout,class_headings,no
+holdout_019,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_019,holdout,position_subtotals,Summe <position name>
+holdout_019,holdout,pages,1
+holdout_019,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -90,00"
+holdout_020,holdout,document_type,Anlagenverzeichnis
+holdout_020,holdout,format,scan
+holdout_020,holdout,orientation,landscape
+holdout_020,holdout,columns,"13 columns (8 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+holdout_020,holdout,header_lines,3 incl. spanning group header
+holdout_020,holdout,sign_convention,disposals printed negative
+holdout_020,holdout,date_style,de_short
+holdout_020,holdout,font,Times-Roman
+holdout_020,holdout,class_headings,yes
+holdout_020,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_020,holdout,pages,2
+holdout_020,holdout,scan_severity,light
+holdout_020,holdout,scan_quality,"200 dpi, skew up to 0.02 deg, noise 0.006, JPEG q60"
+holdout_021,holdout,document_type,Anlagenspiegel (netto)
+holdout_021,holdout,format,xlsx
+holdout_021,holdout,orientation,landscape
+holdout_021,holdout,columns,"10 columns (5 amounts): asset_no, sub_no, name, acq_date, nd_years, bw_prev, zugang, abgang_bw, afa_gj, bw_close"
+holdout_021,holdout,sub_numbers,separate sub-number column
+holdout_021,holdout,header_lines,3 incl. spanning group header
+holdout_021,holdout,sign_convention,disposals printed negative
+holdout_021,holdout,font,CourierNew
+holdout_021,holdout,class_headings,yes
+holdout_021,holdout,subtotal_rows,account subtotal: Summe <class name>
+holdout_021,holdout,no_grand_total,
+holdout_021,holdout,xlsx_numbers_as_text,amount cells hold German-format text
+holdout_021,holdout,xlsx_sheet,AV
+holdout_022,holdout,document_type,Anlagenspiegel (netto)
+holdout_022,holdout,format,xlsx
+holdout_022,holdout,orientation,landscape
+holdout_022,holdout,columns,"9 columns (7 amounts): asset_no, name, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_022,holdout,header_lines,3 incl. spanning group header
+holdout_022,holdout,number_style,"1,234.56 (English)"
+holdout_022,holdout,font,CourierNew
+holdout_022,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_022,holdout,class_headings,yes
+holdout_022,holdout,subtotal_rows,account subtotal: Summe <class name>
+holdout_022,holdout,xlsx_table_offset,"starts 0 rows down, 1 columns right"
+holdout_022,holdout,xlsx_sheet,Export
+holdout_023,holdout,document_type,Anlagenspiegel
+holdout_023,holdout,format,pdf
+holdout_023,holdout,orientation,landscape
+holdout_023,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_023,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_023,holdout,book_value_columns_swapped,prior year before current year
+holdout_023,holdout,header_lines,2
+holdout_023,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_023,holdout,zero_shown_as,blank
+holdout_023,holdout,font,Courier
+holdout_023,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_023,holdout,class_headings,yes
+holdout_023,holdout,subtotal_rows,class subtotal: Summe <class name>
+holdout_023,holdout,position_subtotals,** <position>
+holdout_023,holdout,pages,3
+holdout_023,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_024,holdout,document_type,Anlagenspiegel
+holdout_024,holdout,format,scan
+holdout_024,holdout,orientation,landscape
+holdout_024,holdout,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_024,holdout,book_value_columns_swapped,prior year before current year
+holdout_024,holdout,header_lines,2
+holdout_024,holdout,sign_convention,disposals printed negative
+holdout_024,holdout,zero_shown_as,blank
+holdout_024,holdout,class_headings,no
+holdout_024,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_024,holdout,pages,3
+holdout_024,holdout,scan_severity,light
+holdout_024,holdout,scan_quality,"300 dpi, skew up to 0.31 deg, noise 0.015, JPEG q60"
+holdout_024,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_025,holdout,document_type,Anlagengitter
+holdout_025,holdout,format,outline
+holdout_025,holdout,orientation,landscape
+holdout_025,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_025,holdout,book_value_columns_swapped,prior year before current year
+holdout_025,holdout,header_lines,2
+holdout_025,holdout,number_style,"(1.234,56) for negatives"
+holdout_025,holdout,pages,2
+holdout_025,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_026,holdout,document_type,Anlagengitter
+holdout_026,holdout,format,scan
+holdout_026,holdout,orientation,landscape
+holdout_026,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_026,holdout,header_lines,2
+holdout_026,holdout,font,Times-Roman
+holdout_026,holdout,pages,1
+holdout_026,holdout,scan_severity,light
+holdout_026,holdout,scan_quality,"200 dpi, skew up to 0.22 deg, noise 0.01, JPEG q75"
+holdout_026,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+holdout_027,holdout,document_type,Anlagenverzeichnis
+holdout_027,holdout,format,pdf
+holdout_027,holdout,orientation,landscape
+holdout_027,holdout,columns,"11 columns (5 amounts): asset_no, sub_no, acq_date, name, nd_months, method, ahk_close, kum_afa_close, bw_close, afa_gj, zuschreibung"
+holdout_027,holdout,sub_numbers,separate sub-number column
+holdout_027,holdout,header_lines,3 incl. spanning group header
+holdout_027,holdout,number_style,"1234,56"
+holdout_027,holdout,zero_shown_as,blank
+holdout_027,holdout,date_style,iso
+holdout_027,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_027,holdout,class_headings,yes
+holdout_027,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_027,holdout,position_subtotals,Zwischensumme <position>
+holdout_027,holdout,no_grand_total,
+holdout_027,holdout,pages,2
+holdout_027,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_028,holdout,document_type,Anlagengitter
+holdout_028,holdout,format,pdf
+holdout_028,holdout,orientation,landscape
+holdout_028,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_028,holdout,book_value_columns_swapped,prior year before current year
+holdout_028,holdout,header_lines,3 incl. spanning group header
+holdout_028,holdout,sign_convention,disposals printed negative
+holdout_028,holdout,zero_shown_as,-
+holdout_028,holdout,font,Narrow
+holdout_028,holdout,pages,2
+holdout_028,holdout,problem_noise_page_unrelated,ignore this page; it holds no schedule rows
+holdout_029,holdout,document_type,Anlagenspiegel (netto)
+holdout_029,holdout,format,pdf
+holdout_029,holdout,orientation,portrait
+holdout_029,holdout,columns,"8 columns (6 amounts): name, asset_no, bw_prev, zugang, umbuchung, abgang_bw, afa_gj, bw_close"
+holdout_029,holdout,id_column_not_first,name > asset_no
+holdout_029,holdout,header_lines,3 incl. spanning group header
+holdout_029,holdout,number_style,"1234,56"
+holdout_029,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_029,holdout,zero_shown_as,-
+holdout_029,holdout,font,Narrow
+holdout_029,holdout,class_headings,yes
+holdout_029,holdout,subtotal_rows,account subtotal: * <class name>
+holdout_029,holdout,pages,2
+holdout_029,holdout,problem_noise_page_cover,ignore this page; it holds no schedule rows
+holdout_030,holdout,document_type,Anlagenverzeichnis
+holdout_030,holdout,format,scan
+holdout_030,holdout,orientation,landscape
+holdout_030,holdout,columns,"13 columns (8 amounts): asset_no, name, acq_date, nd_years, method, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, zuschreibung, bw_close"
+holdout_030,holdout,header_lines,2
+holdout_030,holdout,number_style,"1234,56"
+holdout_030,holdout,zero_shown_as,-
+holdout_030,holdout,date_style,de_short
+holdout_030,holdout,class_headings,yes
+holdout_030,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_030,holdout,position_subtotals,Summe <position>
+holdout_030,holdout,pages,3
+holdout_030,holdout,scan_severity,medium
+holdout_030,holdout,scan_quality,"150 dpi, skew up to 0.3 deg, noise 0.02, JPEG q50"
+holdout_030,holdout,page_rotated,page 1 by 180 deg
+holdout_030,holdout,tick_marks,5
+holdout_030,holdout,highlight_marks,2
+holdout_030,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_030,holdout,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+holdout_031,holdout,document_type,Anlagengitter
+holdout_031,holdout,format,pdf
+holdout_031,holdout,orientation,landscape
+holdout_031,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_031,holdout,book_value_columns_swapped,prior year before current year
+holdout_031,holdout,header_lines,3 incl. spanning group header
+holdout_031,holdout,number_style,"1234,56"
+holdout_031,holdout,zero_shown_as,-
+holdout_031,holdout,pages,2
+holdout_031,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_032,holdout,document_type,Anlagenspiegel (netto)
+holdout_032,holdout,format,xlsx
+holdout_032,holdout,orientation,portrait
+holdout_032,holdout,columns,"9 columns (7 amounts): name, asset_no, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_032,holdout,id_column_not_first,name > asset_no
+holdout_032,holdout,header_lines,3 incl. spanning group header
+holdout_032,holdout,zero_shown_as,blank
+holdout_032,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_032,holdout,class_headings,no
+holdout_032,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_032,holdout,xlsx_table_offset,"starts 0 rows down, 1 columns right"
+holdout_032,holdout,xlsx_sheet,AV
+holdout_033,holdout,document_type,Anlagenspiegel
+holdout_033,holdout,format,pdf
+holdout_033,holdout,orientation,landscape
+holdout_033,holdout,font_shrunk_to_fit,Times-Roman 6.0 pt
+holdout_033,holdout,columns,"17 columns (12 amounts): asset_no, sub_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_033,holdout,book_value_columns_swapped,prior year before current year
+holdout_033,holdout,sub_numbers,separate sub-number column
+holdout_033,holdout,header_lines,2
+holdout_033,holdout,number_style,"(1.234,56) for negatives"
+holdout_033,holdout,sign_convention,disposals printed negative
+holdout_033,holdout,zero_shown_as,blank
+holdout_033,holdout,font,Times-Roman
+holdout_033,holdout,class_headings,no
+holdout_033,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_033,holdout,position_subtotals,Zwischensumme <position>
+holdout_033,holdout,pages,2
+holdout_033,holdout,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+holdout_034,holdout,document_type,Anlagengitter
+holdout_034,holdout,format,xlsx
+holdout_034,holdout,orientation,landscape
+holdout_034,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_034,holdout,header_lines,3 incl. spanning group header
+holdout_034,holdout,number_style,"1234,56"
+holdout_034,holdout,sign_convention,disposals printed negative
+holdout_034,holdout,font,CourierNew
+holdout_034,holdout,xlsx_table_offset,"starts 0 rows down, 2 columns right"
+holdout_034,holdout,xlsx_sheet,Anlagenspiegel
+holdout_034,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+holdout_035,holdout,document_type,Anlagenverzeichnis
+holdout_035,holdout,format,outline
+holdout_035,holdout,orientation,landscape
+holdout_035,holdout,columns,"16 columns (11 amounts): asset_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+holdout_035,holdout,header_lines,3 incl. spanning group header
+holdout_035,holdout,number_style,"(1.234,56) for negatives"
+holdout_035,holdout,zero_shown_as,blank
+holdout_035,holdout,class_headings,yes
+holdout_035,holdout,subtotal_rows,account subtotal: Zwischensumme <class no.>
+holdout_035,holdout,position_subtotals,** <position>
+holdout_035,holdout,pages,2
+holdout_036,holdout,document_type,Anlagengitter
+holdout_036,holdout,format,pdf
+holdout_036,holdout,orientation,landscape
+holdout_036,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_036,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_036,holdout,book_value_columns_swapped,prior year before current year
+holdout_036,holdout,header_lines,3 incl. spanning group header
+holdout_036,holdout,number_style,"1,234.56 (English)"
+holdout_036,holdout,zero_shown_as,-
+holdout_036,holdout,font,Courier
+holdout_036,holdout,position_subtotals,Summe <position name>
+holdout_036,holdout,pages,1
+holdout_037,holdout,document_type,Anlagenverzeichnis
+holdout_037,holdout,format,outline
+holdout_037,holdout,orientation,landscape
+holdout_037,holdout,font_shrunk_to_fit,Narrow 6.0 pt
+holdout_037,holdout,columns,"13 columns (8 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+holdout_037,holdout,header_lines,3 incl. spanning group header
+holdout_037,holdout,number_style,"1,234.56 (English)"
+holdout_037,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_037,holdout,font,Narrow
+holdout_037,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_037,holdout,class_headings,no
+holdout_037,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_037,holdout,position_subtotals,Summe <position>
+holdout_037,holdout,pages,2
+holdout_037,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -9,00"
+holdout_038,holdout,document_type,Anlagenverzeichnis
+holdout_038,holdout,format,pdf
+holdout_038,holdout,orientation,landscape
+holdout_038,holdout,columns,"9 columns (4 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, kum_afa_close, bw_close, afa_gj"
+holdout_038,holdout,header_lines,3 incl. spanning group header
+holdout_038,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_038,holdout,zero_shown_as,blank
+holdout_038,holdout,date_style,iso
+holdout_038,holdout,font,CourierNew
+holdout_038,holdout,class_headings,yes
+holdout_038,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_038,holdout,no_grand_total,
+holdout_038,holdout,pages,2
+holdout_038,holdout,problem_noise_page_unrelated,ignore this page; it holds no schedule rows
+holdout_039,holdout,document_type,Anlagenspiegel (netto)
+holdout_039,holdout,format,outline
+holdout_039,holdout,orientation,portrait
+holdout_039,holdout,columns,"8 columns (6 amounts): asset_no, name, bw_prev, zugang, umbuchung, abgang_bw, afa_gj, bw_close"
+holdout_039,holdout,header_lines,3 incl. spanning group header
+holdout_039,holdout,number_style,"1,234.56 (English)"
+holdout_039,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_039,holdout,zero_shown_as,blank
+holdout_039,holdout,font,Courier
+holdout_039,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_039,holdout,class_headings,yes
+holdout_039,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_039,holdout,position_subtotals,Zwischensumme <position>
+holdout_039,holdout,no_grand_total,
+holdout_039,holdout,pages,1
+holdout_039,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_040,holdout,document_type,Anlagengitter
+holdout_040,holdout,format,pdf
+holdout_040,holdout,orientation,landscape
+holdout_040,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_040,holdout,book_value_columns_swapped,prior year before current year
+holdout_040,holdout,header_lines,2
+holdout_040,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_040,holdout,zero_shown_as,-
+holdout_040,holdout,font,Narrow
+holdout_040,holdout,unit_teur,"amounts in thousand euro, rounded one by one"
+holdout_040,holdout,pages,1
+holdout_041,holdout,document_type,Anlagenspiegel
+holdout_041,holdout,format,scan
+holdout_041,holdout,orientation,landscape
+holdout_041,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_041,holdout,columns,"14 columns (11 amounts): asset_no, name, acq_date, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, bw_close, bw_prev"
+holdout_041,holdout,zero_columns_left_out,zuschreibung
+holdout_041,holdout,header_lines,3 incl. spanning group header
+holdout_041,holdout,number_style,"(1.234,56) for negatives"
+holdout_041,holdout,zero_shown_as,blank
+holdout_041,holdout,class_headings,yes
+holdout_041,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_041,holdout,position_subtotals,Zwischensumme <position>
+holdout_041,holdout,pages,1
+holdout_041,holdout,scan_severity,medium
+holdout_041,holdout,scan_quality,"150 dpi, skew up to 1.13 deg, noise 0.033, JPEG q40"
+holdout_041,holdout,tick_marks,10
+holdout_041,holdout,highlight_marks,2
+holdout_041,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -100,00"
+holdout_041,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_042,holdout,document_type,Anlagengitter
+holdout_042,holdout,format,scan
+holdout_042,holdout,orientation,landscape
+holdout_042,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_042,holdout,book_value_columns_swapped,prior year before current year
+holdout_042,holdout,header_lines,2
+holdout_042,holdout,number_style,"1,234.56 (English)"
+holdout_042,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_042,holdout,zero_shown_as,-
+holdout_042,holdout,font,Times-Roman
+holdout_042,holdout,unit_teur,"amounts in thousand euro, rounded one by one"
+holdout_042,holdout,pages,1
+holdout_042,holdout,scan_severity,medium
+holdout_042,holdout,scan_quality,"200 dpi, skew up to 0.63 deg, noise 0.028, JPEG q40"
+holdout_042,holdout,tick_marks,4
+holdout_042,holdout,highlight_marks,2
+holdout_043,holdout,document_type,Anlagengitter
+holdout_043,holdout,format,xlsx
+holdout_043,holdout,orientation,landscape
+holdout_043,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_043,holdout,book_value_columns_swapped,prior year before current year
+holdout_043,holdout,header_lines,3 incl. spanning group header
+holdout_043,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_043,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_043,holdout,zero_shown_as,-
+holdout_043,holdout,font,Courier
+holdout_043,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_043,holdout,position_subtotals,Zwischensumme <position>
+holdout_043,holdout,xlsx_table_offset,"starts 2 rows down, 1 columns right"
+holdout_043,holdout,xlsx_sheet,AV
+holdout_044,holdout,document_type,Anlagenspiegel (netto)
+holdout_044,holdout,format,scan
+holdout_044,holdout,orientation,portrait
+holdout_044,holdout,columns,"9 columns (7 amounts): asset_no, name, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_044,holdout,header_lines,2
+holdout_044,holdout,number_style,"1234,56"
+holdout_044,holdout,sign_convention,disposals printed negative
+holdout_044,holdout,zero_shown_as,-
+holdout_044,holdout,font,Times-Roman
+holdout_044,holdout,class_headings,no
+holdout_044,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_044,holdout,position_subtotals,Summe <position name>
+holdout_044,holdout,pages,1
+holdout_044,holdout,scan_severity,medium
+holdout_044,holdout,scan_quality,"200 dpi, skew up to 0.86 deg, noise 0.034, JPEG q40"
+holdout_044,holdout,tick_marks,4
+holdout_044,holdout,highlight_marks,2
+holdout_044,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -90,00"
+holdout_044,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_045,holdout,document_type,Anlagenverzeichnis
+holdout_045,holdout,format,xlsx
+holdout_045,holdout,orientation,landscape
+holdout_045,holdout,font_shrunk_to_fit,CourierNew 5.5 pt
+holdout_045,holdout,columns,"17 columns (11 amounts): asset_no, sub_no, name, acq_date, method, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+holdout_045,holdout,sub_numbers,separate sub-number column
+holdout_045,holdout,header_lines,3 incl. spanning group header
+holdout_045,holdout,number_style,"1234,56"
+holdout_045,holdout,zero_shown_as,blank
+holdout_045,holdout,font,CourierNew
+holdout_045,holdout,class_headings,yes
+holdout_045,holdout,subtotal_rows,class subtotal: Summe <class name>
+holdout_045,holdout,xlsx_numbers_as_text,amount cells hold German-format text
+holdout_045,holdout,xlsx_table_offset,"starts 2 rows down, 1 columns right"
+holdout_045,holdout,xlsx_sheet,AV
+holdout_046,holdout,document_type,Anlagenspiegel
+holdout_046,holdout,format,outline
+holdout_046,holdout,orientation,landscape
+holdout_046,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_046,holdout,book_value_columns_swapped,prior year before current year
+holdout_046,holdout,header_lines,3 incl. spanning group header
+holdout_046,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_046,holdout,class_headings,no
+holdout_046,holdout,subtotal_rows,account subtotal: Summe <class name>
+holdout_046,holdout,two_years,"2023, 2024"
+holdout_046,holdout,pages,4
+holdout_046,holdout,problem_carry_over,carry-over lines repeat a running sum; they are not assets and not totals
+holdout_047,holdout,document_type,Anlagenverzeichnis
+holdout_047,holdout,format,pdf
+holdout_047,holdout,orientation,portrait
+holdout_047,holdout,columns,"9 columns (4 amounts): asset_no, name, acq_date, nd_years, method, ahk_close, kum_afa_close, bw_close, afa_gj"
+holdout_047,holdout,header_lines,3 incl. spanning group header
+holdout_047,holdout,number_style,"(1.234,56) for negatives"
+holdout_047,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_047,holdout,zero_shown_as,blank
+holdout_047,holdout,date_style,iso
+holdout_047,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_047,holdout,class_headings,yes
+holdout_047,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_047,holdout,position_subtotals,** <position>
+holdout_047,holdout,pages,1
+holdout_047,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 1.000,00"
+holdout_047,holdout,problem_glued_numbers,split the glued string into the two amounts of the two adjacent columns
+holdout_047,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_048,holdout,document_type,Anlagenspiegel
+holdout_048,holdout,format,xlsx
+holdout_048,holdout,orientation,landscape
+holdout_048,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_048,holdout,columns,"14 columns (12 amounts): asset_no, name, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+holdout_048,holdout,column_blocks_reordered,bw > ahk > afa
+holdout_048,holdout,book_value_columns_swapped,prior year before current year
+holdout_048,holdout,header_lines,3 incl. spanning group header
+holdout_048,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_048,holdout,zero_shown_as,blank
+holdout_048,holdout,font,Courier
+holdout_048,holdout,class_headings,yes
+holdout_048,holdout,subtotal_rows,class subtotal: * <class name>
+holdout_048,holdout,xlsx_numbers_as_text,amount cells hold German-format text
+holdout_048,holdout,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+holdout_048,holdout,xlsx_sheet,Export
+holdout_048,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+holdout_049,holdout,document_type,Anlagengitter
+holdout_049,holdout,format,scan
+holdout_049,holdout,orientation,landscape
+holdout_049,holdout,font_shrunk_to_fit,Times-Roman 6.0 pt
+holdout_049,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_049,holdout,header_lines,2
+holdout_049,holdout,number_style,"1234,56"
+holdout_049,holdout,zero_shown_as,blank
+holdout_049,holdout,font,Times-Roman
+holdout_049,holdout,position_subtotals,Summe <position name>
+holdout_049,holdout,pages,1
+holdout_049,holdout,scan_severity,light
+holdout_049,holdout,scan_quality,"300 dpi, skew up to 0.01 deg, noise 0.007, JPEG q60"
+holdout_050,holdout,document_type,Anlagenverzeichnis
+holdout_050,holdout,format,outline
+holdout_050,holdout,orientation,landscape
+holdout_050,holdout,columns,"13 columns (8 amounts): asset_no, name, acq_date, method, nd_years, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+holdout_050,holdout,header_lines,2
+holdout_050,holdout,sign_convention,disposals printed negative
+holdout_050,holdout,font,CourierNew
+holdout_050,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_050,holdout,class_headings,no
+holdout_050,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_050,holdout,position_subtotals,Summe <position name>
+holdout_050,holdout,pages,2
+holdout_050,holdout,problem_wrapped_description,join the continuation line to the asset above; it is not a row of its own
+holdout_051,holdout,document_type,Anlagenspiegel
+holdout_051,holdout,format,pdf
+holdout_051,holdout,orientation,landscape
+holdout_051,holdout,font_shrunk_to_fit,CourierNew 5.5 pt
+holdout_051,holdout,columns,"14 columns (12 amounts): name, asset_no, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_051,holdout,id_column_not_first,name > asset_no
+holdout_051,holdout,header_lines,3 incl. spanning group header
+holdout_051,holdout,font,CourierNew
+holdout_051,holdout,class_headings,no
+holdout_051,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_051,holdout,two_years,"2024, 2025"
+holdout_051,holdout,pages,2
+holdout_052,holdout,document_type,Anlagenverzeichnis
+holdout_052,holdout,format,xlsx
+holdout_052,holdout,orientation,landscape
+holdout_052,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_052,holdout,columns,"16 columns (11 amounts): asset_no, acq_date, name, nd_months, method, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, zuschreibung, afa_abgang, kum_afa_close, bw_close"
+holdout_052,holdout,header_lines,2
+holdout_052,holdout,zero_shown_as,blank
+holdout_052,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_052,holdout,class_headings,yes
+holdout_052,holdout,subtotal_rows,account subtotal: Zwischensumme <class no.>
+holdout_052,holdout,position_subtotals,Zwischensumme <position>
+holdout_052,holdout,xlsx_numbers_as_text,amount cells hold German-format text
+holdout_052,holdout,xlsx_table_offset,"starts 1 rows down, 1 columns right"
+holdout_052,holdout,xlsx_sheet,Anlagenspiegel
+holdout_053,holdout,document_type,Anlagenspiegel
+holdout_053,holdout,format,outline
+holdout_053,holdout,orientation,landscape
+holdout_053,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_053,holdout,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_053,holdout,column_blocks_reordered,afa > bw > ahk
+holdout_053,holdout,book_value_columns_swapped,prior year before current year
+holdout_053,holdout,header_lines,2
+holdout_053,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_053,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_053,holdout,zero_shown_as,-
+holdout_053,holdout,class_headings,yes
+holdout_053,holdout,subtotal_rows,class subtotal: Summe Konto <account>
+holdout_053,holdout,pages,2
+holdout_053,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_054,holdout,document_type,Anlagenspiegel (netto)
+holdout_054,holdout,format,scan
+holdout_054,holdout,orientation,landscape
+holdout_054,holdout,columns,"11 columns (7 amounts): asset_no, name, acq_date, nd_years, bw_prev, zugang, umbuchung, abgang_bw, zuschreibung, afa_gj, bw_close"
+holdout_054,holdout,header_lines,3 incl. spanning group header
+holdout_054,holdout,number_style,"(1.234,56) for negatives"
+holdout_054,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_054,holdout,date_style,de_short
+holdout_054,holdout,class_headings,yes
+holdout_054,holdout,subtotal_rows,class subtotal: Summe <class name>
+holdout_054,holdout,position_subtotals,** <position>
+holdout_054,holdout,pages,3
+holdout_054,holdout,scan_severity,heavy
+holdout_054,holdout,scan_quality,"150 dpi, skew up to 1.41 deg, noise 0.047, JPEG q32"
+holdout_054,holdout,tick_marks,7
+holdout_054,holdout,highlight_marks,1
+holdout_054,holdout,stamp_marks,2
+holdout_054,holdout,uneven_lighting,
+holdout_054,holdout,edge_shadow,
+holdout_054,holdout,values_obscured_by_marks,23
+holdout_055,holdout,document_type,Anlagengitter
+holdout_055,holdout,format,xlsx
+holdout_055,holdout,orientation,landscape
+holdout_055,holdout,font_shrunk_to_fit,CourierNew 5.5 pt
+holdout_055,holdout,columns,"14 columns (12 amounts): code, name, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+holdout_055,holdout,column_blocks_reordered,bw > ahk > afa
+holdout_055,holdout,book_value_columns_swapped,prior year before current year
+holdout_055,holdout,header_lines,2
+holdout_055,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_055,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_055,holdout,zero_shown_as,blank
+holdout_055,holdout,font,CourierNew
+holdout_055,holdout,position_subtotals,Summe <position name>
+holdout_055,holdout,two_years,"2024, 2025"
+holdout_055,holdout,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+holdout_055,holdout,xlsx_sheet,AV
+holdout_056,holdout,document_type,Anlagenspiegel
+holdout_056,holdout,format,xlsx
+holdout_056,holdout,orientation,landscape
+holdout_056,holdout,columns,"16 columns (12 amounts): asset_no, name, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_056,holdout,book_value_columns_swapped,prior year before current year
+holdout_056,holdout,header_lines,2
+holdout_056,holdout,number_style,"(1.234,56) for negatives"
+holdout_056,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_056,holdout,zero_shown_as,blank
+holdout_056,holdout,date_style,iso
+holdout_056,holdout,class_headings,yes
+holdout_056,holdout,subtotal_rows,account subtotal: Summe <class no.> <class name>
+holdout_056,holdout,xlsx_table_offset,"starts 1 rows down, 0 columns right"
+holdout_056,holdout,xlsx_sheet,Sheet1
+holdout_057,holdout,document_type,Anlagenspiegel
+holdout_057,holdout,format,pdf
+holdout_057,holdout,orientation,landscape
+holdout_057,holdout,font_shrunk_to_fit,Helvetica 6.0 pt
+holdout_057,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_057,holdout,book_value_columns_swapped,prior year before current year
+holdout_057,holdout,header_lines,3 incl. spanning group header
+holdout_057,holdout,zero_shown_as,blank
+holdout_057,holdout,class_headings,yes
+holdout_057,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_057,holdout,position_subtotals,Summe <position name>
+holdout_057,holdout,pages,1
+holdout_057,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -100,00"
+holdout_058,holdout,document_type,Anlagenspiegel
+holdout_058,holdout,format,scan
+holdout_058,holdout,orientation,landscape
+holdout_058,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_058,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_058,holdout,header_lines,3 incl. spanning group header
+holdout_058,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_058,holdout,zero_shown_as,-
+holdout_058,holdout,font,Courier
+holdout_058,holdout,class_headings,yes
+holdout_058,holdout,subtotal_rows,account subtotal: Zwischensumme <class no.>
+holdout_058,holdout,pages,2
+holdout_058,holdout,scan_severity,light
+holdout_058,holdout,scan_quality,"300 dpi, skew up to 0.27 deg, noise 0.011, JPEG q75"
+holdout_059,holdout,document_type,Anlagenspiegel
+holdout_059,holdout,format,pdf
+holdout_059,holdout,orientation,portrait
+holdout_059,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_059,holdout,header_lines,3 incl. spanning group header
+holdout_059,holdout,number_style,"(1.234,56) for negatives"
+holdout_059,holdout,sign_convention,disposals printed negative
+holdout_059,holdout,zero_shown_as,blank
+holdout_059,holdout,font,Narrow
+holdout_059,holdout,class_headings,yes
+holdout_059,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_059,holdout,pages,1
+holdout_060,holdout,document_type,Anlagengitter
+holdout_060,holdout,format,outline
+holdout_060,holdout,orientation,landscape
+holdout_060,holdout,font_shrunk_to_fit,Courier 6.0 pt
+holdout_060,holdout,columns,"14 columns (12 amounts): code, name, bw_close, bw_prev, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_060,holdout,column_blocks_reordered,bw > afa > ahk
+holdout_060,holdout,header_lines,2
+holdout_060,holdout,zero_shown_as,blank
+holdout_060,holdout,font,Courier
+holdout_060,holdout,pages,2
+holdout_060,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_061,holdout,document_type,Anlagenverzeichnis
+holdout_061,holdout,format,xlsx
+holdout_061,holdout,orientation,landscape
+holdout_061,holdout,columns,"11 columns (7 amounts): name, asset_no, acq_date, nd_years, ahk_open, zugang, abgang, umbuchung, ahk_close, afa_gj, bw_close"
+holdout_061,holdout,id_column_not_first,name > asset_no > acq_date > nd_years
+holdout_061,holdout,header_lines,3 incl. spanning group header
+holdout_061,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_061,holdout,zero_shown_as,-
+holdout_061,holdout,font,Times-Roman
+holdout_061,holdout,class_headings,yes
+holdout_061,holdout,subtotal_rows,class subtotal: <class name> gesamt
+holdout_061,holdout,xlsx_table_offset,"starts 3 rows down, 2 columns right"
+holdout_061,holdout,xlsx_sheet,Tabelle1
+holdout_062,holdout,document_type,Anlagenspiegel (netto)
+holdout_062,holdout,format,outline
+holdout_062,holdout,orientation,portrait
+holdout_062,holdout,columns,"9 columns (6 amounts): asset_no, name, acq_date, bw_prev, zugang, umbuchung, abgang_bw, afa_gj, bw_close"
+holdout_062,holdout,header_lines,2
+holdout_062,holdout,number_style,"1,234.56 (English)"
+holdout_062,holdout,zero_shown_as,blank
+holdout_062,holdout,class_headings,no
+holdout_062,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_062,holdout,position_subtotals,** <position>
+holdout_062,holdout,no_grand_total,
+holdout_062,holdout,pages,3
+holdout_062,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by -1.000,00"
+holdout_062,holdout,problem_noise_page_blank,ignore this page; it holds no schedule rows
+holdout_063,holdout,document_type,Anlagenverzeichnis
+holdout_063,holdout,format,pdf
+holdout_063,holdout,orientation,landscape
+holdout_063,holdout,font_shrunk_to_fit,Times-Roman 5.5 pt
+holdout_063,holdout,columns,"13 columns (8 amounts): asset_no, acq_date, name, nd_months, method, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, zuschreibung, bw_close"
+holdout_063,holdout,header_lines,3 incl. spanning group header
+holdout_063,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_063,holdout,font,Times-Roman
+holdout_063,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_063,holdout,class_headings,yes
+holdout_063,holdout,subtotal_rows,class subtotal: Summe <class name>
+holdout_063,holdout,position_subtotals,Summe <position name>
+holdout_063,holdout,pages,2
+holdout_064,holdout,document_type,Anlagenverzeichnis
+holdout_064,holdout,format,scan
+holdout_064,holdout,orientation,landscape
+holdout_064,holdout,columns,"13 columns (7 amounts): asset_no, sub_no, name, acq_date, method, nd_years, ahk_close, bw_prev, zugang, abgang_bw, umbuchung, afa_gj, bw_close"
+holdout_064,holdout,sub_numbers,separate sub-number column
+holdout_064,holdout,header_lines,3 incl. spanning group header
+holdout_064,holdout,date_style,de_short
+holdout_064,holdout,class_headings,yes
+holdout_064,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_064,holdout,pages,2
+holdout_064,holdout,scan_severity,heavy
+holdout_064,holdout,scan_quality,"120 dpi, skew up to 1.46 deg, noise 0.045, JPEG q32"
+holdout_064,holdout,tick_marks,6
+holdout_064,holdout,highlight_marks,2
+holdout_064,holdout,stamp_marks,1
+holdout_064,holdout,uneven_lighting,
+holdout_064,holdout,edge_shadow,
+holdout_064,holdout,values_obscured_by_marks,4
+holdout_065,holdout,document_type,Anlagengitter
+holdout_065,holdout,format,pdf
+holdout_065,holdout,orientation,landscape
+holdout_065,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_065,holdout,header_lines,2
+holdout_065,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_065,holdout,zero_shown_as,blank
+holdout_065,holdout,font,Times-Roman
+holdout_065,holdout,pages,1
+holdout_065,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 90,00"
+holdout_066,holdout,document_type,Anlagenspiegel
+holdout_066,holdout,format,xlsx
+holdout_066,holdout,orientation,landscape
+holdout_066,holdout,columns,"14 columns (12 amounts): asset_no, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_066,holdout,header_lines,2
+holdout_066,holdout,zero_shown_as,blank
+holdout_066,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_066,holdout,class_headings,yes
+holdout_066,holdout,subtotal_rows,class subtotal: Zwischensumme <class no.>
+holdout_066,holdout,position_subtotals,** <position>
+holdout_066,holdout,two_years,"2023, 2024"
+holdout_066,holdout,xlsx_table_offset,"starts 0 rows down, 2 columns right"
+holdout_066,holdout,xlsx_sheet,AV
+holdout_067,holdout,document_type,Anlagengitter
+holdout_067,holdout,format,scan
+holdout_067,holdout,orientation,landscape
+holdout_067,holdout,columns,"13 columns (12 amounts): name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_prev, bw_close"
+holdout_067,holdout,book_value_columns_swapped,prior year before current year
+holdout_067,holdout,header_lines,3 incl. spanning group header
+holdout_067,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_067,holdout,zero_shown_as,blank
+holdout_067,holdout,font,Courier
+holdout_067,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_067,holdout,pages,1
+holdout_067,holdout,scan_severity,heavy
+holdout_067,holdout,scan_quality,"150 dpi, skew up to 2.12 deg, noise 0.039, JPEG q25"
+holdout_067,holdout,tick_marks,12
+holdout_067,holdout,highlight_marks,2
+holdout_067,holdout,stamp_marks,1
+holdout_067,holdout,uneven_lighting,
+holdout_067,holdout,edge_shadow,
+holdout_067,holdout,values_obscured_by_marks,11
+holdout_068,holdout,document_type,Anlagengitter
+holdout_068,holdout,format,scan
+holdout_068,holdout,orientation,landscape
+holdout_068,holdout,columns,"13 columns (11 amounts): code, name, bw_prev, bw_close, kum_afa_open, afa_gj, afa_abgang, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_068,holdout,column_blocks_reordered,bw > afa > ahk
+holdout_068,holdout,book_value_columns_swapped,prior year before current year
+holdout_068,holdout,zero_columns_left_out,zuschreibung
+holdout_068,holdout,header_lines,2
+holdout_068,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_068,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_068,holdout,font,Times-Roman
+holdout_068,holdout,no_ruled_lines,no lines under the header or above sums
+holdout_068,holdout,pages,2
+holdout_068,holdout,scan_severity,medium
+holdout_068,holdout,scan_quality,"200 dpi, skew up to 0.52 deg, noise 0.028, JPEG q40"
+holdout_068,holdout,tick_marks,3
+holdout_068,holdout,highlight_marks,1
+holdout_068,holdout,problem_non_tying_subtotal,"report the printed value; flag that it differs from the sum of its rows by 9,00"
+holdout_068,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_069,holdout,document_type,Anlagengitter
+holdout_069,holdout,format,scan
+holdout_069,holdout,orientation,landscape
+holdout_069,holdout,columns,"13 columns (12 amounts): name, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_069,holdout,column_blocks_reordered,afa > bw > ahk
+holdout_069,holdout,header_lines,2
+holdout_069,holdout,number_style,"(1.234,56) for negatives"
+holdout_069,holdout,sign_convention,SAP signs (disposals and depreciation negative)
+holdout_069,holdout,zero_shown_as,blank
+holdout_069,holdout,font,Narrow
+holdout_069,holdout,position_subtotals,Summe <position>
+holdout_069,holdout,pages,1
+holdout_069,holdout,scan_severity,heavy
+holdout_069,holdout,scan_quality,"120 dpi, skew up to 1.67 deg, noise 0.044, JPEG q25"
+holdout_069,holdout,tick_marks,13
+holdout_069,holdout,stamp_marks,2
+holdout_069,holdout,uneven_lighting,
+holdout_069,holdout,edge_shadow,
+holdout_069,holdout,values_obscured_by_marks,42
+holdout_070,holdout,document_type,Anlagengitter
+holdout_070,holdout,format,outline
+holdout_070,holdout,orientation,landscape
+holdout_070,holdout,columns,"14 columns (12 amounts): code, name, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, bw_close, bw_prev"
+holdout_070,holdout,header_lines,3 incl. spanning group header
+holdout_070,holdout,number_style,"1.234,56- (trailing minus)"
+holdout_070,holdout,zero_shown_as,-
+holdout_070,holdout,font,Times-Roman
+holdout_070,holdout,position_subtotals,** <position>
+holdout_070,holdout,pages,2
+holdout_070,holdout,problem_header_only_on_first_page,keep the column meaning of page 1 for the following pages
+holdout_071,holdout,document_type,Anlagenspiegel
+holdout_071,holdout,format,pdf
+holdout_071,holdout,orientation,landscape
+holdout_071,holdout,font_shrunk_to_fit,Courier 5.5 pt
+holdout_071,holdout,columns,"15 columns (12 amounts): asset_no, name, acq_date, bw_close, bw_prev, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close, ahk_open, zugang, abgang, umbuchung, ahk_close"
+holdout_071,holdout,column_blocks_reordered,bw > afa > ahk
+holdout_071,holdout,header_lines,2
+holdout_071,holdout,zero_shown_as,-
+holdout_071,holdout,font,Courier
+holdout_071,holdout,class_headings,yes
+holdout_071,holdout,subtotal_rows,account subtotal: Summe Konto <account>
+holdout_071,holdout,no_grand_total,
+holdout_071,holdout,pages,1
+holdout_072,holdout,document_type,Anlagenspiegel
+holdout_072,holdout,format,scan
+holdout_072,holdout,orientation,landscape
+holdout_072,holdout,columns,"16 columns (12 amounts): asset_no, sub_no, name, acq_date, bw_prev, bw_close, ahk_open, zugang, abgang, umbuchung, ahk_close, kum_afa_open, afa_gj, afa_abgang, zuschreibung, kum_afa_close"
+holdout_072,holdout,column_blocks_reordered,bw > ahk > afa
+holdout_072,holdout,book_value_columns_swapped,prior year before current year
+holdout_072,holdout,sub_numbers,separate sub-number column
+holdout_072,holdout,header_lines,3 incl. spanning group header
+holdout_072,holdout,sign_convention,disposals printed negative
+holdout_072,holdout,zero_shown_as,blank
+holdout_072,holdout,font,Times-Roman
+holdout_072,holdout,class_headings,yes
+holdout_072,holdout,subtotal_rows,class subtotal: Summe <class no.> <class name>
+holdout_072,holdout,position_subtotals,** <position>
+holdout_072,holdout,no_grand_total,
+holdout_072,holdout,pages,2
+holdout_072,holdout,scan_severity,medium
+holdout_072,holdout,scan_quality,"200 dpi, skew up to 0.55 deg, noise 0.027, JPEG q50"
+holdout_072,holdout,page_rotated,page 2 by 180 deg
+holdout_072,holdout,tick_marks,10
+holdout_072,holdout,highlight_marks,1
