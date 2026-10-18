@@ -1,11 +1,13 @@
 """Our stand-in for the leaderboard scorer: +1 correct, 0 blank, -3 wrong (brief), matched by pointer location.
 
-Prediction file `<doc_id>.pred.json`: the submission format, i.e. the `.key.json` schema (organiser answer Q2):
+Prediction file `<doc_id>.pred.json`: key-style JSON with local evaluator extensions (not all schema-valid):
     {"meta": {...}, "rows": [{"kind", "year", ..., "fields": {f: cents | None}, "printed": {f: text},
                               "pointer": {"page", "line", "bbox"} | {"sheet", "cell", "cells": {f: coord}},
                               "flags": {...}}], "planted": [...]}
 Optionally a row may carry "pointers": {f: {"page", "bbox"} | {"sheet", "cell"}}: a tighter per-value pointer that
 overrides the row pointer for that field.
+Null amounts and the optional `pointers` property are not accepted by the strict corpus schema.
+See docs/OPEN_QUESTIONS.md for the extraction-output contract gaps.
 
 A predicted value is matched to the key row whose location holds its pointer (xlsx: the exact cell of that field;
 PDF: same page, pointer centre inside the key row's bbox). Scored per key (row, field):
@@ -13,8 +15,8 @@ PDF: same page, pointer centre inside the key row's bbox). Scored per key (row, 
   - value == key and pointer shows it     -> +1
   - anything else                         -> -3
 A predicted value that matches no key cell/row is an `extra` and also costs -3 (conservative: never emit junk).
-"Pointer shows it" for text PDFs: the key's printed string is in the text inside the pointer bbox (as in
-check_corpus.pdf_checks); for scans/outlines (no text layer) the row containment is all we can check.
+"Pointer shows it" for text PDFs: the key's printed string is in the text inside the pointer bbox (stricter
+than check_corpus.pdf_checks, which searches the whole page); for scans/outlines the row containment is all we check.
 """
 
 from __future__ import annotations
@@ -28,8 +30,8 @@ from carth.ingest.pdf_text import pdf_tokens, text_in_bbox
 
 WRONG, RIGHT = -3, 1
 PAD = 1.5  # points of slack around key row bboxes for pointer containment (bboxes are rounded to 0.1 pt)
-# Key flags whose printed text is not fully on the page by design (assumption 5 in docs/CHALLENGE_UNDERSTANDING.md):
-# the value is scored, the "pointer shows it" text check is skipped. Revisit once the organisers answer Q6/Q7.
+# Key flags whose printed text is not fully on the page by design (see docs/OPEN_QUESTIONS.md, section 3):
+# the value is scored, the "pointer shows it" text check is skipped. Derived-value scoring remains unresolved.
 NO_TEXT_CHECK = {"cut_off"}
 
 

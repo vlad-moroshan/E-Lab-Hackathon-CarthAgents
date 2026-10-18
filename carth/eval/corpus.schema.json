@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:carthagents:corpus-answer-key:v1",
   "title": "CarthAgents corpus answer key",
-  "description": "Shared JSON contract emitted by A3-Hackathon-Corpus/_generator/core.py write_key and the supplied family modules. Covers all supplied *.key.json files. This is the row-oriented development answer-key format, not a confirmed per-value submission protocol. Amount fields are integer EUR cents even when the source unit is TEUR; printed strings preserve source formatting.",
+  "description": "Shared JSON contract emitted by A3-Hackathon-Corpus/_generator/core.py write_key and the supplied family modules. Covers all supplied *.key.json files and defines the key-style format for JSON-first extraction output. Its strict fixture constraints still need reconciliation with abstentions, unseen-document metadata and per-value evidence; see docs/OPEN_QUESTIONS.md. Amount fields are integer EUR cents even when the source unit is TEUR; printed strings preserve source formatting.",
   "type": "object",
   "properties": {
     "meta": {

@@ -1,4 +1,6 @@
-"""Run the organisers' scorer (`_generator/check_corpus.py`, answer Q1) on our predictions.
+"""Run supplied integrity checks (`_generator/check_corpus.py`) on our predictions.
+
+This checker does not compute a +1/0/-3 score or measure completeness against the answer keys. See docs/CHALLENGE_UNDERSTANDING.md.
 
 check_corpus checks a key-schema JSON against its document: row laws and subtotal ties (`arithmetic`), every
 printed string on the pointer's page (`pdf_checks`, text PDFs), every pointer cell holding the value
