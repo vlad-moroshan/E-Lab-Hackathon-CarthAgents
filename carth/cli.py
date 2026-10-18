@@ -6,6 +6,7 @@
     carth recall [--corpus DIR] [--tokens DIR] [--formats ...]           evidence-layer recall against the keys
     carth oracle [--corpus DIR] [--pred DIR] [--mode key|empty]          write key-derived predictions (scorer check)
     carth validate-corpus [FILE_OR_DIR] [--schema PATH]               validate the answer-key JSON contract
+    carth validate-output [FILE_OR_DIR]                              validate extraction output JSON
 """
 
 from __future__ import annotations
@@ -55,6 +56,9 @@ def main(argv: list[str] | None = None) -> int:
     val.add_argument("input", nargs="?", type=Path, default=CORPUS)
     val.add_argument("--schema", type=Path)
 
+    output = sub.add_parser("validate-output", help="validate extraction outputs without ground truth")
+    output.add_argument("input", nargs="?", type=Path, default=PRED)
+
     a = ap.parse_args(argv)
     if a.cmd == "eval":
         only = set(a.formats.split(",")) if a.formats else None
@@ -89,6 +93,10 @@ def main(argv: list[str] | None = None) -> int:
         if a.schema is not None:
             options += ["--schema", str(a.schema)]
         return validate_main(options)
+    elif a.cmd == "validate-output":
+        from carth.output.validate import main as validate_main
+
+        return validate_main([str(a.input)])
     return 0
 
 

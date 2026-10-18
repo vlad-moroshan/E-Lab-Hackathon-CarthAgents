@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "meta": {
+    "doc_id": "example",
+    "format": "xlsx",
+    "years": [
+      2024,
+      2025
+    ],
+    "unit": "EUR",
+    "period_end": "2025-12-31"
+  },
+  "rows": [
+    {
+      "row_id": "r1",
+      "kind": "asset",
+      "level": "class",
+      "year": 2025,
+      "class": "1000",
+      "fields": {
+        "ahk_close": {
+          "amount": 123456,
+          "status": "observed",
+          "printed": "1.234,56",
+          "raw_amount": 123456,
+          "source_unit": "EUR",
+          "pointer": {
+            "sheet": "2025",
+            "cell": "I8"
+          }
+        },
+        "umbuchung": {
+          "amount": 0,
+          "status": "observed",
+          "printed": "",
+          "raw_amount": 0,
+          "source_unit": "EUR",
+          "pointer": {
+            "sheet": "2025",
+            "cell": "G8"
+          }
+        },
+        "bw_close": {
+          "amount": null,
+          "status": "unreadable",
+          "printed": "12??",
+          "reason": "The cell text does not identify a unique amount.",
+          "pointer": {
+            "sheet": "2025",
+            "cell": "S8"
+          }
+        }
+      }
+    },
+    {
+      "row_id": "r2",
+      "kind": "asset",
+      "level": "class",
+      "year": 2024,
+      "class": "1000",
+      "fields": {
+        "ahk_close": {
+          "amount": 123456,
+          "status": "observed",
+          "printed": "1.234,56",
+          "raw_amount": 123456,
+          "source_unit": "EUR",
+          "pointer": {
+            "sheet": "2024",
+            "cell": "I8"
+          }
+        }
+      }
+    }
+  ],
+  "findings": [
+    {
+      "code": "unreadable_amount",
+      "severity": "warning",
+      "message": "Closing book value could not be read.",
+      "row_id": "r1",
+      "field": "bw_close"
+    }
+  ]
+}

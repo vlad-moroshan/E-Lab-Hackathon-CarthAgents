@@ -19,12 +19,13 @@ Snapshot: **72 paired samples across 10 families**, **4,002 keyed rows**, **36,0
 | `carth/` | Existing top-level Python package: CLI, `ingest/`, `eval/` | Preserve this package structure; dependencies and build configuration live in `pyproject.toml` / `uv.lock`. |
 | `carth/eval/` | `score.py`, `official.py`, `recall.py`, `corpus.schema.json`, `validate_corpus.py` | Local scorer, supplied-checker wrapper, evidence recall and key-style JSON contract/validator. See the project guide for their different guarantees. |
 | `docs/` | Project guide, this reference and open questions | Requirements and pipeline, detailed source reference and unresolved issues, respectively. |
-| `tests/` | `test_corpus_schema.py` | Whole-corpus acceptance and malformed-record rejection tests. |
+| `carth/output/` | `extraction.schema.json`, `validate.py` | Extraction output contract and validation without ground truth. |
+| `tests/` | Corpus and output schema tests | Whole-corpus acceptance, evidence/abstention validation and evaluator compatibility. |
 | `.gitignore` | Python/tooling defaults, macOS metadata, Excel owner/lock files and build-artifact exclusions | Repository housekeeping; it does not establish an application stack. |
 | `.DS_Store`, `.git/` | Finder metadata and version-control internals | Not challenge data. |
 | `~$*.xlsx` (in demo/other workbook folders) | Small Excel owner/lock artifacts, not ZIP workbooks | Created by Excel, not the generator. Ignore as inputs and in Git; leave active locks on disk while their workbook is open. |
 
-The `carth` Python package provides text-PDF/Excel tokenization, evidence recall, a local scorer/oracle, a supplied-checker wrapper and schema validation. Its `pyproject.toml`, `uv.lock` and `carth/` layout are authoritative for application setup. The output target is key-style JSON, with optional separate XLSX conversion; neither the complete extraction runner nor converter is implemented. See [the project guide](CHALLENGE_UNDERSTANDING.md) for commands and [open questions](OPEN_QUESTIONS.md) for schema gaps. Generator code remains separate under the supplied corpus.
+The `carth` Python package provides text-PDF/Excel tokenization, evidence recall, a local scorer/oracle, a supplied-checker wrapper and schema validation. Its `pyproject.toml`, `uv.lock` and `carth/` layout are authoritative for application setup. The output target is [extraction JSON](OUTPUT_FORMAT.md), with optional separate XLSX conversion; neither the complete extraction runner nor converter is implemented. See [the project guide](CHALLENGE_UNDERSTANDING.md) for commands and [open questions](OPEN_QUESTIONS.md) for submission compatibility. Generator code remains separate under the supplied corpus.
 
 ### File types and their differences
 
@@ -119,7 +120,7 @@ This shared format is formalized in [carth/eval/corpus.schema.json](../carth/eva
 
 Run `uv run carth validate-corpus` from the repository root (an optional positional argument selects a file or corpus folder). The package command checks the schema itself, enables date-format validation and adds cross-field checks for row years, matching `fields`/`printed` keys, pointer/flag field references, box ordering and document IDs. It validates all 72 keys / 4,002 rows / 36,081 standard amounts / 306 net amounts. Regression checks: `uv run python -m unittest discover -s tests -v`.
 
-The schema formalizes the **key-style JSON output format**. Its strict fixture constraints do not yet cover general abstentions or unknown generator metadata; those gaps and local evaluator extensions are listed in [open questions](OPEN_QUESTIONS.md#1-json-schema-versus-extraction-output). Structural validation does not prove financial correctness or source-pointer accuracy, and does not replace arithmetic/source checks.
+The schema formalizes the **ground-truth answer-key format**. Its synthetic metadata and `planted` annotations are evaluation data, not extraction targets. The separate [extraction schema](../carth/output/extraction.schema.json) supports per-value evidence, abstentions and detected findings; see [Extraction JSON](OUTPUT_FORMAT.md). Structural validation does not prove financial correctness or source-pointer accuracy, and does not replace arithmetic/source checks.
 
 | Part | Contents |
 | --- | --- |
@@ -138,7 +139,7 @@ Problems to handle include glued adjacent amounts, wrapped names, headers only o
 
 ### Open integration questions
 
-The single review list is [Open questions](OPEN_QUESTIONS.md). It covers schema/abstention gaps, checker versus scoring semantics, inferred key values, optional workbook representation and OCR/run conditions. The [project guide](CHALLENGE_UNDERSTANDING.md) describes JSON-first output, reporting years and evaluation tools.
+The single review list is [Open questions](OPEN_QUESTIONS.md). It covers submission compatibility, checker versus scoring semantics, inferred key values, optional workbook representation and OCR/run conditions. The [project guide](CHALLENGE_UNDERSTANDING.md) describes JSON-first output, reporting years and evaluation tools.
 
 ## 6. Optional Arbeitsversion export: all 27 tabs
 

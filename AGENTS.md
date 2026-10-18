@@ -2,7 +2,7 @@
 
 Read [docs/CHALLENGE_UNDERSTANDING.md](docs/CHALLENGE_UNDERSTANDING.md) for project requirements and output format, [docs/REFERENCE.md](docs/REFERENCE.md) for the detailed source reference, and [docs/OPEN_QUESTIONS.md](docs/OPEN_QUESTIONS.md) for unresolved issues.
 
-- Build toward schema-based JSON per document first; XLSX conversion is a separate, optional step.
+- Produce one JSON per input using `carth/output/extraction.schema.json`; see `docs/OUTPUT_FORMAT.md`. XLSX conversion is a separate, optional step. Ground-truth keys use `carth/eval/corpus.schema.json`; never emit generator metadata or `planted` in extraction output.
 - Preserve supplied challenge documents, keys, generator and profiles. Write outputs separately and do not overwrite the template in `challenge/`.
 - Inspect current Git changes before edits; no commit/push is implied by this guide.
 - Keep documentation focused on content. Omit attribution, change history and decision logs.

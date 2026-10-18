@@ -25,7 +25,7 @@ def _check_corpus(corpus: Path):
 
 
 def check(corpus: Path, pred_dir: Path, only: set[str] | None = None) -> int:
-    cc = _check_corpus(corpus)
+    cc = None
     n = fails = 0
     for doc_id, (kp, key) in load_keys(corpus).items():
         fmt = key["meta"]["format"]
@@ -34,15 +34,21 @@ def check(corpus: Path, pred_dir: Path, only: set[str] | None = None) -> int:
             continue
         n += 1
         pred = json.loads(pp.read_text("utf-8"))
-        pred.setdefault("meta", {}).update(format=fmt, variant="perfect")  # format is known from the file itself
-        pred["meta"].setdefault("unit", key["meta"]["unit"])
         doc = _doc_path(kp, key)
         try:
-            errs = [] if pred.get("rows") else ["no rows"]
-            errs += (cc.xlsx_checks if fmt == "xlsx" else cc.pdf_checks)(pred, doc) + cc.arithmetic(pred)
-        except Exception as e:  # a broken prediction is a FAIL, not a crash
+            if "schema_version" in pred:
+                from carth.output.check import check_document
+
+                errs = check_document(pred, doc)
+            else:
+                cc = cc if cc is not None else _check_corpus(corpus)
+                pred.setdefault("meta", {}).update(format=fmt, variant="perfect")
+                pred["meta"].setdefault("unit", key["meta"]["unit"])
+                errs = [] if pred.get("rows") else ["no rows"]
+                errs += (cc.xlsx_checks if fmt == "xlsx" else cc.pdf_checks)(pred, doc) + cc.arithmetic(pred)
+        except Exception as e:
             errs = [f"{type(e).__name__}: {e}"]
         fails += bool(errs)
         print(("FAIL " if errs else "OK   ") + doc_id + (": " + "; ".join(errs[:3]) + (f" (+{len(errs) - 3})" if len(errs) > 3 else "") if errs else ""))
     print(f"{n} predictions, {n - fails} OK, {fails} FAIL")
-    return 1 if fails else 0
+    return 1 if fails or n == 0 else 0

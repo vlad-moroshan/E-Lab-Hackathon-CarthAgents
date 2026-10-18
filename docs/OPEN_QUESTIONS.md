@@ -2,16 +2,11 @@
 
 Schema gaps, evaluation limitations and unspecified export requirements for the [extraction pipeline](CHALLENGE_UNDERSTANDING.md).
 
-## 1. JSON schema versus extraction output
+## 1. Submission compatibility
 
-The strict [schema](../carth/eval/corpus.schema.json) describes complete synthetic fixtures:
+The [extraction contract](OUTPUT_FORMAT.md) supports source metadata, per-value evidence, explicit abstentions and detected findings. The [ground-truth schema](../carth/eval/corpus.schema.json) requires synthetic metadata and `planted` annotations and cannot represent general extraction failures.
 
-- `rows` and `fields` must be nonempty; amounts cannot be null. There is no general unreadable/absent/not-applicable status, uncertainty reason or empty-document representation.
-- `meta` requires `seed`, `invented_names`, `company`, `family` and a known `variant`; the validator also requires `doc_id` to start with `family + '_'`. Generator-only facts are unavailable from unfamiliar documents and must not be fabricated or copied from keys.
-- `flags` allows only `glued`, `non_tying`, `cut_off`, `transfer_incomplete`; additional properties are rejected. Arbitrary diagnostics and per-value `pointers` are not allowed. The local scorer nevertheless accepts null amounts and per-value `pointers`.
-- f07 `net_fields` has no corresponding per-field printed-text/cell-pointer contract, although every value needs evidence.
-
-An extraction-specific schema or extension is needed for abstentions, diagnostics, unknown metadata and per-value evidence. Omitting an amount alone does not satisfy explicit flagged abstention.
+The official submission interface must accept extraction output directly or specify an evaluation adapter. Do not fabricate seeds, family classifications or planted conditions to satisfy a ground-truth contract. The local `eval` command supports both formats; `check` supports source and row-law checks on both formats.
 
 ## 2. Scoring and evidence
 

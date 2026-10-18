@@ -1,13 +1,8 @@
 """Our stand-in for the leaderboard scorer: +1 correct, 0 blank, -3 wrong (brief), matched by pointer location.
 
-Prediction file `<doc_id>.pred.json`: key-style JSON with local evaluator extensions (not all schema-valid):
-    {"meta": {...}, "rows": [{"kind", "year", ..., "fields": {f: cents | None}, "printed": {f: text},
-                              "pointer": {"page", "line", "bbox"} | {"sheet", "cell", "cells": {f: coord}},
-                              "flags": {...}}], "planted": [...]}
-Optionally a row may carry "pointers": {f: {"page", "bbox"} | {"sheet", "cell"}}: a tighter per-value pointer that
-overrides the row pointer for that field.
-Null amounts and the optional `pointers` property are not accepted by the strict corpus schema.
-See docs/OPEN_QUESTIONS.md for the extraction-output contract gaps.
+Prediction files `<doc_id>.pred.json` may use carth/output/extraction.schema.json or legacy key-style rows.
+Versioned outputs are validated and projected to scalar amounts/per-value pointers for scoring.
+Net movements remain outside the score denominator. Legacy oracle predictions remain supported.
 
 A predicted value is matched to the key row whose location holds its pointer (xlsx: the exact cell of that field;
 PDF: same page, pointer centre inside the key row's bbox). Scored per key (row, field):
@@ -27,6 +22,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from carth.ingest.pdf_text import pdf_tokens, text_in_bbox
+from carth.eval.prediction import for_scoring
 
 WRONG, RIGHT = -3, 1
 PAD = 1.5  # points of slack around key row bboxes for pointer containment (bboxes are rounded to 0.1 pt)
@@ -89,6 +85,8 @@ def _inside(bbox, row_bbox) -> bool:
 
 
 def score_doc(key_path: Path, key: dict, pred: dict | None) -> DocScore:
+    if pred is not None:
+        pred = for_scoring(pred)
     m = key["meta"]
     ds = DocScore(m["doc_id"], m["family"], m["format"], m["variant"])
     targets = {(i, f) for i, r in enumerate(key["rows"]) for f in r.get("fields", {})}
