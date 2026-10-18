@@ -25,3 +25,5 @@
 .source-details span{font-size:11px;color:#758198}
 .source-details strong{font-size:12px;font-weight:500;line-height:1.5;color:#4c5c75;overflow-wrap:anywhere}
 .finding strong,.finding p{font-size:11px}
+
+.team-wordmark{line-height:1.15;font-size:21px;letter-spacing:-.7px}.team-wordmark>small{display:block;font-size:12px;font-weight:650;letter-spacing:.3px;color:var(--blue);margin-bottom:3px}
