@@ -34,3 +34,5 @@ npm run dev
 ```
 
 Use Node 22.13+ and open the URL printed by Vite. The bundled sample is explicitly labelled; extraction and workbook generation remain separate backend steps.
+
+Local frontend/backend integration: run `uv run python -m carth.server --specs out/layouts`, then configure the frontend with its `.env.example`. See [frontend setup](frontend/README.md). A matching reviewed layout is still required until automatic layout detection is connected.
