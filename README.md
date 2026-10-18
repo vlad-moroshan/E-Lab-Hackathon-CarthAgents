@@ -12,7 +12,7 @@ Documents → extraction + validation → per-value JSON → Arbeitsversion XLSX
 
 ```sh
 uv sync                                   # Python ≥ 3.11; installs pdfplumber, openpyxl, docTR/torch (CPU OCR), openai
-echo 'OPENAI_API_KEY=sk-…' > .env         # layout interpretation (default model gpt-6-astra; override with CARTH_MODEL)
+echo 'OPENAI_API_KEY=sk-…' > .env         # layout interpretation (default model gpt-6.1-sol; override with CARTH_MODEL)
 uv run carth run INPUT_DIR OUT_DIR        # every .pdf / .xlsx under INPUT_DIR
 ```
 
