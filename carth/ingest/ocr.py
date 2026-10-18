@@ -117,12 +117,19 @@ _orient: Paddle | None = None  # the orientation model is Paddle's, shared by ev
 
 
 def _orientation(img) -> tuple[int, float]:
+    """Paddle's page-orientation model when installed; without it the page is read both upright and turned 180°
+    and the better reading wins (sideways pages need the model)."""
     global _orient
     if _orient is None:
-        from paddleocr import DocImgOrientationClassification
+        try:
+            from paddleocr import DocImgOrientationClassification
 
-        _orient = type("O", (), {})()
-        _orient.clf = DocImgOrientationClassification(model_name="PP-LCNet_x1_0_doc_ori")
+            _orient = type("O", (), {})()
+            _orient.clf = DocImgOrientationClassification(model_name="PP-LCNet_x1_0_doc_ori")
+        except Exception:  # paddle runtime not installed: no orientation model
+            _orient = False
+    if _orient is False:  # no model: OCR upright and upside down, reading quality decides (see ocr_pages)
+        return 180, 0.0
     return Paddle.orientation(_orient, img)
 
 

@@ -71,15 +71,22 @@ def main(argv: list[str] | None = None) -> int:
     val.add_argument("input", nargs="?", type=Path, default=CORPUS)
     val.add_argument("--schema", type=Path)
 
-    run = sub.add_parser("run", help="write per-value JSON and Arbeitsversion from source/layout references")
+    run = sub.add_parser("run", help="the agent: folder of documents -> per-document JSON + Arbeitsversion.xlsx")
     run.add_argument("input", type=Path)
     run.add_argument("out", type=Path)
-    run.add_argument("--specs", type=Path, help="reviewed <doc_id>.layout.json references; missing layouts are flagged")
+    run.add_argument("--specs", type=Path, help="use reviewed <doc_id>.layout.json references instead of the model")
+    run.add_argument("--ocr-tokens", type=Path, help="optional `carth ocr` cache; without it OCR runs live (docTR)")
+    run.add_argument("--workers", type=int, default=4)
 
     a = ap.parse_args(argv)
     if a.cmd == "run":
-        from carth.output import run
-        return run(a.input, a.out, a.specs)
+        if a.specs:
+            from carth.output import run
+            return run(a.input, a.out, a.specs)
+        from carth.resolve import main as resolve_main
+        args = [str(a.input), "--out", str(a.out), "--workers", str(a.workers)]
+        args += ["--ocr-tokens", str(a.ocr_tokens)] if a.ocr_tokens else ["--ocr-tokens", ""]
+        return resolve_main(args)
     elif a.cmd == "eval":
         from carth.eval import score
         only = set(a.formats.split(",")) if a.formats else None

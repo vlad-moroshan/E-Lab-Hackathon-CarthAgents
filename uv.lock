@@ -286,8 +286,11 @@ dependencies = [
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pypdfium2" },
+    { name = "python-doctr" },
     { name = "rapidfuzz" },
     { name = "reportlab" },
+    { name = "torch" },
+    { name = "torchvision" },
 ]
 
 [package.optional-dependencies]
@@ -316,9 +319,12 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pypdfium2", specifier = ">=4.30" },
     { name = "pytesseract", marker = "extra == 'tesseract'", specifier = "==0.3.13" },
+    { name = "python-doctr", specifier = ">=1.1" },
     { name = "python-doctr", marker = "extra == 'doctr'", specifier = "==1.1.0" },
     { name = "rapidfuzz", specifier = ">=3.9" },
     { name = "reportlab", specifier = ">=4.2" },
+    { name = "torch", specifier = ">=2.4" },
+    { name = "torchvision", specifier = ">=0.19" },
 ]
 provides-extras = ["ocr", "doctr", "tesseract"]
 

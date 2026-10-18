@@ -268,6 +268,21 @@ def to_pred(result: dict) -> dict:
     return {"meta": {"doc_id": result["document"]["id"], "years": years}, "rows": keep, "planted": []}
 
 
+_OCR_LOCK = __import__("threading").Lock()
+_OCR_ENGINE = None
+
+
+def _live_ocr(path: Path, pages: list[int]) -> list[dict]:
+    """docTR OCR of the given pages; one engine per process, used by one thread at a time."""
+    global _OCR_ENGINE
+    from carth.ingest import ocr
+
+    with _OCR_LOCK:
+        if _OCR_ENGINE is None:
+            _OCR_ENGINE = ocr.Doctr()
+        return ocr.ocr_pages(path, _OCR_ENGINE, pages, 300)
+
+
 def attach_ocr(doc: dict, path: Path, ocr_dir: Path | None) -> str:
     """Words for pages without a text layer, from a `carth ocr` cache (<stem>.json). The cache must describe the same
     file (same resolved path and page count; same SHA-256 when the cache records one). Text-layer pages keep their exact
@@ -276,9 +291,17 @@ def attach_ocr(doc: dict, path: Path, ocr_dir: Path | None) -> str:
     if not todo:
         return ""
     cp = ocr_dir / f"{Path(path).stem}.json" if ocr_dir else None
-    if not cp or not cp.exists():
-        doc["ocr_cache"] = "missing"
-        return f"ocr: no cache for {len(todo)} pages"
+    if not cp or not cp.exists():  # unattended run: OCR now (docTR on CPU)
+        try:
+            ocr = _live_ocr(path, todo)
+        except Exception as e:
+            doc["ocr_cache"] = f"ocr unavailable: {type(e).__name__}"
+            return f"ocr: unavailable ({type(e).__name__}: {str(e)[:80]})"
+        for i, t in enumerate(ocr):
+            t["id"] = f"o{i}"
+        doc["tokens"] = [t for t in doc["tokens"] if t["page"] not in todo] + ocr
+        doc["ocr_cache"] = {"engine": "doctr (live)", "pages": todo, "verified": "computed in this run"}
+        return f"ocr doctr live: {len(todo)} pages, {len(ocr)} words"
     from carth import ingest
 
     c = ingest.load(cp)

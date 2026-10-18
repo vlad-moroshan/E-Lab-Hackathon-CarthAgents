@@ -13,6 +13,9 @@ dependencies = [
     "rapidfuzz>=3.9",
     "jsonschema==4.25.1",
     "reportlab>=4.2",  # imported by the organisers' check_corpus.py (via core.py)
+    "python-doctr>=1.1",  # live OCR in `carth run` (pages without a text layer), CPU
+    "torch>=2.4",
+    "torchvision>=0.19",
 ]
 
 [project.optional-dependencies]
