@@ -20,7 +20,7 @@ Open the local URL printed by Vite. `npm run build` creates `dist/`; `npm test` 
 3. Select a value to see its original text and PDF region or Excel cell reference. Excel source preview is not implemented.
 4. **Download Arbeitsversion** downloads the populated `.xlsx` output for the current result. It stays disabled with an availability message until a workbook is supplied. The frontend does not generate or verify that workbook.
 
-Automatic workbook delivery awaits the backend contract. For demo setup only, open the result filename in the review footer and load the populated backend output under **Development tools**. Select the workbook from the same run; never use the blank template or source workbook as the output. Loading a new result clears the previous workbook.
+The local bridge returns the generated Arbeitsversion with the extraction result, enabling download automatically. For offline demo setup, the result filename in the footer still opens developer attachments.
 
 Until the backend endpoint is available, real-file processing is disabled. Choose a **prepared PDF or Excel sample**, then **Review sample**, to explore the flow using its supplied answer key. These are explicitly labelled sample results, not extraction runs. Arbitrary uploads never receive a canned sample answer.
 
@@ -28,23 +28,33 @@ Under **Development tools**, select a source document and load its matching JSON
 
 ## Processing endpoint setup
 
-Copy `.env.example` to `.env.local`, set `VITE_PROCESS_ENDPOINT` to the endpoint provided by the backend team, and restart Vite. For example, `http://localhost:8000/api/process` is a proposed URL, not an existing service. Vite exposes this setting to the browser, so never put secrets in it.
+From the repository root, start the local backend:
 
-The proposed minimal contract is:
+```sh
+uv sync
+uv run python -m carth.server --specs out/layouts
+```
 
-- Request: `POST` with `multipart/form-data`, one field named `file` containing the original PDF/XLSX. The browser sets the multipart boundary.
-- Response: HTTP 200 with the key-style JSON object `{ "meta": ..., "rows": [...] }` directly, without an envelope.
-- A cross-origin backend must allow the frontend origin (normally `http://127.0.0.1:5173`). No credentials or API keys are sent by this adapter.
-- The frontend reports failures, supports retry, and can cancel its request. Cancelling in the browser does not guarantee cancellation of server work.
-- This initial adapter expects one completed response. Job IDs, polling, streamed progress, and automatic workbook URLs can be added when the backend defines them.
+Copy `.env.example` to `.env.local` in `frontend`, then start/restart Vite. The endpoint is `http://127.0.0.1:8000/api/process`. The bridge binds only to localhost and allows frontend origins on port 5173. Use `--origin` to add a different local frontend origin.
 
-The request adapter is `src/processing.ts`. The backend endpoint has not been implemented in this frontend change.
+**Extraction still requires a reviewed layout** named `<source-stem>.layout.json` in the specs folder, with a matching SHA-256. Automatic layout discovery and OCR are not invoked by this bridge. Missing layouts return a visible error, never a canned result or blank workbook presented as success. The integration point for the layout detection team is `process_file` in `carth/server.py`, between ingestion and `extract`.
+
+- Request: `POST multipart/form-data`, one `file` field (PDF/XLSX, up to 50 MB).
+- Response: `{result: <runtime extraction JSON>, workbook: {name: "…-Arbeitsversion.xlsx", base64: "…"}}`.
+- Runtime JSON is `{version:1, document, rows, values, flags}`. The frontend adapter retains per-field pointers, flags, nulls, raw trace strings and units. All backend amount fields are available under **All amounts**.
+- Excel bytes come from `write_outputs`, not a frontend reconstruction. Files stay in browser memory; temporary server files are removed after each response. Cancellation stops the browser request, but may not stop server processing.
+- `GET /api/health` reports bridge availability and the layout requirement.
+- This synchronous local demo bridge is not a production service; no credentials, job queue or persistence are included.
+
+`src/processing.ts` also accepts direct legacy key-style responses for compatibility. Direct runtime JSON imports work through `parseResult`; offline imports do not include an Excel file automatically.
 
 No edits, login, or automatic extraction are included in prepared samples. Reloading returns to the upload screen. Loaded files are kept in browser memory; processing sends the selected file to the configured endpoint. The stylesheet loads Google Fonts with system-font fallbacks.
 
 ## Backend contract
 
-The existing corpus shape is accepted: `{ meta, rows }`. This is a UI adapter, not the repository’s strict JSON Schema validator. The UI accepts the agreed `null` and `provenance` extensions, which the current [strict schema](../carth/eval/corpus.schema.json) does not allow; see [open questions](../docs/OPEN_QUESTIONS.md). `planted` is deliberately discarded. `rows[].flags` is displayed as sample findings for the bundled fixture and as backend-reported findings for a loaded result. Never populate flags from answer-key knowledge in a real extraction run.
+The runtime adapter displays `trace.raw` as **Source value** because Excel traces may contain numeric cell text rather than formatted display strings. PDF trace strings retain the observed source text.
+
+The existing corpus shape is also accepted: `{ meta, rows }`. This is a UI adapter, not the repository’s strict JSON Schema validator. The UI accepts the agreed `null` and `provenance` extensions, which the current [strict schema](../carth/eval/corpus.schema.json) does not allow; see [open questions](../docs/OPEN_QUESTIONS.md). `planted` is deliberately discarded. `rows[].flags` is displayed as sample findings for the bundled fixture and as backend-reported findings for a loaded result. Never populate flags from answer-key knowledge in a real extraction run.
 
 - `meta`: company, doc_id, doc_type, period_end, years, format, unit.
 - Each row: kind, year, asset_no, sub_no, class, account, position, name.
@@ -88,4 +98,4 @@ Configure the processing endpoint when available; it already feeds the returned 
 
 ## Demo scope
 
-The bundled f00 example contains individual assets. In other families, `kind: asset` can mean a class/account/position leaf rather than an individual asset. The current Assets label is intended for the chosen demo, not a general granularity classifier. Additional `net_fields` are retained in the loaded row but are not displayed in the amount table. See the [project guide](../docs/CHALLENGE_UNDERSTANDING.md) before expanding to those document families.
+The bundled f00 example contains individual assets. In other families, `kind: asset` can mean a class/account/position leaf rather than an individual asset. The current Assets label is intended for the chosen demo, not a general granularity classifier. Legacy key `net_fields` are retained but not displayed; runtime `net:bew_ahk` and `net:bew_wb` values appear under All amounts. See the [project guide](../docs/CHALLENGE_UNDERSTANDING.md) before expanding to those document families.
