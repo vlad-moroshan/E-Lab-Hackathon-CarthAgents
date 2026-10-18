@@ -28,7 +28,7 @@ JSON and XLSX outputs use the same collision-safe document ID. For unique stems 
 
 ## Reporting years
 
-JSON output is **per document, not limited to one year**. `meta.years` lists the reporting years and each row carries its own `year`. Preserve all years represented in the source.
+JSON output is **per document, not limited to one year**. Each runtime row carries its own `year`; fixture-style predictions also list `meta.years`. Preserve all years represented in the source. An unresolved year stays null with flagged blank values, never a made-up date.
 
 **10 of the 72 supplied documents contain two full annual schedules:**
 
@@ -77,7 +77,7 @@ The lockfile pins transitive dependencies; use `--locked` to prevent resolution 
 
 The authoritative setup is [pyproject.toml](../pyproject.toml), [uv.lock](../uv.lock) and [carth/](../carth/). Ingest and OCR discover source files without keys. OCR selects pages with no text or substantial image content even when headings are selectable. Original page boxes remain reversible; native text and OCR evidence are retained separately. OCR defaults to one worker; explicit parallelism needs a measured memory budget. No fresh OCR benchmark was run for these fixes.
 
-`carth run INPUT OUT --specs LAYOUTS` writes both required outputs using reviewed source references. It does not yet discover layouts automatically. Missing specs yield flagged outputs and a nonzero exit. Layout specs and limitations are documented in [IMPLEMENTATION.md](IMPLEMENTATION.md). Corpus generators have separate dependencies and can delete outputs; preserve the supplied corpus.
+`carth run INPUT OUT --specs LAYOUTS` writes both required outputs using reviewed source references. `python -m carth.resolve INPUT --out OUT` adds model layout inference, validates its references and parses source amounts in code. Missing/ambiguous references and unresolved identities/years remain explicit. The automatic runner saves successful documents, records batch diagnostics and exits nonzero for failed or incomplete batches. Layout selectors, per-section units and remaining limits are documented in [IMPLEMENTATION.md](IMPLEMENTATION.md). Corpus generators have separate dependencies and can delete outputs; preserve the supplied corpus.
 
 Run these existing checks from the repository root:
 

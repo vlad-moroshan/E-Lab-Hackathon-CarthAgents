@@ -8,7 +8,6 @@ def section_views(spec, views):
     Legacy sections without boundaries are supported only where their container has a unique owner.
     Parallel tables may share lines if they explicitly select them and use disjoint source columns.
     """
-    ids = {v['id'] for v in views}
     selected = {}
     owners = {}
     for section in spec.sections:

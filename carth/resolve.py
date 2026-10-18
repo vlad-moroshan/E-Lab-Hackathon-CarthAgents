@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import json
 import re
-from collections import Counter
 from pathlib import Path
 
 from openpyxl.utils import get_column_letter
@@ -59,7 +58,7 @@ def _views(lay: dict) -> list[dict]:
                 plain = " | ".join(re.sub(r"#(-?)c\d+", r"#\1", _cell(toks[c["tid"]], c["band"], True)) for c in ln["cells"])
                 out.append({"page": None, "sheet": sh["sheet"], "row": ln["row"], "id": ln["id"], "cells": ln["cells"],
                             "body": body, "plain": plain,
-                            "full": f"R{ln['row']}{' [hidden]' if ln['hidden'] else ''}: {body}"})
+                            "full": f"[{ln['id']}] R{ln['row']}{' [hidden]' if ln['hidden'] else ''}: {body}"})
         return out
     for pg in lay["pages"]:
         for ln in pg["lines"]:
@@ -68,7 +67,7 @@ def _views(lay: dict) -> list[dict]:
             out.append({"page": pg["page"], "sheet": None, "id": ln["id"], "cells": ln["cells"], "body": body,
                         "frame": ln.get("frame", "page"),
                         "plain": re.sub(r"@b\d+|#(-?)b[\d?]+", lambda m: f"#{m.group(1) or ''}" if m.group(0).startswith("#") else "", body),
-                        "full": f"L{ln['id'].split('l')[-1]}{gap} i{ln['indent']:.0f}: {body}"})
+                        "full": f"[{ln['id']}] frame={ln.get('frame', 'page')} L{ln['id'].split('l')[-1]}{gap} i{ln['indent']:.0f}: {body}"})
     return out
 
 
@@ -144,15 +143,21 @@ def resolve(doc: dict, lay: dict, spec) -> dict:
                      for b in p['bands'] if b.get('frame', 'page') in frames}
             if any(f.band not in bands for f in s.fields if f.field != 'ignore'):
                 raise ValueError(f'{s.name}: unknown amount band in selected reading frame')
-    years = {id(s): s.year if s.year is not None else _fallback_year(owned[id(s)]) for s in spec.sections}
+    years = {id(s): s.year if s.year is not None else _fallback_year([
+        v for v in owned[id(s)] if not any(role == 'noise' and _match(rx, v) for rx,role in compiled[id(s)][1])
+    ]) for s in spec.sections}
     records = []
     order = {v["id"]:i for i,v in enumerate(views)}
     for s in spec.sections:
         cur, ctx = None, {}
+        previous = None
         start, roles, ids = compiled[id(s)]
         for v in owned[id(s)]:
-            if cur is not None and cur['lines'][-1].get('frame') != v.get('frame'):
+            if previous is not None and order[v['id']] != order[previous['id']] + 1:
                 cur = None
+            if previous is not None and previous.get('frame') != v.get('frame'):
+                cur, ctx = None, {}
+            previous = v
             role = next((r for rx, r in roles if _match(rx, v)), None)
             if role in ("header", "noise"):
                 continue
