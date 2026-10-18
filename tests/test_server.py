@@ -34,7 +34,7 @@ class UploadIntegrationTests(unittest.TestCase):
             self.assertEqual(result['Anlagenverzeichnis']['A2'].value, '001')
             self.assertEqual(payload['result']['values'][0]['pointer'], {'sheet': 'Assets', 'cell': 'B2'})
             with self.assertRaisesRegex(ValueError, 'reviewed layout'):
-                process_file(source, None, root / 'missing')
+                process_file(source, None, root / 'missing', auto=False)
             spec['sha256'] = '0' * 64
             (specs / 'schedule.layout.json').write_text(json.dumps(spec))
             with self.assertRaisesRegex(ValueError, 'fingerprint'):

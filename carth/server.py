@@ -14,10 +14,18 @@ from carth.output import extract, write_outputs
 MAX_UPLOAD = 50 * 1024 * 1024
 
 
-def process_file(source: Path, specs: Path | None, out: Path) -> dict:
+def process_file(source: Path, specs: Path | None, out: Path, auto: bool = True) -> dict:
     doc = ingest.ingest(source)
     spec_path = specs / f'{source.stem}.layout.json' if specs else None
     spec = json.loads(spec_path.read_text()) if spec_path and spec_path.is_file() else None
+    if spec is None and auto:  # no reviewed layout: the automatic agent (live OCR, layout, model spec, resolver)
+        from carth.layout import layout
+        from carth.resolve import attach_ocr, resolve
+        from carth.spec import infer
+
+        attach_ocr(doc, source, None)
+        lay = layout(doc)
+        spec = resolve(doc, lay, infer(lay)[0])
     result = extract(doc, spec, source.stem)
     if not result['values']:
         raise ValueError('This document needs a reviewed layout before values can be extracted. ' + '; '.join(result['flags']))
@@ -42,7 +50,7 @@ def handler(specs: Path | None, origins: set[str]):
 
         def do_GET(self):
             self.reply(200 if self.path == '/api/health' else 404,
-                       {'status': 'ready', 'layout_required': True} if self.path == '/api/health' else {'error': 'Not found'})
+                       {'status': 'ready', 'layout_required': False} if self.path == '/api/health' else {'error': 'Not found'})
 
         def do_POST(self):
             if self.path != '/api/process':
