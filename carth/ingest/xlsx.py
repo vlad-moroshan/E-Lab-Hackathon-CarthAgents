@@ -24,6 +24,7 @@ def _hidden_cols(ws) -> set[int]:
 def xlsx_tokens(path: Path) -> tuple[list[dict], list[dict]]:
     """Returns (sheets, tokens). One token per non-empty cell."""
     wb = load_workbook(path, data_only=True)
+    formulas = load_workbook(path, data_only=False)
     sheets, tokens = [], []
     for ws in wb.worksheets:
         hcols = _hidden_cols(ws)
@@ -35,16 +36,19 @@ def xlsx_tokens(path: Path) -> tuple[list[dict], list[dict]]:
         for row in ws.iter_rows():
             for c in row:
                 v = c.value
-                if v is None or (isinstance(v, str) and not v.strip()):
+                formula_cell = formulas[ws.title][c.coordinate]
+                formula = str(formula_cell.value) if formula_cell.data_type == "f" else None
+                if formula is None and (v is None or (isinstance(v, str) and not v.strip())):
                     continue
                 if isinstance(v, (datetime, date)):
                     v = v.date().isoformat() if isinstance(v, datetime) else v.isoformat()
                 rd = ws.row_dimensions[c.row]
                 tokens.append({
                     "sheet": ws.title, "cell": c.coordinate, "row": c.row, "col": c.column,
-                    "text": v if isinstance(v, str) else str(v),
+                    "text": "" if v is None else v if isinstance(v, str) else str(v),
+                    "formula": formula,
                     "value": v,  # number / str / ISO date: the stored value, untouched
-                    "kind": "number" if isinstance(v, (int, float)) and not isinstance(v, bool) else
+                    "kind": "formula" if formula and v is None else "number" if isinstance(v, (int, float)) and not isinstance(v, bool) else
                             "date" if c.is_date else "text",
                     "number_format": c.number_format,
                     "hidden": bool(rd.hidden or c.column in hcols or ws.sheet_state != "visible"),
@@ -53,4 +57,6 @@ def xlsx_tokens(path: Path) -> tuple[list[dict], list[dict]]:
                     "merged": merged.get(c.coordinate),
                     "src": "xlsx", "conf": 1.0,
                 })
+    wb.close()
+    formulas.close()
     return sheets, tokens

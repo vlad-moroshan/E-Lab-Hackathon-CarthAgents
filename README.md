@@ -12,9 +12,9 @@ The `carth` package currently provides text-PDF/Excel ingestion, schema validati
 
 - [Project guide](docs/CHALLENGE_UNDERSTANDING.md): output contract, pipeline, commands and reporting years.
 - [Data and workbook reference](docs/REFERENCE.md): corpus families, accounting fields, template mapping and all 72 samples.
-- [Open inconsistencies](docs/OPEN_QUESTIONS.md): schema gaps and unresolved requirements.
+- [Open inconsistencies](docs/OPEN_QUESTIONS.md): submission compatibility and unresolved requirements.
 - [Challenge materials](challenge/): short brief, detailed brief and Arbeitsversion template.
-- [JSON Schema](carth/eval/corpus.schema.json) · [Development corpus](A3-Hackathon-Corpus/).
+- [Extraction JSON format](docs/OUTPUT_FORMAT.md) · [Ground-truth schema](carth/eval/corpus.schema.json) · [Development corpus](A3-Hackathon-Corpus/).
 
 From the repository root:
 
@@ -34,3 +34,10 @@ npm run dev
 ```
 
 Use Node 22.13+ and open the URL printed by Vite. The bundled sample is explicitly labelled; extraction and workbook generation remain separate backend steps.
+
+Iterate in the [experiment notebook](notebooks/experiments.ipynb): select inputs, assemble Python algorithms, inspect output, then evaluate.
+
+```sh
+uv run --extra notebook jupyter lab notebooks/experiments.ipynb
+uv run --extra dev pytest -q
+```

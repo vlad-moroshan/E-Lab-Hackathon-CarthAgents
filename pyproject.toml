@@ -16,6 +16,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+notebook = ["jupyterlab>=4.0", "ipykernel>=6.0", "nbclient>=0.10"]
+dev = ["pytest>=8.0"]
 # installed on Colab / a GPU box only
 ocr = ["paddleocr>=3.0", "python-doctr>=0.10"]
 
