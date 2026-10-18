@@ -30,6 +30,12 @@ REGISTER = dict(ahk_open='W', zugang='X', abgang='Y', umbuchung='Z', ahk_close='
                 kum_afa_close='AH', bw_close='AI', bw_prev='AJ', afa_gj='AR', abgang_bw='AS')
 
 
+def check_output_directory(out: Path):
+    resolved = Path(out).resolve()
+    if resolved.is_relative_to(TEMPLATE.parent.resolve()) or resolved.is_relative_to((TEMPLATE.parents[1] / 'A3-Hackathon-Corpus').resolve()):
+        raise ValueError('protected output directory')
+
+
 def validate(result):
     schema = json.loads(Path(__file__).with_name('extraction.schema.json').read_text())
     Draft202012Validator(schema).validate(result)
@@ -46,6 +52,9 @@ def validate(result):
             raise ValueError('blank requires a reason flag')
         if value['value'] is not None and (value['pointer'] is None or value['trace'] is None):
             raise ValueError('observed amount requires source and conversion trace')
+        if rows[value['row']]['year'] is None:
+            if value['value'] is not None or not rows[value['row']].get('flags'):
+                raise ValueError('unknown reporting year requires flagged abstention')
         p = value['pointer']
         if p and 'bbox' in p:
             b = p['bbox']
@@ -62,13 +71,13 @@ def extract(doc: dict, spec: dict | None, doc_id: str) -> dict:
         return result
     if spec.get('sha256') != doc['sha256']:
         raise ValueError('layout spec fingerprint does not match source')
-    unit = spec.get('unit')
-    if unit not in ('EUR', 'TEUR'):
-        raise ValueError('layout spec must identify EUR or TEUR')
     at = {t['id']: t for t in doc['tokens']}
     cells = {(t.get('sheet'), t.get('cell')): t for t in doc['tokens']}
     used = set()
     for row in spec['rows']:
+        unit = row.get('unit', spec.get('unit'))
+        if unit not in ('EUR', 'TEUR'):
+            raise ValueError('each layout row must identify EUR or TEUR')
         ident = {k:v for k,v in row.items() if k != 'fields'}
         result['rows'].append(ident)
         for field, ref in row['fields'].items():
@@ -143,14 +152,13 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
     stem = result['document']['id']
     if Path(stem).name != stem or stem in ('.', '..'):
         raise ValueError('unsafe document ID')
-    if out.resolve().is_relative_to(TEMPLATE.parent.resolve()) or out.resolve().is_relative_to((TEMPLATE.parents[1] / 'A3-Hackathon-Corpus').resolve()):
-        raise ValueError('protected output directory')
+    check_output_directory(out)
     if (out / f'{stem}.xlsx').resolve() == Path(result['document']['source']).resolve():
         raise ValueError('output would overwrite source workbook')
     out.mkdir(parents=True, exist_ok=True)
     wb = load_workbook(template)
     rows = {r['id']:r for r in result['rows']}
-    years = sorted({r['year'] for r in rows.values()})
+    years = sorted({r['year'] for r in rows.values()}, key=lambda y: (y is None, y or 0))
     targets = {}
     groups = {}
     for row in rows.values():
@@ -160,7 +168,7 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
     for (base, year), records in groups.items():
         ws = wb[base] if len(years) <= 1 else wb.copy_worksheet(wb[base])
         if len(years) > 1:
-            ws.title = f'{base[:26]} {year}'
+            ws.title = f'{base[:26]} {year if year is not None else "?"}'
         register = base == 'Anlagenverzeichnis'
         start = 2 if register else 8
         limit = 501 if register else 27
@@ -175,7 +183,7 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
             ws['Y7'] = 'Quellgranularität'
             ws['Z7'] = 'Quellkonto'
             ws['C2'] = None
-            ws['A4'] = f'Berichtsjahr: {year}; Geschäftsjahresende nicht abgeleitet'
+            ws['A4'] = f'Berichtsjahr: {year if year is not None else "unbekannt"}; Geschäftsjahresende nicht abgeleitet'
         # Keep template checks, but clear imported amount slots so blanks stay blank.
         for rr in range(start, max(limit, start + len(records) - 1) + 1):
             for col in (REGISTER if register else GRID).values():
@@ -222,8 +230,7 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
 
 
 def run(input_path: Path, out: Path, specs: Path | None = None) -> int:
-    if out.resolve().is_relative_to(TEMPLATE.parent.resolve()) or out.resolve().is_relative_to((TEMPLATE.parents[1] / 'A3-Hackathon-Corpus').resolve()):
-        raise ValueError('protected output directory')
+    check_output_directory(out)
     failures, incomplete = [], False
     ids = ingest.document_ids(input_path)
     for path, doc_id in ids.items():

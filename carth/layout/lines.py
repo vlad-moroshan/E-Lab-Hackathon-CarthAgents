@@ -29,6 +29,7 @@ import math
 import re
 import statistics
 import sys
+from copy import deepcopy
 from collections import defaultdict
 from pathlib import Path
 
@@ -178,7 +179,7 @@ def _band_of(t: dict, bands: list[dict]) -> int | None:
     return b["id"] if abs(b["x1"] - x) <= BAND_TOL + 1 else None
 
 
-def _pdf_page(page: dict, toks: list[dict], lines: list[list[dict]], bands: list[dict]) -> dict:
+def _pdf_page(page: dict, toks: list[dict], lines: list[list[dict]], bands: list[dict], frame: str, prefix: str) -> dict:
     h = statistics.median(t["rbox"][3] - t["rbox"][1] for t in toks) if toks else 1.0
     left = min((ln[0]["rbox"][0] for ln in lines), default=0.0)
     out, prev_bottom = [], None
@@ -186,7 +187,7 @@ def _pdf_page(page: dict, toks: list[dict], lines: list[list[dict]], bands: list
         top, bottom = min(t["rbox"][1] for t in ln), max(t["rbox"][3] for t in ln)
         cells = [{"tid": t["id"], "type": t["type"], "band": _band_of(t, bands)} for t in ln]
         out.append({
-            "id": f"p{page['page']}l{k}", "y": [round(top, 2), round(bottom, 2)],
+            "id": f"{prefix}l{k}", "frame": frame, "y": [round(top, 2), round(bottom, 2)],
             "gap_above": None if prev_bottom is None else round((top - prev_bottom) / h, 2),  # in text heights
             "indent": round(ln[0]["rbox"][0] - left, 2),  # 0 = starts at the page's left margin
             "text": " ".join(t["text"] for t in ln), "cells": cells,
@@ -217,30 +218,49 @@ def _xlsx_sheet(sheet: dict, toks: list[dict]) -> dict:
 
 def layout(doc: dict) -> dict:
     """Token file (carth.ingest / carth ocr output) -> {"kind", "pages" | "sheets", "tokens": {id: token}}."""
-    toks = doc["tokens"]
+    toks = deepcopy(doc["tokens"])
     if doc["kind"] == "xlsx":
         by = defaultdict(list)
         for t in toks:
             by[t["sheet"]].append(t)
         parts = {"sheets": [_xlsx_sheet(s, by.get(s["sheet"], [])) for s in doc["sheets"]]}
     else:
-        by = defaultdict(list)
+        by = defaultdict(lambda: defaultdict(list))
         for t in toks:
             t["type"] = token_type(t)
-            by[t["page"]].append(t)
-        lines, skews = {}, {}
-        for p in doc["pages"]:
-            toks_p = by.get(p["page"], [])
-            lines[p["page"]] = _lines(toks_p)
-            skews[p["page"]] = _skew(lines[p["page"]])
-            if abs(skews[p["page"]]) > 0.1:  # straighten, then chain the lines again
-                _straighten(toks_p, skews[p["page"]])
-                lines[p["page"]] = _lines(toks_p)
-        shifts = _align(by, lines)
-        bands = _bands([ln for lns in lines.values() for ln in lns])
-        parts = {"pages": [{**_pdf_page(p, by.get(p["page"], []), lines[p["page"]], bands),
-                            "skew_deg": round(skews[p["page"]], 3), "dx": shifts.get(p["page"], 0.0)}
-                           for p in doc["pages"]]}
+            direction = int(t.get('dir', 0))
+            angle = round(t.get('baseline_angle', direction), 3)
+            frame = (t.get('src', 'pdf'), direction, angle)
+            by[frame][t["page"]].append(t)
+        pages = {p['page']: {**p, 'lines': [], 'bands': [], 'frames': []} for p in doc['pages']}
+        next_band = 0
+        for frame_index, (frame, frame_pages) in enumerate(sorted(by.items())):
+            frame_id = f'f{frame_index}'
+            lines, skews = {}, {}
+            for pno, ts in frame_pages.items():
+                for t in ts:
+                    t['frame'] = frame_id
+                lines[pno] = _lines(ts)
+                skews[pno] = _skew(lines[pno])
+                if abs(skews[pno]) > .1:
+                    _straighten(ts, skews[pno])
+                    lines[pno] = _lines(ts)
+            shifts = _align(frame_pages, lines)
+            bands = _bands([ln for lns in lines.values() for ln in lns])
+            for band in bands:
+                band['id'] += next_band
+                band['frame'] = frame_id
+            next_band += len(bands)
+            for pno, ts in frame_pages.items():
+                page = pages[pno]
+                prefix = f'p{pno}' if len(by) == 1 else f'p{pno}{frame_id}'
+                part = _pdf_page(page, ts, lines[pno], bands, frame_id, prefix)
+                page['lines'].extend(part['lines'])
+                page['bands'].extend(bands)
+                page['frames'].append({'id':frame_id, 'source':frame[0], 'dir':frame[1], 'baseline_angle':frame[2],
+                                       'skew_deg':round(skews[pno],3), 'dx':shifts.get(pno,0.0)})
+                page['text_height'] = part['text_height']
+        parts = {'pages': list(pages.values())}
     return {"source": doc.get("source"), "kind": doc["kind"], **parts, "tokens": {t["id"]: t for t in toks}}
 
 

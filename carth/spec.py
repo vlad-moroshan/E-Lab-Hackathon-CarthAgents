@@ -19,12 +19,12 @@ import sys
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from carth.layout import layout
 from carth.numbers import parse_amount
 
-DEFAULT_MODEL = os.environ.get("CARTH_MODEL", "gpt-6-astra")  # best of 4 on the 10-doc sample (eval/spec_metrics.py)
+DEFAULT_MODEL = os.environ.get("CARTH_MODEL", "gpt-6-astra")  # configurable runtime default; evaluation remains separate
 CACHE = Path("out/spec")
 FIELDS = ("ahk_open", "zugang", "abgang", "umbuchung", "zuschreibung", "ahk_close", "kum_afa_open", "afa_gj",
           "afa_abgang", "kum_afa_close", "bw_close", "bw_prev", "abgang_bw", "bew_ahk", "bew_wb", "ignore")
@@ -35,9 +35,18 @@ MAX_LINES_PER_PAGE, MAX_PAGES, MAX_ROWS = 45, 6, 140
 # ---------------------------------------------------------------------------------------------------- schema
 
 
+def checked_pattern(value):
+    if not value:
+        raise ValueError('regex cannot be empty')
+    try:
+        return re.compile(value, re.I)
+    except re.error as exc:
+        raise ValueError(f'invalid regex: {exc}') from exc
+
+
 class FieldMap(BaseModel):
-    line: int = Field(description="0-based line inside the record (0 = the record's first line)")
-    band: int = Field(description="band number (PDF) or column number (xlsx) holding the amount")
+    line: int = Field(ge=0, description="0-based line inside the record (0 = the record's first line)")
+    band: int = Field(ge=0, le=16384, description="band number (PDF) or column number (xlsx) holding the amount")
     field: FieldName = Field(description="canonical field; 'ignore' for amount columns that are not a target field")
 
 
@@ -48,23 +57,39 @@ class IdRule(BaseModel):
     scope: Literal["record", "heading"] = Field(description="record: the first line of each record / subtotal; "
                                                             "heading: heading lines whose code applies to the rows below")
 
+    @field_validator('regex')
+    @classmethod
+    def valid_id_pattern(cls, value):
+        if checked_pattern(value).groups != 1:
+            raise ValueError('identity regex must have exactly one capture group')
+        return value
+
 
 class RowRole(BaseModel):
     regex: str = Field(description="Python regex searched in the masked line text (case-insensitive)")
     role: Literal["class_subtotal", "account_subtotal", "position_subtotal", "grand_total", "carry_over", "heading",
                   "header", "noise"]
 
+    @field_validator('regex')
+    @classmethod
+    def valid_pattern(cls, value):
+        checked_pattern(value)
+        return value
+
 
 class Section(BaseModel):
     name: str
     pages: list[int] = Field(description="PDF pages (1-based) of this section; for xlsx: []")
     sheet: str | None = Field(description="xlsx sheet name, else null")
-    year: int | None = Field(description="fiscal year (year of the period end) reported in this section")
+    line_ids: list[str] | None = Field(default=None, description="Exact source line IDs for this table, or null for a range/container")
+    start_line: str | None = Field(default=None, description="Inclusive first source line ID; pair with end_line, or null")
+    end_line: str | None = Field(default=None, description="Inclusive last source line ID; pair with start_line, or null")
+    year: int | None = Field(ge=1900, le=2200, description="fiscal year (year of the period end) reported in this section")
     unit: Literal["EUR", "TEUR"]
     granularity: Literal["asset", "account", "class", "position"] = Field(
         description="what one leaf record is: a single asset, a ledger account, an asset class, a balance-sheet line")
     gross_or_net: Literal["gross", "net"] = Field(description="net = starts from prior book value (abgang_bw)")
-    record_lines: int = Field(description="printed lines per record (1 for one line per asset, 3 or 4 for blocks)")
+    record_lines: int = Field(ge=1, description="printed lines per record (1 for one line per asset, 3 or 4 for blocks)")
     record_start: str = Field(description="Python regex on masked line text that matches the FIRST line of every record "
                                           "and subtotal block, and no other line")
     fields: list[FieldMap]
@@ -74,6 +99,28 @@ class Section(BaseModel):
                                           "rows at that granularity, and codes printed on heading lines")
     year_columns_note: str = Field(description="free text: anything unusual (two years, repeated values, hidden "
                                                "columns to ignore, units)")
+
+    @field_validator('record_start')
+    @classmethod
+    def valid_start_pattern(cls, value):
+        checked_pattern(value)
+        return value
+
+    @model_validator(mode='after')
+    def valid_structure(self):
+        if any(p < 1 for p in self.pages):
+            raise ValueError('page numbers must be positive')
+        names, positions = set(), set()
+        for field in self.fields:
+            if field.line >= self.record_lines:
+                raise ValueError('field line offset is outside record_lines')
+            if field.field == 'ignore':
+                continue
+            if field.field in names or (field.line,field.band) in positions:
+                raise ValueError('duplicate target field or source coordinate')
+            names.add(field.field)
+            positions.add((field.line,field.band))
+        return self
 
 
 class Spec(BaseModel):
@@ -100,6 +147,9 @@ Rules:
 - record_start must match the first line of every record AND of every subtotal/total block in the section.
 - roles: regexes that identify subtotal / total / carry-over (Übertrag) / heading / repeated page header lines.
 - Two fiscal years or two tables = two sections. Cover letters, blank pages, unrelated reports go to noise_pages.
+- When tables share a sheet/page, give explicit line_ids or inclusive start_line/end_line using source IDs shown
+  in brackets. Select heading/period lines as well as record lines. Parallel tables on the same lines must select
+  those lines explicitly and use disjoint amount columns. List every continuation page; unlisted pages are excluded.
 - If the document is not a fixed-asset schedule (trial balance, P&L, balance sheet), set is_asset_schedule=false.
 - year: the fiscal year of the period END of the section (e.g. "01.07.2024 bis 30.06.2025" -> 2025). Never null when a
   period or report date is printed. A print / creation date is not the period.
@@ -107,6 +157,9 @@ Rules:
   (Konto, Bestandskonto) where accounts are a separate level; position_subtotal = sum per balance-sheet position
   (numbered position, roman-numeral group or 7-digit SAP Bilanzposition); grand_total = sum of everything;
   carry_over = Übertrag / carried-forward running sum at page breaks. heading = a label line without amounts.
+- granularity / leaf rows: a row is a leaf ("asset" kind) only at the finest level the document reports. If the same
+  document (another section or sheet) also lists the individual assets of a class or account, then the rows per class
+  or account are sums: use class_subtotal / account_subtotal roles for them, not leaf rows.
 - ids: identity codes as printed (single words such as '0027', '210004', '1000', '2102100'), one capture group each.
   Name the code by what it is in German accounting: account = ledger account number (Konto, Sachkonto, Bestandskonto;
   SKR03/SKR04 fixed-asset accounts are 3-4 digits, often with a leading zero, e.g. 027, 0027, 0210); class = asset class
@@ -143,7 +196,7 @@ def render(lay: dict) -> str:
             out.append(f"=== sheet {sh['sheet']!r} ({sh['state']}); hidden columns: {sh['hidden_cols']}")
             for ln in sh["lines"][:MAX_ROWS]:
                 cells = " | ".join(f"{toks[c['tid']]['cell']}={_cell(toks[c['tid']], c['band'], True)}" for c in ln["cells"])
-                out.append(f"R{ln['row']}{' [hidden]' if ln['hidden'] else ''}: {cells}")
+                out.append(f"[{ln['id']}] R{ln['row']}{' [hidden]' if ln['hidden'] else ''}: {cells}")
         return "\n".join(out)
     pages = lay["pages"]
     keep = pages[:MAX_PAGES] + ([pages[-1]] if len(pages) > MAX_PAGES else [])
@@ -157,7 +210,7 @@ def render(lay: dict) -> str:
                 continue
             body = " ".join(_cell(toks[c["tid"]], c["band"], False) for c in ln["cells"])
             gap = "" if ln["gap_above"] is None else f" g{ln['gap_above']:.1f}"
-            out.append(f"L{ln['id'].split('l')[-1]}{gap} i{ln['indent']:.0f}: {body}")
+            out.append(f"[{ln['id']}] frame={ln.get('frame', 'page')} L{ln['id'].split('l')[-1]}{gap} i{ln['indent']:.0f}: {body}")
     if len(pages) > len(keep):
         out.append(f"(document has {len(pages)} pages; pages {len(keep)}..{len(pages) - 1} not shown follow the same layout)")
     return "\n".join(out)
@@ -180,7 +233,7 @@ def infer(lay: dict, model: str = DEFAULT_MODEL, cache: Path | None = CACHE) -> 
     import time
 
     view = render(lay)
-    h = hashlib.sha256(f"{model}\n{SYSTEM}\n{view}".encode()).hexdigest()[:16]
+    h = hashlib.sha256(f"{model}\n{SYSTEM}\n{Spec.model_json_schema()}\n{view}".encode()).hexdigest()[:16]
     cp = cache / f"{h}.json" if cache else None
     if cp and cp.exists():
         d = json.loads(cp.read_text())
