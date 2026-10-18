@@ -2,6 +2,8 @@
 
     carth eval   [--corpus DIR] [--pred DIR] [--formats xlsx,pdf] [-v]   score predictions against the answer keys
     carth check  [--corpus DIR] [--pred DIR] [--formats ...]             organisers' check_corpus checks on predictions
+    carth ingest [--corpus DIR] [--out DIR] [--formats ...]              stage 1: documents -> out/tokens/<doc_id>.json
+    carth recall [--corpus DIR] [--tokens DIR] [--formats ...]           evidence-layer recall against the keys
     carth oracle [--corpus DIR] [--pred DIR] [--mode key|empty]          write key-derived predictions (scorer check)
     carth validate-corpus [FILE_OR_DIR] [--schema PATH]               validate the answer-key JSON contract
 """
@@ -16,6 +18,7 @@ from carth.eval import score
 
 CORPUS = Path("A3-Hackathon-Corpus")
 PRED = Path("out/pred")
+TOKENS = Path("out/tokens")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -32,6 +35,16 @@ def main(argv: list[str] | None = None) -> int:
     ck.add_argument("--corpus", type=Path, default=CORPUS)
     ck.add_argument("--pred", type=Path, default=PRED)
     ck.add_argument("--formats", help="comma list of xlsx,pdf,scan,outline")
+
+    ing = sub.add_parser("ingest", help="documents -> token files")
+    ing.add_argument("--corpus", type=Path, default=CORPUS)
+    ing.add_argument("--out", type=Path, default=TOKENS)
+    ing.add_argument("--formats", help="comma list of xlsx,pdf,scan,outline")
+
+    rec = sub.add_parser("recall", help="evidence-layer recall against the keys")
+    rec.add_argument("--corpus", type=Path, default=CORPUS)
+    rec.add_argument("--tokens", type=Path, default=TOKENS)
+    rec.add_argument("--formats", help="comma list of xlsx,pdf,scan,outline")
 
     orc = sub.add_parser("oracle", help="write predictions derived from the keys")
     orc.add_argument("--corpus", type=Path, default=CORPUS)
@@ -50,6 +63,20 @@ def main(argv: list[str] | None = None) -> int:
         from carth.eval.official import check
 
         return check(a.corpus, a.pred, set(a.formats.split(",")) if a.formats else None)
+    elif a.cmd == "ingest":
+        from carth import ingest
+
+        only = set(a.formats.split(",")) if a.formats else None
+        for doc_id, (kp, key) in score.load_keys(a.corpus).items():
+            if only and key["meta"]["format"] not in only:
+                continue
+            doc = ingest.ingest(score._doc_path(kp, key))
+            ingest.save(doc, a.out / f"{doc_id}.json")
+            print(f"{doc_id:<28} {doc['kind']:<9} {len(doc['tokens']):>6} tokens")
+    elif a.cmd == "recall":
+        from carth.eval.recall import recall_corpus
+
+        print(recall_corpus(a.corpus, a.tokens, set(a.formats.split(",")) if a.formats else None))
     elif a.cmd == "oracle":
         a.pred.mkdir(parents=True, exist_ok=True)
         for doc_id, (_, key) in score.load_keys(a.corpus).items():

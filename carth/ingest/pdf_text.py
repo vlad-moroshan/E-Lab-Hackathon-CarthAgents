@@ -16,11 +16,15 @@ import pdfplumber
 
 def page_words(page) -> list[dict]:
     p = page.dedupe_chars(tolerance=1)
+    # no extra_attrs: splitting words on size would cut "12.138,62" before its last digit on turned pages,
+    # where float noise gives one glyph size 3.3599… instead of 3.36… — read size / font from the chars instead
     ws = p.extract_words(keep_blank_chars=False, use_text_flow=False, line_dir_rotated="ltr",
-                         char_dir_rotated="btt", extra_attrs=["size", "fontname"])
+                         char_dir_rotated="btt", return_chars=True)
     H = float(page.height)
     out = []
     for w in ws:
+        c0 = w["chars"][0]
+        w["size"], w["fontname"] = c0["size"], c0["fontname"]
         bbox = [round(w["x0"], 2), round(w["top"], 2), round(w["x1"], 2), round(w["bottom"], 2)]
         if w["upright"]:
             rbox = bbox
