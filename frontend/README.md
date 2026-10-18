@@ -1,4 +1,4 @@
-# CarthAgents review demo
+# 3.5 CarthAsians review demo
 
 A read-only React + TypeScript review workspace for the TUM.ai fixed-asset challenge. Runs locally with Vite. The backend remains responsible for extraction and generating the Arbeitsversion workbook.
 
