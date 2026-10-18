@@ -24,7 +24,7 @@ def _check_corpus(corpus: Path):
     return check_corpus
 
 
-def check(corpus: Path, pred_dir: Path, only: set[str] | None = None) -> int:
+def check(corpus: Path, pred_dir: Path, only: set[str] | None = None, partial: bool = False) -> int:
     cc = _check_corpus(corpus)
     n = fails = 0
     for doc_id, (kp, key) in load_keys(corpus).items():
@@ -33,16 +33,20 @@ def check(corpus: Path, pred_dir: Path, only: set[str] | None = None) -> int:
         if (only and fmt not in only) or not pp.exists():
             continue
         n += 1
-        pred = json.loads(pp.read_text("utf-8"))
-        pred.setdefault("meta", {}).update(format=fmt, variant="perfect")  # format is known from the file itself
-        pred["meta"].setdefault("unit", key["meta"]["unit"])
         doc = _doc_path(kp, key)
         try:
+            pred = json.loads(pp.read_text("utf-8"))
+            pred.setdefault("meta", {}).update(format=fmt, variant="perfect")
+            pred["meta"].setdefault("unit", key["meta"]["unit"])
             errs = [] if pred.get("rows") else ["no rows"]
             errs += (cc.xlsx_checks if fmt == "xlsx" else cc.pdf_checks)(pred, doc) + cc.arithmetic(pred)
         except Exception as e:  # a broken prediction is a FAIL, not a crash
             errs = [f"{type(e).__name__}: {e}"]
         fails += bool(errs)
         print(("FAIL " if errs else "OK   ") + doc_id + (": " + "; ".join(errs[:3]) + (f" (+{len(errs) - 3})" if len(errs) > 3 else "") if errs else ""))
-    print(f"{n} predictions, {n - fails} OK, {fails} FAIL")
-    return 1 if fails else 0
+    expected = sum(1 for _, (_, k) in load_keys(corpus).items() if not only or k["meta"]["format"] in only)
+    print(f"{n} predictions, {n - fails} OK, {fails} FAIL; {expected - n} of {expected} expected documents have no "
+          f"prediction (not checked)")
+    if n == 0:
+        print("FAIL: nothing was checked")
+    return 1 if fails or n == 0 or (not partial and n != expected) else 0

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Observed extraction output (distinct from corpus fixtures)",
+  "type": "object", "additionalProperties": false,
+  "required": ["version", "document", "rows", "values", "flags"],
+  "properties": {
+    "version": {"const": 1},
+    "document": {"type":"object", "additionalProperties":false, "required":["id","source","sha256"], "properties":{"id":{"type":"string","minLength":1},"source":{"type":"string"},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"}}},
+    "flags": {"$ref":"#/$defs/flags"},
+    "rows": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["id","year","kind","granularity"],"properties":{"id":{"type":"string","minLength":1},"year":{"type":"integer","minimum":1900,"maximum":2200},"kind":{"enum":["asset","class_subtotal","account_subtotal","position_subtotal","grand_total","carry_over"]},"granularity":{"enum":["asset","class","account","position"]},"asset_no":{"type":["string","null"]},"sub_no":{"type":["string","null"]},"class":{"type":["string","null"]},"account":{"type":["string","null"]},"position":{"type":["string","null"]},"name":{"type":["string","null"]}}}},
+    "values": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["row","field","value","pointer","flags","trace","workbook"],"properties":{"row":{"type":"string"},"field":{"enum":["ahk_open","zugang","abgang","abgang_bw","umbuchung","ahk_close","kum_afa_open","afa_gj","afa_gj_plan","afa_gj_ausserplan","afa_abgang","zuschreibung","afa_umbuchung","kum_afa_close","bw_close","bw_prev","net:bew_ahk","net:bew_wb"]},"value":{"type":["integer","null"]},"pointer":{"oneOf":[{"type":"null"},{"type":"object","additionalProperties":false,"required":["sheet","cell"],"properties":{"sheet":{"type":"string"},"cell":{"type":"string","pattern":"^[A-Z]+[1-9][0-9]*$"}}},{"type":"object","additionalProperties":false,"required":["page","bbox"],"properties":{"page":{"type":"integer","minimum":1},"bbox":{"type":"array","minItems":4,"maxItems":4,"items":{"type":"number","minimum":0}}}}]},"flags":{"$ref":"#/$defs/flags"},"trace":{"type":["object","null"]},"workbook":{"type":["object","null"]}}}}
+  },
+  "$defs": {"flags":{"type":"array","items":{"type":"string","minLength":1}}}
+}

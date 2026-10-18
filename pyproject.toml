@@ -16,8 +16,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# installed on Colab / a GPU box only
-ocr = ["paddleocr>=3.0", "python-doctr>=0.10"]
+# CPU OCR stack verified with Python 3.12; keep the runtime explicit.
+ocr = [
+    "numpy==2.3.5",
+    "paddleocr==3.7.0",
+    "paddlepaddle==3.3.1",
+]
+# Experimental engines also need the ocr extra for shared page orientation.
+doctr = ["python-doctr==1.1.0"]
+tesseract = ["pytesseract==0.3.13"]
 
 [project.scripts]
 carth = "carth.cli:main"

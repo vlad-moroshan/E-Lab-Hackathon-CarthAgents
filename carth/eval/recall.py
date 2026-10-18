@@ -14,7 +14,11 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from carth import ingest
+from carth.eval.frames import best_turn, turn_box
 from carth.eval.score import load_keys
+from carth.numbers import parse_amount
+from carth.eval.evidence import cell_cents
+from carth.ingest.xlsx import empty_amount_cell
 
 
 def _centre_in(t, bbox, pad=0.5) -> bool:
@@ -32,15 +36,25 @@ def doc_recall(key: dict, doc: dict) -> Counter:
             for f, coord in p.get("cells", {}).items():
                 t, want, printed = at.get((p["sheet"], coord)), r["fields"][f], r["printed"][f]
                 v = t["value"] if t else None
-                ok = ((v is None and want == 0 and not printed)
-                      or (isinstance(v, (int, float)) and abs(round(v * scale)) == abs(want))
-                      or (isinstance(v, str) and v == printed))
+                ok = ((t is None and want == 0 and not printed and empty_amount_cell(doc, p["sheet"], coord))
+                      or cell_cents(t, key["meta"]["unit"], f) == want)
                 c["exact" if ok else "missing"] += 1
                 c["hidden"] += bool(t and t["hidden"])
         return c
     by_page = defaultdict(list)
     for t in doc["tokens"]:
         by_page[t["page"]].append(t)
+    # OCR boxes are on the page as given; the keys use the print's orientation (see carth/eval/frames.py)
+    sizes = {p["page"]: (p["width"], p["height"]) for p in doc.get("pages", [])}
+    rows_by_page = defaultdict(list)
+    for r in key["rows"]:
+        rows_by_page[r["pointer"]["page"]].append(r["pointer"]["bbox"])
+    for pg, toks in by_page.items():
+        if toks and str(toks[0].get("src", "")).startswith("ocr") and pg in sizes:
+            W, H = sizes[pg]
+            amounts = [t["bbox"] for t in toks if parse_amount(t["text"], ocr=True)]
+            turn = best_turn(amounts, rows_by_page.get(pg, []), W, H)
+            by_page[pg] = [{**t, "bbox": turn_box(t["bbox"], turn, W, H)} for t in toks]
     for r in key["rows"]:
         p = r["pointer"]
         toks = [t for t in by_page.get(p["page"], []) if _centre_in(t, p["bbox"])]
@@ -60,15 +74,22 @@ def doc_recall(key: dict, doc: dict) -> Counter:
     return c
 
 
-def recall_corpus(corpus: Path, tokens_dir: Path, only: set[str] | None = None) -> str:
+def recall_corpus(corpus: Path, tokens_dir: Path, only: set[str] | None = None, partial: bool = False) -> str:
     rows, tot = [], Counter()
     by_fmt = defaultdict(Counter)
     for doc_id, (_, key) in load_keys(corpus).items():
         fmt = key["meta"]["format"]
         tp = tokens_dir / f"{doc_id}.json"
-        if (only and fmt not in only) or not tp.exists():
+        if only and fmt not in only:
             continue
-        c = doc_recall(key, ingest.load(tp))
+        if not tp.exists():
+            if partial:
+                continue
+            n = (sum(len(r["pointer"].get("cells", {})) for r in key["rows"]) if fmt == "xlsx" else
+                 sum(bool(s) for r in key["rows"] for s in r.get("printed", {}).values()))
+            c = Counter(missing=n, missing_documents=1)
+        else:
+            c = doc_recall(key, ingest.load(tp))
         rows.append((doc_id, fmt, c))
         tot += c
         by_fmt[fmt] += c
@@ -83,4 +104,5 @@ def recall_corpus(corpus: Path, tokens_dir: Path, only: set[str] | None = None) 
     out = [head, "-" * len(head)]
     out += [line(d, c) for d, _, c in rows if c["missing"] or c["inside"] or c["joined"]]
     out += ["", *[line(f"format={f}", c) for f, c in sorted(by_fmt.items())], line("TOTAL", tot)]
+    out.append(f"missing token documents: {tot['missing_documents']}; partial diagnostics: {partial}")
     return "\n".join(out)

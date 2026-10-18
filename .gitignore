@@ -228,3 +228,5 @@ __marimo__/
 # carth artifacts
 out/
 .venv/
+
+.vscode/

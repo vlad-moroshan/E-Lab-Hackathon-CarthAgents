@@ -4,7 +4,7 @@ Detailed source reference for the CarthAgents hackathon on **18 October 2026**. 
 
 ## 1. Source materials and output direction
 
-The [short brief](<../challenge/Challenge 1 - CarthAgents.pdf>), [detailed brief](../challenge/TUM-ai-Challenge-Brief-CarthAgents-detailed.pdf) and [workbook template](../challenge/Arbeitsversion-merged-layout-20.xlsx) live in `challenge/`. The project produces schema-based JSON first; a separate optional step converts it to XLSX. The workbook inventory below describes that export target, not an extraction dependency.
+The [short brief](<../challenge/Challenge 1 - CarthAgents.pdf>), [detailed brief](../challenge/TUM-ai-Challenge-Brief-CarthAgents-detailed.pdf) and [workbook template](../challenge/Arbeitsversion-merged-layout-20.xlsx) live in `challenge/`. The project requires per-value JSON and a filled Arbeitsversion XLSX for each document; conversion consumes the JSON. The workbook inventory below describes that export target, not an extraction dependency.
 
 ## 2. Repository inventory
 
@@ -12,7 +12,7 @@ Snapshot: **72 paired samples across 10 families**, **4,002 keyed rows**, **36,0
 
 | Location | Supplied content | Role |
 | --- | --- | --- |
-| `challenge/` | Short and detailed challenge PDFs plus `Arbeitsversion-merged-layout-20.xlsx` | Challenge requirements and optional output template. |
+| `challenge/` | Short and detailed challenge PDFs plus `Arbeitsversion-merged-layout-20.xlsx` | Challenge requirements and required output template. |
 | `A3-Hackathon-Corpus/f00_demo/` through `f09_excel_register/` | 72 source documents and 72 matching `.key.json` files | Synthetic development and evaluation corpus. |
 | `A3-Hackathon-Corpus/_generator/` | README, four Python utilities, 10 family modules and one shared SAP module | Explains data construction, layouts, planted problems, rendering and key conventions. Not an agent implementation. |
 | `A3-Hackathon-Corpus/_intern/profiles/` | 26 Markdown layout profiles | Descriptions of reference layouts that inspired the synthetic corpus. The original client documents described there are not supplied here. |
@@ -24,7 +24,7 @@ Snapshot: **72 paired samples across 10 families**, **4,002 keyed rows**, **36,0
 | `.DS_Store`, `.git/` | Finder metadata and version-control internals | Not challenge data. |
 | `~$*.xlsx` (in demo/other workbook folders) | Small Excel owner/lock artifacts, not ZIP workbooks | Created by Excel, not the generator. Ignore as inputs and in Git; leave active locks on disk while their workbook is open. |
 
-The `carth` Python package provides text-PDF/Excel tokenization, evidence recall, a local scorer/oracle, a supplied-checker wrapper and schema validation. Its `pyproject.toml`, `uv.lock` and `carth/` layout are authoritative for application setup. The output target is key-style JSON, with optional separate XLSX conversion; neither the complete extraction runner nor converter is implemented. See [the project guide](CHALLENGE_UNDERSTANDING.md) for commands and [open questions](OPEN_QUESTIONS.md) for schema gaps. Generator code remains separate under the supplied corpus.
+The `carth` Python package provides text-PDF/Excel tokenization, evidence recall, a local scorer/oracle, a supplied-checker wrapper and schema validation. Its `pyproject.toml`, `uv.lock` and `carth/` layout are authoritative for application setup. Runtime output uses the extraction schema and a copied Arbeitsversion; the runner currently consumes reviewed layout references. Automatic layout discovery remains unfinished. See [the project guide](CHALLENGE_UNDERSTANDING.md) for commands and [open questions](OPEN_QUESTIONS.md) for schema gaps. Generator code remains separate under the supplied corpus.
 
 ### File types and their differences
 
@@ -119,7 +119,7 @@ This shared format is formalized in [carth/eval/corpus.schema.json](../carth/eva
 
 Run `uv run carth validate-corpus` from the repository root (an optional positional argument selects a file or corpus folder). The package command checks the schema itself, enables date-format validation and adds cross-field checks for row years, matching `fields`/`printed` keys, pointer/flag field references, box ordering and document IDs. It validates all 72 keys / 4,002 rows / 36,081 standard amounts / 306 net amounts. Regression checks: `uv run python -m unittest discover -s tests -v`.
 
-The schema formalizes the **key-style JSON output format**. Its strict fixture constraints do not yet cover general abstentions or unknown generator metadata; those gaps and local evaluator extensions are listed in [open questions](OPEN_QUESTIONS.md#1-json-schema-versus-extraction-output). Structural validation does not prove financial correctness or source-pointer accuracy, and does not replace arithmetic/source checks.
+The schema formalizes the **answer-key fixture format**. Runtime [extraction.schema.json](../carth/extraction.schema.json) supports per-value evidence, abstentions and unknown source metadata; organiser acceptance is listed in [open questions](OPEN_QUESTIONS.md#1-submission-schema-and-naming). Structural validation does not prove financial correctness or source-pointer accuracy, and does not replace arithmetic/source checks.
 
 | Part | Contents |
 | --- | --- |
@@ -138,9 +138,9 @@ Problems to handle include glued adjacent amounts, wrapped names, headers only o
 
 ### Open integration questions
 
-The single review list is [Open questions](OPEN_QUESTIONS.md). It covers schema/abstention gaps, checker versus scoring semantics, inferred key values, optional workbook representation and OCR/run conditions. The [project guide](CHALLENGE_UNDERSTANDING.md) describes JSON-first output, reporting years and evaluation tools.
+The single review list is [Open questions](OPEN_QUESTIONS.md). It covers schema/abstention gaps, checker versus scoring semantics, inferred key values, workbook representation and OCR/run conditions. The [project guide](CHALLENGE_UNDERSTANDING.md) describes JSON-first output, reporting years and evaluation tools.
 
-## 6. Optional Arbeitsversion export: all 27 tabs
+## 6. Required Arbeitsversion export: all 27 tabs
 
 Source: [challenge/Arbeitsversion-merged-layout-20.xlsx](../challenge/Arbeitsversion-merged-layout-20.xlsx). Defined name **`A3_LAYOUT_VERSION = 20`**. All 27 sheets are visible; some columns are hidden. It is a broad, mostly empty audit template with prefilled formulas, not another populated client hand-over. Formula caches in the template are empty; formula text and actual calculated display values must not be confused.
 
@@ -185,7 +185,7 @@ Each field catalog gives **column, stable field ID, display heading, block, requ
 
 ### Core amount mapping: corpus fields to actual workbook columns
 
-Workbook amounts are numeric **EUR**, whereas key/JSON amount examples use **integer cents**. Normalize signs and scale in code while preserving original evidence. This table guides the optional JSON-to-XLSX conversion; the JSON contract is defined separately in the schema.
+Workbook amounts are numeric **EUR**, whereas key/JSON amount examples use **integer cents**. Normalize signs and scale in code while preserving original evidence. This table guides JSON-to-XLSX conversion; the JSON contract is defined separately in the schema.
 
 | Corpus meaning | Grid column / field ID | Register column / field ID |
 | --- | --- | --- |

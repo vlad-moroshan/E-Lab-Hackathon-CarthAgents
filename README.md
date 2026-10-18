@@ -2,19 +2,19 @@
 
 **TUM.ai hackathon · 18 October 2026**
 
-Extract German fixed-asset reports into **one schema-based JSON file per document**, with source evidence for every amount. Code parses the figures; models interpret layout. Preserve printed errors, flag uncertainty, and check accuracy and completeness.
+Extract German fixed-asset reports into **per-value JSON and a filled Arbeitsversion XLSX per document**, with source evidence for every amount. Code parses the figures; models interpret layout. Preserve printed errors, flag uncertainty, and check accuracy and completeness.
 
 ```text
-Documents → extraction + validation → JSON → optional, separate XLSX conversion
+Documents → extraction + validation → per-value JSON → Arbeitsversion XLSX
 ```
 
-The `carth` package currently provides text-PDF/Excel ingestion, schema validation and evaluation tools. The unattended extraction command and optional workbook converter still need implementation.
+The `carth` package provides ingestion, OCR, local evaluation and a validated JSON/workbook writer. `carth run INPUT OUT --specs LAYOUTS` parses source references from reviewed layout specs. Automatic layout discovery remains unfinished; missing specs produce flagged outputs and a nonzero exit.
 
 - [Project guide](docs/CHALLENGE_UNDERSTANDING.md): output contract, pipeline, commands and reporting years.
 - [Data and workbook reference](docs/REFERENCE.md): corpus families, accounting fields, template mapping and all 72 samples.
 - [Open inconsistencies](docs/OPEN_QUESTIONS.md): schema gaps and unresolved requirements.
 - [Challenge materials](challenge/): short brief, detailed brief and Arbeitsversion template.
-- [JSON Schema](carth/eval/corpus.schema.json) · [Development corpus](A3-Hackathon-Corpus/).
+- [Extraction schema](carth/extraction.schema.json) · [Corpus fixture schema](carth/eval/corpus.schema.json) · [Development corpus](A3-Hackathon-Corpus/).
 
 From the repository root:
 
