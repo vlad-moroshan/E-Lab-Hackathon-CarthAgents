@@ -22,3 +22,15 @@ From the repository root:
 uv run carth validate-corpus
 uv run python -m unittest discover -s tests -v
 ```
+
+## Review frontend
+
+The read-only React + TypeScript demo lives in [`frontend/`](frontend/README.md). It loads key-style JSON directly, displays source PDF evidence and findings, and downloads an attached backend-generated workbook.
+
+```sh
+cd frontend
+npm ci
+npm run dev
+```
+
+Use Node 22.13+ and open the URL printed by Vite. The bundled sample is explicitly labelled; extraction and workbook generation remain separate backend steps.
