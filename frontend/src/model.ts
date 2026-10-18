@@ -5,7 +5,7 @@ export type Result = {meta:{company?:string; doc_id?:string; doc_type?:string; y
 export const FIELDS = [
  ['ahk_open','Opening cost','AHK 01.01.','ahk_01_01'],['zugang','Additions','Zugang','ahk_zugang'],['abgang','Disposals','Abgang','ahk_abgang'],['umbuchung','Transfers','Umbuchung (±)','ahk_umbuchung'],['ahk_close','Closing cost','AHK 31.12.','ahk_31_12'],['kum_afa_open','Opening depreciation','Kum. AfA 01.01.','afa_01_01'],['afa_gj','Annual depreciation','AfA des GJ','afa_gj'],['afa_abgang','Depreciation on disposals','AfA auf Abgang','afa_abgang'],['zuschreibung','Write-ups','Zuschreibung','zuschreibung'],['kum_afa_close','Closing depreciation','Kum. AfA 31.12.','afa_31_12'],['bw_close','Closing book value','Buchwert GJ','bw_31_12_gj'],['bw_prev','Prior book value','Buchwert VJ','bw_31_12_vj'],
 ] as const;
-export const money=(value:number|null|undefined)=>value==null?'—':new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}).format(value/100);
+export const formatCents=(value:number|null|undefined)=>value==null?'—':new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}).format(value);
 export function parseResult(input:unknown):Result {
  if(!input || typeof input!=='object')throw new Error('Choose a JSON object containing meta and rows.');
  const data=input as Record<string,unknown>;

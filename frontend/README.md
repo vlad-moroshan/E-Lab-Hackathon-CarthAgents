@@ -70,6 +70,8 @@ Example unresolved and calculated metadata (illustrative, not a measured result)
 }
 ```
 
+The review table and result amount display integer EUR cents with grouping separators (for example, `1.942.596` cents). “As printed” preserves the original source string. The populated Arbeitsversion remains a separate backend export with its template-defined units.
+
 Amounts in `fields` are always EUR cents even when the source uses TEUR. The backend must perform any justified unit/sign normalisation and preserve the original `printed` representation. A source pointer does not prove accuracy. The app reports supplied values, not an accuracy score.
 
 ## Implementation
