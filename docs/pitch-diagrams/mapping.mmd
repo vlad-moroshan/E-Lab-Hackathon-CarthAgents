@@ -1,0 +1,15 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 260
+---
+flowchart LR
+    M["Section rule<br/>2025 asset rows<br/><b>B → ahk_open</b>"] --> X["Deterministic code<br/>read 123.45 EUR<br/><b>parse 12345 cents</b>"]
+    S["Source evidence<br/><b>Assets!B2</b>"] --> X
+    X --> O["Asset 001 · ahk_open<br/><b>12345 cents</b><br/>source: Assets!B2"]
+    classDef model fill:#292951,stroke:#9692e6,color:#efedff,stroke-width:2px;
+    classDef code fill:#0b514e,stroke:#58d4bc,color:#e4fff9,stroke-width:2px;
+    classDef source fill:#153749,stroke:#4a8098,color:#e6f4fb,stroke-width:2px;
+    class M model;
+    class X,O code;
+    class S source;

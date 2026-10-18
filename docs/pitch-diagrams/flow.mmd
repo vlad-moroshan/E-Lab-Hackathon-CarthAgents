@@ -1,0 +1,14 @@
+flowchart LR
+    S["PDF / Excel"] --> E["Source evidence<br/>text · cells · OCR"]
+    E --> M["LLM plan<br/>layout → meaning"]
+    M --> X["Code executor<br/>retrieve + parse"]
+    E -. "original values" .-> X
+    X --> J["JSON"]
+    X --> W["Arbeitsversion XLSX"]
+    X --> R["Review + evidence"]
+    classDef source fill:#153749,stroke:#4a8098,color:#e6f4fb,stroke-width:2px;
+    classDef model fill:#292951,stroke:#9692e6,color:#efedff,stroke-width:2px;
+    classDef code fill:#0b514e,stroke:#58d4bc,color:#e4fff9,stroke-width:2px;
+    class S,E source;
+    class M model;
+    class X,J,W,R code;

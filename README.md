@@ -37,6 +37,7 @@ conventions. Details: `docs/IMPLEMENTATION.md`, open points: `docs/OPEN_QUESTION
 
 `carth run INPUT OUT --specs LAYOUTS` instead uses reviewed `<id>.layout.json` references (no model call).
 
+- [Architecture pitch (PDF)](docs/architecture-pitch.pdf) · [Editable slides](docs/architecture-pitch.md) · [Diagram sources and rendering](docs/pitch-diagrams/README.md).
 - [Project guide](docs/CHALLENGE_UNDERSTANDING.md): output contract, pipeline, commands and reporting years.
 - [Data and workbook reference](docs/REFERENCE.md): corpus families, accounting fields, template mapping and all 72 samples.
 - [Open inconsistencies](docs/OPEN_QUESTIONS.md): schema gaps and unresolved requirements.

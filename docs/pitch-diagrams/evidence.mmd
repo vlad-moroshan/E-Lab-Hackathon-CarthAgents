@@ -1,0 +1,12 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 260
+---
+flowchart LR
+    S["Excel source<br/>Assets!B2<br/><b>123.45</b>"] --> T["Source token<br/><b>id: t3</b><br/>text: 123.45 · value: 123.45"]
+    T --> P["Exact pointer<br/><b>sheet: Assets</b><br/><b>cell: B2</b>"]
+    classDef source fill:#153749,stroke:#4a8098,color:#e6f4fb,stroke-width:2px;
+    classDef evidence fill:#0b514e,stroke:#58d4bc,color:#e4fff9,stroke-width:2px;
+    class S source;
+    class T,P evidence;
