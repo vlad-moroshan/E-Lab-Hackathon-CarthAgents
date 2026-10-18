@@ -1,0 +1,1022 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:carthagents:corpus-answer-key:v1",
+  "title": "CarthAgents corpus answer key",
+  "description": "Shared JSON contract emitted by A3-Hackathon-Corpus/_generator/core.py write_key and the supplied family modules. Covers all supplied *.key.json files. This is the row-oriented development answer-key format, not a confirmed per-value submission protocol. Amount fields are integer EUR cents even when the source unit is TEUR; printed strings preserve source formatting.",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "$ref": "#/$defs/metadata"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/row"
+      },
+      "minItems": 1
+    },
+    "planted": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/problem"
+      }
+    }
+  },
+  "required": [
+    "meta",
+    "rows",
+    "planted"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "meta": {
+            "properties": {
+              "format": {
+                "const": "xlsx"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "properties": {
+                "pointer": {
+                  "$ref": "#/$defs/xlsxPointer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "rows": {
+            "items": {
+              "properties": {
+                "pointer": {
+                  "$ref": "#/$defs/pdfPointer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "year": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9999
+    },
+    "years": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/year"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "cell": {
+      "type": "string",
+      "pattern": "^[A-Z]{1,3}[1-9][0-9]*$"
+    },
+    "fieldName": {
+      "type": "string",
+      "enum": [
+        "ahk_open",
+        "zugang",
+        "abgang",
+        "umbuchung",
+        "zuschreibung",
+        "ahk_close",
+        "kum_afa_open",
+        "afa_gj",
+        "afa_abgang",
+        "kum_afa_close",
+        "bw_close",
+        "bw_prev",
+        "abgang_bw"
+      ]
+    },
+    "amounts": {
+      "description": "Normalized integer cents. Disposals and depreciation are magnitudes; transfers retain their sign. Fields not supplied by a layout are omitted.",
+      "type": "object",
+      "properties": {
+        "ahk_open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zugang": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "abgang": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "umbuchung": {
+          "type": "integer"
+        },
+        "zuschreibung": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ahk_close": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kum_afa_open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "afa_gj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "afa_abgang": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kum_afa_close": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bw_close": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bw_prev": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "abgang_bw": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "printed": {
+      "description": "Raw display strings, including blanks, zeros, trailing minus and rounded TEUR values. Must have the same keys as fields (checked by validate_corpus.py).",
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/fieldName"
+      },
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1
+    },
+    "flags": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "*",
+          "ahk_open",
+          "zugang",
+          "abgang",
+          "umbuchung",
+          "zuschreibung",
+          "ahk_close",
+          "kum_afa_open",
+          "afa_gj",
+          "afa_abgang",
+          "kum_afa_close",
+          "bw_close",
+          "bw_prev",
+          "abgang_bw"
+        ]
+      },
+      "additionalProperties": {
+        "enum": [
+          "glued",
+          "non_tying",
+          "cut_off",
+          "transfer_incomplete"
+        ]
+      },
+      "minProperties": 1
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "enum": [
+            "EUR",
+            "TEUR"
+          ]
+        },
+        "years": {
+          "$ref": "#/$defs/years"
+        },
+        "period_end": {
+          "$ref": "#/$defs/date"
+        },
+        "company": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "invented_names": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonemptyString"
+          },
+          "minItems": 1
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "doc_id": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "family": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "doc_type": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "format": {
+          "enum": [
+            "xlsx",
+            "pdf",
+            "scan",
+            "outline"
+          ]
+        },
+        "variant": {
+          "enum": [
+            "perfect",
+            "problem",
+            "layout-mutation"
+          ]
+        },
+        "paired_with": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "pairing": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "software": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "company_code": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "position_codes": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/nonemptyString"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/nonemptyString"
+          }
+        },
+        "row_level": {
+          "enum": [
+            "asset",
+            "account",
+            "class",
+            "bilanzposition"
+          ]
+        },
+        "trio": {
+          "type": "object",
+          "properties": {
+            "client_seed": {
+              "type": "integer"
+            },
+            "docs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/nonemptyString"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "ties": {
+              "$ref": "#/$defs/nonemptyString"
+            }
+          },
+          "required": [
+            "client_seed",
+            "docs",
+            "ties"
+          ],
+          "additionalProperties": false
+        },
+        "net_fields": {
+          "description": "Human-readable explanation of the row net_fields mapping.",
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "required": [
+        "unit",
+        "years",
+        "period_end",
+        "company",
+        "invented_names",
+        "seed",
+        "doc_id",
+        "family",
+        "doc_type",
+        "format",
+        "variant"
+      ],
+      "additionalProperties": false
+    },
+    "row": {
+      "description": "Logical source row. kind=asset means a leaf and can represent an account, class or balance-sheet position with asset_no=null. Subtotals, totals and carry-overs remain separate rows.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "asset",
+            "class_subtotal",
+            "account_subtotal",
+            "position_subtotal",
+            "grand_total",
+            "carry_over"
+          ]
+        },
+        "year": {
+          "$ref": "#/$defs/year"
+        },
+        "asset_no": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "sub_no": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "class": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "account": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "position": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "name": {
+          "type": "string"
+        },
+        "acq_date": {
+          "$ref": "#/$defs/date"
+        },
+        "nd_months": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "method": {
+          "enum": [
+            "linear",
+            "GWG",
+            "keine"
+          ]
+        },
+        "fields": {
+          "$ref": "#/$defs/amounts"
+        },
+        "printed": {
+          "$ref": "#/$defs/printed"
+        },
+        "pointer": {
+          "$ref": "#/$defs/pointer"
+        },
+        "flags": {
+          "$ref": "#/$defs/flags"
+        },
+        "level": {
+          "enum": [
+            "account",
+            "class",
+            "*",
+            "**",
+            "***",
+            "****"
+          ]
+        },
+        "hgb_position": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "net_fields": {
+          "description": "Signed integer cents for f07 net movement columns; not part of standard fields or per-field pointer.cells.",
+          "type": "object",
+          "properties": {
+            "bew_ahk": {
+              "type": "integer"
+            },
+            "bew_wb": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "bew_ahk",
+            "bew_wb"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "year",
+        "fields",
+        "printed",
+        "pointer"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "asset"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "asset_no",
+              "name"
+            ]
+          }
+        }
+      ]
+    },
+    "pointer": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/xlsxPointer"
+        },
+        {
+          "$ref": "#/$defs/pdfPointer"
+        }
+      ]
+    },
+    "xlsxPointer": {
+      "description": "Workbook source pointer: row anchor plus per-standard-field cell addresses. Some unprinted block fields have no cell pointer.",
+      "type": "object",
+      "properties": {
+        "sheet": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "cell": {
+          "$ref": "#/$defs/cell"
+        },
+        "cells": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/fieldName"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/cell"
+          }
+        }
+      },
+      "required": [
+        "sheet",
+        "cell",
+        "cells"
+      ],
+      "additionalProperties": false
+    },
+    "pdfPointer": {
+      "description": "1-based physical page and line, with a row/block-wide [x0, top, x1, bottom] box in PDF points and top-left origin. This does not assert per-value evidence or page-bound validity.",
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bbox": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "page",
+        "line",
+        "bbox"
+      ],
+      "additionalProperties": false
+    },
+    "problem": {
+      "description": "Development-only annotation describing a deliberately planted issue or multi-year condition.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "glued_numbers",
+            "non_tying_subtotal",
+            "wrapped_description",
+            "noise_page_cover",
+            "noise_page_blank",
+            "noise_page_unrelated",
+            "carry_over",
+            "header_only_on_first_page",
+            "column_cut_off",
+            "teur_rounding",
+            "multi_year",
+            "numbers_as_text",
+            "hidden_column",
+            "transfer_breaks_cost_law",
+            "unrelated_table"
+          ]
+        },
+        "where": {
+          "type": "array",
+          "minItems": 1
+        },
+        "expected_behaviour": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "required": [
+        "type",
+        "where",
+        "expected_behaviour"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "glued_numbers"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/gluedLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "non_tying_subtotal"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/subtotalLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "wrapped_description"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/wrappedLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "noise_page_cover"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rowLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "noise_page_blank"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rowLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "noise_page_unrelated"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rowLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "carry_over"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rowLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "header_only_on_first_page"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/headerLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "column_cut_off"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/cutLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "teur_rounding"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/unitLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "multi_year"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/yearsLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "numbers_as_text"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/textLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "hidden_column"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/hiddenLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "transfer_breaks_cost_law"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/transferLocation"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "unrelated_table"
+            },
+            "where": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tableLocation"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "gluedLocation": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "$ref": "#/$defs/pointer"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fieldName"
+          },
+          "minItems": 2,
+          "uniqueItems": true,
+          "maxItems": 2
+        },
+        "printed": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "row",
+        "fields",
+        "printed"
+      ],
+      "additionalProperties": false
+    },
+    "subtotalLocation": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "$ref": "#/$defs/pointer"
+        },
+        "field": {
+          "$ref": "#/$defs/fieldName"
+        },
+        "printed": {
+          "type": "integer"
+        },
+        "sum_of_rows": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "row",
+        "field",
+        "printed",
+        "sum_of_rows"
+      ],
+      "additionalProperties": false
+    },
+    "wrappedLocation": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "$ref": "#/$defs/pointer"
+        },
+        "continuation": {
+          "$ref": "#/$defs/pointer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "row",
+        "continuation",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "rowLocation": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "$ref": "#/$defs/pointer"
+        }
+      },
+      "required": [
+        "row"
+      ],
+      "additionalProperties": false
+    },
+    "headerLocation": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "required": [
+        "pages"
+      ],
+      "additionalProperties": false
+    },
+    "cutLocation": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fieldName"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "pages": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "chars_lost": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "fields",
+        "pages",
+        "chars_lost"
+      ],
+      "additionalProperties": false
+    },
+    "unitLocation": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "const": "TEUR"
+        }
+      },
+      "required": [
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "yearsLocation": {
+      "type": "object",
+      "properties": {
+        "years": {
+          "$ref": "#/$defs/years"
+        }
+      },
+      "required": [
+        "years"
+      ],
+      "additionalProperties": false
+    },
+    "textLocation": {
+      "type": "object",
+      "properties": {
+        "sheet": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fieldName"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "cells": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "required": [
+        "sheet"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "fields"
+          ]
+        },
+        {
+          "required": [
+            "cells"
+          ]
+        }
+      ]
+    },
+    "hiddenLocation": {
+      "type": "object",
+      "properties": {
+        "sheet": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "column": {
+          "type": "string",
+          "pattern": "^[A-Z]{1,3}$"
+        },
+        "header": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "required": [
+        "sheet",
+        "column",
+        "header"
+      ],
+      "additionalProperties": false
+    },
+    "transferLocation": {
+      "type": "object",
+      "properties": {
+        "row": {
+          "$ref": "#/$defs/pointer"
+        },
+        "field": {
+          "$ref": "#/$defs/fieldName"
+        },
+        "printed": {
+          "type": "integer"
+        },
+        "implied": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "row",
+        "field",
+        "printed",
+        "implied"
+      ],
+      "additionalProperties": false
+    },
+    "tableLocation": {
+      "type": "object",
+      "properties": {
+        "sheet": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "range": {
+          "type": "string",
+          "pattern": "^[A-Z]{1,3}[1-9][0-9]*:[A-Z]{1,3}[1-9][0-9]*$"
+        }
+      },
+      "required": [
+        "sheet",
+        "range"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

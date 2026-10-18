@@ -1,6 +1,9 @@
 # macOS metadata
 .DS_Store
 
+# Excel temporary owner/lock files (created while a workbook is open)
+~$*.xlsx
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
