@@ -13,15 +13,32 @@ npm run dev
 
 Open the local URL printed by Vite. `npm run build` creates `dist/`; `npm test` checks the JSON adapter's key behaviours.
 
-## Demo flow
+## Source-first workflow
 
-1. The app opens the explicitly labelled synthetic `f00_demo_04` corpus sample.
-2. Search for `210004`, then select its Additions amount to inspect `19.425,96` and the PDF row highlight.
-3. Select **Needs review** to inspect sample flags. These come from the fixture, not a live extraction.
-4. **Load results** accepts a backend JSON file. Attach its matching PDF afterwards.
-5. Attach the backend-generated `.xlsx` file. The header then offers **Download Excel**. The app does not generate or verify this workbook; select the file from the same backend run.
+1. Choose a source PDF or Excel (.xlsx) file, up to 50 MB.
+2. **Process document** sends the file to the configured backend and opens its returned JSON in the review workspace. The source stays attached automatically.
+3. Select a value to see its original text and PDF region or Excel cell reference. Excel source preview is not implemented.
+4. Attach the backend-generated `.xlsx` output to enable **Download Excel**. Select the output from the same run; the frontend does not generate or verify that workbook.
 
-Loading a new JSON clears earlier PDF/Excel attachments to avoid stale downloads. No edits, server upload, login, or extraction endpoint are included. Reloading returns to the sample. Files stay in browser memory and are not persisted. The stylesheet loads Google Fonts; system fonts are the fallback when offline.
+Until the backend endpoint is available, real-file processing is disabled. Choose a **prepared PDF or Excel sample**, then **Review sample**, to explore the flow using its supplied answer key. These are explicitly labelled sample results, not extraction runs. Arbitrary uploads never receive a canned sample answer.
+
+Under **Development tools**, select a source document and load its matching JSON. This preserves the selected source and allows backend integration without an HTTP endpoint. The result is labelled imported. **New document** begins another upload; **Back to current review** preserves the existing review until a replacement result succeeds.
+
+## Processing endpoint setup
+
+Copy `.env.example` to `.env.local`, set `VITE_PROCESS_ENDPOINT` to the endpoint provided by the backend team, and restart Vite. For example, `http://localhost:8000/api/process` is a proposed URL, not an existing service. Vite exposes this setting to the browser, so never put secrets in it.
+
+The proposed minimal contract is:
+
+- Request: `POST` with `multipart/form-data`, one field named `file` containing the original PDF/XLSX. The browser sets the multipart boundary.
+- Response: HTTP 200 with the key-style JSON object `{ "meta": ..., "rows": [...] }` directly, without an envelope.
+- A cross-origin backend must allow the frontend origin (normally `http://127.0.0.1:5173`). No credentials or API keys are sent by this adapter.
+- The frontend reports failures, supports retry, and can cancel its request. Cancelling in the browser does not guarantee cancellation of server work.
+- This initial adapter expects one completed response. Job IDs, polling, streamed progress, and automatic workbook URLs can be added when the backend defines them.
+
+The request adapter is `src/processing.ts`. The backend endpoint has not been implemented in this frontend change.
+
+No edits, login, or automatic extraction are included in prepared samples. Reloading returns to the upload screen. Loaded files are kept in browser memory; processing sends the selected file to the configured endpoint. The stylesheet loads Google Fonts with system-font fallbacks.
 
 ## Backend contract
 
@@ -56,12 +73,14 @@ Amounts in `fields` are always EUR cents even when the source uses TEUR. The bac
 ## Implementation
 
 - `src/model.ts`: input adapter, amount formatting, row identities, evidence selection, and field definitions.
-- `src/App.tsx`: review table, direct file loading, findings, and workbook attachment/download.
+- `src/App.tsx`: review table, findings, source attachment, and workbook download.
+- `src/SourceIntake.tsx`: source upload, prepared samples, processing/cancellation, and developer JSON import.
+- `src/processing.ts`: source validation and configurable HTTP adapter.
 - `src/PdfViewer.tsx`: local PDF.js rendering and honest row/field highlights.
 - `src/style.css`: responsive CarthAgents-inspired visual styling.
 - `public/demo`: unmodified synthetic PDF and key JSON from the supplied corpus.
 
-Future API integration can replace `loadJson` with a fetch and feed the response through `parseResult`. Keep the PDF and workbook URLs tied to the same result version. There is deliberately no Excel-export mapping implementation here: the backend owns the template export, including the distinction between annual total depreciation and planned depreciation.
+Configure the processing endpoint when available; it already feeds the returned JSON through `parseResult`. Keep the PDF and workbook URLs tied to the same result version. There is deliberately no Excel-export mapping implementation here: the backend owns the template export, including the distinction between annual total depreciation and planned depreciation.
 
 ## Demo scope
 

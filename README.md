@@ -25,7 +25,7 @@ uv run python -m unittest discover -s tests -v
 
 ## Review frontend
 
-The read-only React + TypeScript demo lives in [`frontend/`](frontend/README.md). It loads key-style JSON directly, displays source PDF evidence and findings, and downloads an attached backend-generated workbook.
+The read-only React + TypeScript demo lives in [`frontend/`](frontend/README.md). It starts with a PDF/XLSX upload, processes it through a configurable backend endpoint, and displays returned JSON with source evidence. Prepared samples and matching-JSON import work before the endpoint is available.
 
 ```sh
 cd frontend
