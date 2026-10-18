@@ -1,0 +1,25 @@
+{
+ "documents": 0,
+ "scored_documents": 0,
+ "total": {
+  "score": 0,
+  "values": 0,
+  "score_pct": null,
+  "correct": 0,
+  "blank": 0,
+  "wrong": 0,
+  "missing": 0
+ },
+ "by_family": {},
+ "by_format": {},
+ "by_variant": {},
+ "by_field": {},
+ "by_kind": {},
+ "wrong_causes": {},
+ "wrong_magnitude": {},
+ "flags": {},
+ "planted": {},
+ "checks": {},
+ "pointer_reread": {},
+ "completeness": {}
+}
