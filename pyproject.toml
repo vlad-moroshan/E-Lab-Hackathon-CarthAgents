@@ -12,6 +12,7 @@ dependencies = [
     "pydantic>=2.7",
     "rapidfuzz>=3.9",
     "jsonschema==4.25.1",
+    "reportlab>=4.2",  # imported by the organisers' check_corpus.py (via core.py)
 ]
 
 [project.optional-dependencies]
