@@ -1,194 +1,98 @@
-# CarthAgents Challenge: Understanding & Assumptions
+# Project guide
 
-Sources read: `Challenge 1 - CarthAgents.pdf`, all of `A3-Hackathon-Corpus/_generator/` (core, check_corpus, selftest, the 10 families + `_sap_common`), all 72 answer keys (stats), `_intern/profiles/*.md`.
+Build an unattended agent that accepts a folder of unfamiliar German fixed-asset documents and produces **one JSON file per document in the shared key-style schema**. A separate, optional step converts that JSON into the Arbeitsversion workbook. XLSX generation is not a prerequisite for extraction or JSON delivery.
 
-## 1. The task in one paragraph
+The [challenge materials](../challenge/) contain the briefs and workbook template. Detailed inventories and mappings live in the [reference](REFERENCE.md); unresolved contract and evaluation issues live in [open questions](OPEN_QUESTIONS.md).
 
-A client sends its auditor a **fixed-asset roll-forward** (Anlagenspiegel / Anlagengitter / Anlagenverzeichnis) in some random export format. We must turn it into the auditor's standard workbook (**Arbeitsversion**): tab *Anlagenverzeichnis* = one row per asset, tab *Anlagengitter* = one row per asset class. Every number must be copied (by code, not by an LLM) from the document, carry a pointer to where it was printed, and the system must abstain where it is unsure.
+## Requirements
 
-## 2. The domain (what a row means)
+- Code retrieves and parses every financial amount from source cells, positioned PDF text or OCR tokens. Layout interpretation must not invent amounts.
+- Model OCR is allowed; retain its text and coordinates and parse the numeric tokens in code. The scope of acceptable generative vision transcription remains unspecified.
+- Every extracted amount needs evidence: PDF page and bounding box, or workbook sheet and cell. Preserve raw text and sign/unit conversion alongside normalized values internally.
+- Report printed values, including broken totals, and flag inconsistencies. Arithmetic is a check, not permission to repair the client document.
+- Abstain explicitly when uncertain. An empty amount cell in an identified source amount column counts as zero; a missing column, unreadable crop or inapplicable field does not. The current schema's abstention gap is [unresolved](OPEN_QUESTIONS.md#1-json-schema-versus-extraction-output).
+- Preserve actual granularity, years, leaf rows, printed subtotals/totals and carry-overs. Summary rows cannot reveal individual assets. Repeated summaries must not be counted twice.
+- Keep answer keys, generator internals, profiles and filename-based layout shortcuts out of runtime extraction. They are development/evaluation aids.
 
-Every row, asset or total, is the same 12/13-number roll-forward. Amounts are int cents, keys store **magnitudes** (signs are layout). Only `umbuchung` may be negative.
+The brief scores a correct value with valid evidence **+1**, a flagged blank **0**, and a wrong value or unsupported pointer **−3**. Arithmetic agreement helps diagnose errors but does not prove correctness or completeness: missing zero rows, duplicates and compensating mistakes can still reconcile.
 
-| field | German print labels (examples) | meaning |
-|---|---|---|
-| `ahk_open` | AHK GJ-Beg, Stand zum 01.01., Anfangsstand, AK/HK | historical cost at start |
-| `zugang` | Zugänge | additions |
-| `abgang` | Abgänge (at cost) | disposals at cost |
-| `umbuchung` | Umbuchungen | transfers (sum to 0 across the whole doc) |
-| `zuschreibung` | Zuschreibungen | write-ups |
-| `ahk_close` | aktuelle AHK, Stand zum 31.12., Endstand | cost at end |
-| `kum_afa_open` | AfA GJ-Beg, kum. Abschreibungen 01.01. | accumulated depreciation at start |
-| `afa_gj` | AfA des Jahres, Abschreibung GJ, Normal-AfA | depreciation this year |
-| `afa_abgang` | AfA Abgang | depreciation removed on disposal |
-| `kum_afa_close` | kumulierte AfA, Abschreibungen (kumuliert) | accumulated depreciation at end |
-| `bw_prev` | Buchwert Vorjahr, Restbuchwert 01.01. | book value at start |
-| `bw_close` | lfd Buchwert, Buchwert 31.12., RBW | book value at end |
-| `abgang_bw` | Abgang zum Restbuchwert (net layouts only) | disposal at book value |
+## JSON contract
 
-**Laws** (`check_corpus.LAWS`), our main checking tool:
-- `ahk_close = ahk_open + zugang − abgang + umbuchung`
-- `kum_afa_close = kum_afa_open + afa_gj − afa_abgang − zuschreibung`
-- `bw_close = ahk_close − kum_afa_close`, `bw_prev = ahk_open − kum_afa_open`
-- net form: `bw_close = bw_prev + zugang + umbuchung − abgang_bw − afa_gj + zuschreibung`
-- subtotal = sum of its child rows (unless the client's sum is broken, which is a planted flag)
-- multi-year: closing of year N−1 = opening of year N
+[carth/eval/corpus.schema.json](../carth/eval/corpus.schema.json) formalizes the supplied key-style format using JSON Schema Draft 2020-12. It defines the JSON output structure; its strict fixture constraints still need reconciliation with real extraction failures and unseen inputs.
 
-Hierarchy (HGB § 266 / SKR03): **HGB position** (A.I.2, A.II.1 to 4, A.III.3) > **account** (0027, 0210, …) > **class** (1000, 3000, …) > **asset** (asset_no + sub_no). 13 classes in the catalog (`core.CATALOG`). SAP layouts use 7-digit Bilanzpositionen (`2102200` = A.II.2).
+| Part | Meaning |
+| --- | --- |
+| `meta` | Document identity, format, unit, years and period; the strict schema also requires generator metadata such as `seed` and `invented_names`. Do not invent these for an unseen source. |
+| `rows[]` | Logical source rows, with kind, year, identity, fields, printed text and pointer. `kind: asset` is a leaf category and can mean an account, class or balance-sheet position. |
+| `fields` / `printed` | Matching field names, normalized integer EUR cents and corresponding source strings. Most cost/disposal/depreciation amounts are magnitudes; transfers retain signs. |
+| `net_fields` | Signed `bew_ahk` and `bew_wb` values in f07, distinct from standard fields. |
+| `pointer` | PDF: 1-based physical page, line and row/block `bbox` in points with top-left origin. Excel: sheet, anchor cell and per-field `cells`. |
+| `flags` / `planted` | Row/field flags and document problem records. The schema permits only the supplied vocabulary, not arbitrary uncertainty descriptions. |
 
-## 3. What the corpus is
+Retain precise value-level evidence internally even where the row-oriented schema only provides a row/block pointer. The local evaluator accepts extra per-value `pointers` and null amounts, but **the strict schema does not**. Do not describe evaluator acceptance as schema validity. See [open questions](OPEN_QUESTIONS.md) before extending or claiming compliance with this contract.
 
-72 documents in 10 families (`f00` to `f09`), each with a `.key.json` answer key. Formats: 21 xlsx, 34 text PDF, 10 scans (image only), 10 "outline" PDFs (vector glyphs, **no text layer**, so OCR is needed). In total ~20 of 72 docs need OCR.
+The local evaluation tools look for `<doc_id>.pred.json` in `out/pred/`; supplied answer keys are `<doc_id>.key.json` beside their documents. The required submission filename convention is unspecified; these are the filenames the local tools consume.
 
-| family | what it imitates | leaf row level |
-|---|---|---|
-| f00 demo | plain DATEV-like Spiegel | asset |
-| f01 net_spiegel | net Spiegel (book value view), account level, 3 heading levels | account |
-| f02 asset_spiegel | gross per-asset, id glued to name in the text layer | asset |
-| f03 block_spiegel | DATEV "Entwicklung des AV": **3-line blocks** per asset, negatives on a 2nd line | asset |
-| f04 verzeichnis | register: only AHK + Buchwert, dates, AfA code, ND | asset |
-| f05 sap_class_gitter | SAP ALV 4-line boxed records, star-levels `*`, `**` | class |
-| f06 sap_asset_gitter | SAP per asset, **page rotated 90°**, outline PDF | asset |
-| f07 sap_class_summary | SAP, net columns `Bew AnschWert`, `Bew Wertber` | class |
-| f08 excel_spiegel_2y | hand-made Excel, two years on two tabs, formulas | HGB position |
-| f09 excel_register | SAP export edited by auditor, hidden outline rows, SUBTOTAL rows | asset |
+## Reporting years
 
-Each family has variants: **perfect**, **problem** (planted defects), **layout-mutation** (same data, renamed / reordered columns, other sign style). That mutation variant is the organisers' simulation of the "unseen layouts" of the final test.
+JSON output is **per document, not limited to one year**. `meta.years` lists the reporting years and each row carries its own `year`. Preserve all years represented in the source.
 
-### Planted problems (what the scorer tests for)
+**10 of the 72 supplied documents contain two full annual schedules:**
 
-| problem | right behaviour |
-|---|---|
-| `glued_numbers` `12.977,004.076,11` | split into the two adjacent columns |
-| `non_tying_subtotal` | report the **printed** value, flag the difference (rule 05) |
-| `wrapped_description` | join the continuation line, it is not a row |
-| `carry_over` (Übertrag) | not an asset and not a total |
-| `header_only_on_first_page` | keep page-1 column mapping |
-| `noise_page_*` (cover letter, blank, unrelated Kontennachweis) | ignore |
-| `teur_rounding` | amounts in thousands, rounded one by one; sums are off by rounding |
-| `multi_year` | tag each row with its year |
-| `column_cut_off` | last column loses its last 4 characters at the page edge; the key says "rebuild from row laws" |
-| `numbers_as_text` (`1.234,56-`) | parse German text and trailing minus |
-| `hidden_column` (old draft) | ignore hidden columns |
-| `unrelated_table` below the register | ignore |
-| `transfer_breaks_cost_law` | Umbuchung cell empty; the key holds the *implied* value, flagged |
+| Documents | Reporting years | Rows per year |
+| --- | --- | ---: |
+| `f01_net_spiegel_08` | 2024 and 2025 | 33 |
+| `f07_sap_class_summary_05` | 2024 and 2025 | 20 |
+| `f08_excel_spiegel_2y_01`, `_02`, `_04`–`_08` | 2024 and 2025 | 10 |
+| `f08_excel_spiegel_2y_03` | 2023 and 2024 | 10 |
 
-Number styles seen: `1.234,56` · `1234,56` · `1.234,56-` · `(1.234,56)` · `1,234.56` · TEUR `1.235`; zeros as `""`, `0,00`, `-`. Dates `31.12.2025`, `31.12.25`, ISO, `12/2025`. Fiscal years can end 30.06, 30.09 or 31.03.
+The Arbeitsversion's core sheets represent **one reporting year with prior-year comparison values**: each grid has one fiscal-end input, and the register has no reporting-year column. A prior-year book-value column is not a second full annual movement schedule. An optional converter therefore needs a target year or separate annual workbooks to represent multi-year JSON. The export convention is unspecified; the JSON must retain both years regardless.
 
-### Answer key = the scoring unit
+## Proposed pipeline and optional workbook step
 
-Each keyed row has `kind` (asset / class_subtotal / account_subtotal / position_subtotal / grand_total / carry_over), identity (`year, asset_no, sub_no, class, account, position, name`), `fields` (cents), `printed` (exact string), `pointer` (`{page, line, bbox}` for PDFs, bbox in **points, top-left origin, like pdfplumber**; `{sheet, cell, cells{field: coord}}` for xlsx) and `flags`. So the unit we are scored on is roughly a **(row, field) value + pointer**: ~3,800 keyed rows × ~10 fields in the training corpus.
+The extraction pipeline and converter below are planned, not implemented commands:
 
-## 4. Intuition about the scoring
+1. Ingest native workbook cells or positioned PDF/OCR tokens, retaining coordinates, types, formulas, cached values, display formats and visibility information.
+2. Identify relevant pages/tables, reporting periods and units. Interpret column meanings, block structure, row roles and hierarchy from the document itself.
+3. Parse source tokens into integer cents in code, preserving the raw signed reading and explicit normalization. Use geometry as well as numeric syntax when separating glued amounts.
+4. Check applicable row laws, printed subtotals, year continuity, source pointers and coverage of rows/columns. Re-read ambiguous regions; keep source inconsistencies distinct from uncertain extraction.
+5. Serialize and validate the JSON output. Resolve the schema's abstention/metadata gaps before calling this a general submission runner.
+6. Optionally convert the saved JSON into a copy of [Arbeitsversion-merged-layout-20.xlsx](../challenge/Arbeitsversion-merged-layout-20.xlsx). Conversion consumes the extraction result rather than re-extracting the documents. Put actual assets in `Anlagenverzeichnis` and appropriate summaries in `Gitter nach Anlagenklasse` / `Gitter nach Bilanzposition`, following the [field mapping](REFERENCE.md#core-amount-mapping-corpus-fields-to-actual-workbook-columns). Convert cents to numeric EUR. Preserve printed totals and distinguish derived workbook cells. Keep reporting years separate as described above.
 
-+1 correct / 0 blank / −3 wrong means **a value is only worth writing if P(correct) > 75 %**. Coverage alone does not help; calibrated abstention is the game. A system that gets 90 % of the values right and writes everything scores 0.9 − 0.3 = 0.6 per value. If it can tell the risky 10 % apart and blank them, it scores ~0.9.
+Start with f00, then native Excel and text PDFs, block/summary layouts, and OCR/orientation handling. Evaluate held-out families and layout mutations; their performance is evidence about generalization, not knowledge of the hidden test. Avoid implementing the template's full audit workflow before the batch extraction path works.
 
-We have a strong, free source of confidence: the **accounting laws**. A row whose 5 identities close to the cent, inside a subtotal that ties, was almost certainly read right (OCR errors and column shifts break the laws). This is also rule 03 ("checks for accuracy *and completeness*"): completeness = Σ assets = printed class totals = grand total, so no missing rows.
+## Current implementation and checks
 
-"A value whose pointer does not show it counts as wrong": the pointer is part of the answer. Derived or "fixed" values have no honest pointer, so we should almost never invent numbers.
+The authoritative application setup is [pyproject.toml](../pyproject.toml), [uv.lock](../uv.lock) and [carth/](../carth/). There is text-PDF/Excel ingestion and evaluation tooling, but no complete unattended extraction command or JSON-to-XLSX converter yet. The `ingest` CLI uses corpus keys to discover inputs and writes evidence tokens, not extracted accounting rows; it is a development harness. OCR is not implemented in this stage. Corpus generators have separate dependencies and may delete their output directories; see the [generator reference](REFERENCE.md#8-generator-files-and-development-checks).
 
-## 4b. Organiser answers (18.10.2026)
+Run these existing checks from the repository root:
 
-| Q | Answer | What it changes |
-|---|---|---|
-| Q1 template + scorer | The Arbeitsversion is an xlsx file (no template handed out yet). **The scorer is `_generator/check_corpus.py`.** | Our output must pass `check_corpus` checks: row laws, subtotal ties (flagged `non_tying` rows exempt), every `printed` string found on the pointer's page (text PDFs), every pointer cell holding the value (xlsx). |
-| Q2 submission | **One JSON per document in the `.key.json` schema** (e.g. `f01_net_spiegel/f01_net_spiegel_01.key.json`). The xlsx Arbeitsversion only if time allows. | Output = `{"meta", "rows", "planted"}` with key-style rows (below). xlsx becomes a stretch goal. |
-| Q5 OCR by a model | **Allowed**: OCR by a model does not break rule 01. | Any OCR model can read scans and outlines. We still prefer engines that return word boxes (PaddleOCR, docTR), because pointers need boxes. The answer did not separate OCR engines from vision LLMs, so code still parses every amount from OCR text. |
+```sh
+uv run carth validate-corpus
+uv run python -m unittest discover -s tests -v
+```
 
-**Output row contract** (copied from the keys, so `check_corpus` can read it):
-`{"kind", "year", "asset_no", "sub_no", "class", "account", "position", "name", "acq_date", "nd_months", "method", "fields": {f: cents}, "printed": {f: text as on the page}, "pointer", "flags"}`
-- `pointer` (PDF / scan / outline): `{"page", "line", "bbox": [x0, top, x1, bottom]}`, **one per row**, the row's box in points, top-left origin.
-- `pointer` (xlsx): `{"sheet", "cell": anchor, "cells": {f: coord}}`.
-- `printed` must be the exact page text: `check_corpus` searches it on the pointer's page.
-- `flags` use the key vocabulary: `{"*": "non_tying"}` for a broken client sum (exempts it from the tie check), `{f: "glued" | "cut_off"}` per field.
-- `meta` needs at least `doc_id, family, doc_type, format, unit, years, period_end, variant`; `planted` lists the problems we detected.
+To inspect the evidence layer for native Excel and text PDFs:
 
-Running `check_corpus.py` on our own output also needs a small wrapper: its `name_hits()` reads confidential client folders we don't have, so we skip that check.
+```sh
+uv run carth ingest --formats xlsx,pdf
+uv run carth recall --formats xlsx,pdf
+```
 
-## 5. Assumptions (to confirm with the organisers, marked ❓)
+After predictions exist:
 
-1. ✅ ~~Template and scorer missing.~~ Answered (§4b): the scorer is `check_corpus.py`, the submission is key-schema JSON, and the xlsx Arbeitsversion is optional.
-2. ❓ Row matching: probably by `(year, asset_no, sub_no)` for assets and `(kind, year, class/account/position)` for totals. It decides how much identity extraction matters.
-3. ❓ Pointer tolerance: does the bbox need to overlap the key's row bbox, or just page + line? For xlsx, the exact cell.
-4. ❓ Class-level docs (f05/f07/f08/f01) fill only the *Anlagengitter* tab. Per-asset docs fill *Anlagenverzeichnis*. Do we also fill Anlagengitter for them, from printed class subtotals only, or from code sums (which have no single pointer)? Safer default: use printed subtotals only.
-5. ❓ Flagged fields (`glued`, `cut_off`, `non_tying`, `transfer_breaks_cost_law`): scored normally, or excluded? The cut-off and transfer cases ask for law-derived values. That conflicts with "read, never judge", so we need the organisers' ruling. Default: the code may derive a value **only** from a law with all other terms read, write it with the pointer of the truncated / empty cell, and flag it.
-6. ✅ Answered (§4b): **OCR by a model is allowed.** The numerals come from an OCR model that returns boxes, and code parses them into cents. The LLM decides *structure*: which column is `afa_gj`, which row is a subtotal, which page is noise, which class maps to which HGB position.
-7. Signs: we output magnitudes as the key does (except `umbuchung`). The printed sign only tells us which column it is.
-8. TEUR docs: report as printed × 1000 EUR (key stores `round_teur` cents); sum checks need a ± 0.5 TEUR per term tolerance.
-9. The hidden test = the same generator with **new families**. The `_intern/profiles` are descriptions of the real hand-overs the families copy; the ones not yet used as families are the best guess for the hidden layouts: SAP per-asset Gitter (`rrtvr`), wide-grid ERP export (`Book3`), **one-text-column dump** (`Book4`), Zugangsliste / Abgangsliste (`zunzun`, `qsqxsxqsx`, `everv`, `Book6`: only part of the fields), Word files (brief mentions .docx; none in the corpus). Non-asset docs (SuSa, Bilanz/GuV: `Book5/7`, `qwdqwd`, `saxqawxq`) may come as distractors and should produce **nothing**.
-10. Tooling: `pdftoppm` is installed. `pdfplumber`, `tesseract` and `soffice` are not (check_corpus needs pdfplumber).
-11. ❓ Zeros: a correct `0` (including a blank movement cell that means 0) scores +1, so we write zeros explicitly rather than leaving them empty.
-12. ❓ Totals: we assume subtotal and total rows are scored too (they are keyed). Carry-over lines are keyed but are neither assets nor totals.
-13. ❓ Each file is processed on its own; checks across related files are optional extras, never needed for the output.
-14. ❓ Run conditions are unknown (time / cost per document, submit code or outputs, API access during the final run). We design for an offline-capable pipeline where the LLM steps are cached per layout.
+```sh
+uv run carth check --pred out/pred
+uv run carth eval --pred out/pred -v
+```
 
-All ❓ items are collected as questions for the organisers in §7.
+| Command | What it establishes | Limits |
+| --- | --- | --- |
+| `ingest` | Writes positioned PDF text and Excel-cell tokens to `out/tokens/<doc_id>.json`. | Corpus-key-driven input discovery; no semantic extraction or OCR yet. |
+| `recall` | Checks whether keyed amounts can be found in available token files at their source locations. | Development-only evidence coverage; skips missing token files and does not establish semantic extraction accuracy. |
+| `validate-corpus` | JSON Schema and cross-field validity; defaults to all `*.key.json` under the corpus. | Does not verify amounts or evidence. A single `.pred.json` can be passed explicitly; directory discovery only finds `*.key.json`. |
+| `check` | Runs supplied arithmetic and source checks on available predictions; skips the private-client name check and forces text-PDF checks for all variants. | Does not score against expected rows. Missing prediction files are skipped; a run with no predictions can pass. Scan/outline checks only verify absence of a text layer. |
+| `eval` | Local +1/0/−3 comparison by pointer location against keyed standard `fields`; missing values receive zero and extra values are penalized. | Does not score `net_fields` or independently validate visual OCR evidence. Its pointer tolerances and clipped-text exceptions are local assumptions. |
+| `oracle` | Writes predictions copied from keys (or empty rows) for checking the evaluator. | Development-only diagnostic, never an extraction result. Empty oracle output is intentionally invalid under the strict schema. |
 
-## 5b. Refinements after cross-review with a second analysis
-
-The second analysis only saw the brief and the generator code, not the corpus, keys or profiles. These points from it hold up (checked against code and keys) and are now part of our model:
-
-- **"Leaf row" ≠ asset.** In the keys, `kind: "asset"` means *the finest row this document prints*: an account (f01), a class (f05/f07, `level: "class"`) or an HGB line item (f08, `row_level: "bilanzposition"`). Our row classifier must decide the **granularity** first. The output tab then follows from it: only real assets go to *Anlagenverzeichnis*.
-- **Column names are not stable meanings.** "Abgänge" is `abgang` (at cost) in gross layouts and `abgang_bw` (at book value) in net layouts (f01, the BW line of f03). The layout type (gross / net) must be decided before mapping columns, and the laws tell the two apart (net form vs. gross form closes).
-- **Visibility ≠ relevance.** f09 keeps every asset row in **hidden outline rows**: they must be read. f08_07 has a **hidden stale draft column**: it must be ignored. So "skip hidden" and "read hidden" are both wrong as blanket rules; the header and the laws decide.
-- **The same value can be printed twice.** f03 prints every account sum in the summary part *and* again in the detail part (verified: duplicate `account_subtotal` keys). Carry-overs (Übertrag) repeat a running sum. Completeness checks must not double-count.
-- **Zero rows are real rows.** SAP layouts print a class with no assets and all zeros (`5100 Anzahlungen`, verified in f05_01). A correct `0` is a +1, not something to drop.
-- **Three kinds of value**: *observed* (pointer shows it), *derived* (computed from observed values by a law), *source inconsistency* (printed, but does not reconcile, so we report it as printed and flag it). Our output and flags sheet should carry this tag per value.
-- **`check_corpus.py` is not the scorer.** It is the organisers' corpus integrity check (laws, pointer validity, name leakage). It is still useful: its `pdf_checks` / `xlsx_checks` show what "the pointer shows the value" probably means. For text PDFs the printed string must appear in the page text. For xlsx the value must sit at the coordinate.
-- **Related documents.** The corpus has a net/gross pair (f01_03 ↔ f02_02) and an SAP trio (f05/f06/f07 01–02, one ledger). ❓ Is each file scored on its own, or is a client hand-over a *bundle* we may cross-check? Default: single-file, with optional cross-doc checks.
-- ❓ Is OCR done by a model (e.g. a vision transformer OCR like docTR or TrOCR, as opposed to an LLM) allowed under rule 01? Our working stance: an OCR engine that outputs characters + bboxes is "code". A generative LLM transcribing digits is not.
-
-Things the second analysis could not see, which still stand: the pointer format and coordinate convention, the corpus format mix (~20/72 docs need OCR), the `_intern/profiles` hint at hidden layouts, and the template / scorer being absent from the repo (verified, not just "not in the uploads").
-
-## 6. Solution direction (to brainstorm next)
-
-A layout-agnostic pipeline where **the LLM classifies and code copies**:
-
-1. **Ingest → uniform "token grid"**: xlsx → cells (value, number_format, hidden/outline, coordinate); text PDF → words + bboxes (pdfplumber); scan / outline → render, deskew / auto-rotate, OCR words + bboxes. Everything becomes `{page|sheet, text, bbox|cell}`.
-2. **Page / region triage** (LLM, cheap model): schedule page vs. cover letter / unrelated / blank; where the table starts; unit (EUR / TEUR); fiscal year(s).
-3. **Column semantics** (LLM on header text only, no numbers): map header bands to canonical fields; detect multi-line record layouts (f03, f05: field = (line-in-block, column)). Output: a *layout spec* (JSON), cached and reused for every page.
-4. **Row segmentation** (code + LLM on labels): asset / continuation / heading / subtotal level / carry-over; identity (asset_no, class, account, position).
-5. **Deterministic extraction**: code parses each number token (German / EN / trailing minus / parens / TEUR) into cents, keeping its bbox or cell as the pointer. Glued tokens are split by enumerating split points that satisfy the row laws.
-6. **Verifier = confidence gate**: per row, run all laws; per group, subtotal ties; cross-year ties; for scans, OCR-confidence. Write a value only if it passes; otherwise try alternative readings (column shift, re-OCR at higher DPI, other parse), else **blank + flag**. Broken client sums are kept as printed and flagged.
-7. **Writer**: fill the Arbeitsversion (both tabs) + pointer columns + a findings / flags sheet.
-
-Generalisation guard: no per-family code. Score on the `layout-mutation` docs as a held-out "unseen layout" proxy, and better still, use the generator itself to create new layout variants for testing.
-
-## 7. Questions for the organisers (most important first)
-
-Each question has its reason and our default if it stays unanswered. ✅ = answered (see §4b). Still open, by priority: **Q3** (row matching), **Q4** (pointer tolerance; partly answered, since `check_corpus` only checks the page text and the xlsx cell), **Q6 / Q7** (computed values, flags), then the rest.
-
-1. ✅ **Can we get the empty Arbeitsversion template and the scorer?** *Answer: the Arbeitsversion is an xlsx file; the scorer is `check_corpus.py`.* The brief says we get both, but neither is in the corpus folder or the repo history.
-   *Why:* we can't build the output writer or measure ourselves without them. *Default:* use the `.key.json` schema as the output format and write our own scorer from it.
-2. ✅ **What exactly do we submit per document?** *Answer: key-schema JSON per document; the xlsx only if time allows.* An `.xlsx` in the template, or JSON / CSV? Where do the pointer and the flag go: extra columns, a separate sheet, or a sidecar file?
-   *Why:* it fixes the output contract. *Default:* the template plus a pointer column per value and a flags sheet.
-3. **How are our rows matched to the answer key?** For assets, by asset number + sub-number + year? For class rows, by class code, account or name? How is an extra row we output (one that isn't in the key) scored, and how is a key row we miss scored? Is a missing row the same as a blank (0)?
-   *Why:* it decides how much effort goes into identity extraction, and whether over-producing rows is dangerous. *Default:* match on `(year, asset_no, sub_no)` and `(kind, year, class/account/position)`. We treat extra rows as risky.
-4. **What counts as "the pointer shows the value"?**
-   - PDFs: page + bounding box? How much overlap is needed? Is a row box enough, or do you need the exact cell box? Which coordinate system: points with a top-left origin, as in the keys?
-   - Scans and rotated pages: coordinates on the image as given, or after we straighten it?
-   - Excel: the exact cell coordinate?
-
-   *Why:* a correct value with a bad pointer scores −3. *Default:* page + a value-level bbox in pdfplumber points on the page as given; the exact cell for Excel.
-5. ✅ **Does OCR by a model break rule 01 ("the model never writes a number")?** *Answer: no, it is fine.* Is an OCR model fine (Tesseract, docTR, PaddleOCR)? Is a vision LLM (GPT-4o) reading the digits forbidden, even if code then checks the result?
-   *Why:* ~20 of 72 documents have no text layer, so this decides the whole OCR stack. *Default:* OCR engines are allowed; LLMs never transcribe digits.
-6. **Are computed values allowed?** Two keys expect values rebuilt from the accounting rules: f05_05 / f06_06, where the last column is cut off at the page edge, and f09_05, where the transfer cell is empty but the key has the implied value. Should we:
-   - (a) compute the value with code and flag it,
-   - (b) leave it blank and flag it, or
-   - (c) report what's printed?
-
-   What pointer is expected for a computed value? *Default:* (a), but only when every other term in the rule was read directly; the pointer goes to the cut-off or empty cell.
-7. **How are flagged fields scored?** That means glued numbers, cut-off columns, and subtotals that don't add up. Are they scored normally, or left out? Does writing the flag itself earn anything?
-   *Default:* scored normally; a subtotal that doesn't add up is reported as printed plus a flag.
-8. **Which rows are scored?** Only asset rows and class rows, or also account, position and grand totals and carry-over lines? On the Anlagengitter tab, if the document lists individual assets, should the class row be the printed class subtotal, or may code add up the assets? If code adds them, what is the pointer?
-   *Default:* score everything that is keyed; fill class rows only from printed subtotals.
-9. **What will the hidden test set contain?** Which formats (will there be Word files)? About how many documents? Could there be documents that aren't asset schedules at all (trial balances, balance sheets), where the right output is empty? Partial lists, like additions-only or disposals-only lists?
-   *Why:* it decides how much we invest in Word input and in recognising non-schedules. *Default:* expect all of these (see assumption 9).
-10. **Signs and units:** do we output magnitudes like the keys (positive, transfers signed), or values as printed? For documents in thousands of euros (TEUR), the printed number × 1000 in euros?
-    *Default:* magnitudes, and TEUR × 1000 (assumptions 7 and 8).
-11. **Is a correct zero scored +1?** Does a blank cell in the document (for example, no additions) count as 0, or as "not applicable"?
-    *Default:* +1, so we write zeros explicitly (assumption 11).
-12. **Is each file scored on its own, or as a client bundle?** May we check related files against each other (the SAP trio, the net/gross pair)?
-    *Default:* each file on its own (assumption 13).
-13. **Run conditions:** is there a time or cost limit per document? Do we submit code or outputs? Is internet / API access available when the final test runs?
-    *Default:* assumption 14.
+The [reference](REFERENCE.md) holds the corpus inventory, domain distinctions, paired-document relationships, workbook catalogs and sample index. [Open questions](OPEN_QUESTIONS.md) is the single review list for unresolved inconsistencies.
