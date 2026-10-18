@@ -86,9 +86,9 @@ class Doctr:
 
     def __init__(self, **_):
         from doctr.models import ocr_predictor
+        from carth.ingest import DOCTR_MODEL
 
-        self.model = ocr_predictor(det_arch="db_resnet50", reco_arch="parseq", pretrained=True,
-                                   assume_straight_pages=True)
+        self.model = ocr_predictor(pretrained=True, **DOCTR_MODEL)
 
     def words(self, img) -> list[tuple[str, list, float]]:
         W, H = img.size

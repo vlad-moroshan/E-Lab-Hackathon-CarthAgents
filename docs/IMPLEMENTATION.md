@@ -30,13 +30,28 @@ uv run carth oracle --mode evidence --ref-tokens out/tokens_paddle_small --pred 
 uv run carth eval --pred out/reference_benchmark --ref-tokens out/tokens_paddle_small
 ```
 
-`run` currently ingests native cells/text. Its layout references are a reviewed intermediate, not an automatic layout detector or an end-to-end hidden-test solution. It does not invoke OCR automatically. Missing layouts produce document-level `needs_layout` flags, both output files, and exit 1. Missing fields produce null values with reason flags. Bad documents are isolated in `_failures.json`. An unreadable input can have a failure diagnostic without a workbook. Completeness cannot be certified merely because a supplied spec omits no fields.
+`carth run INPUT OUT` runs model layout inference, live docTR OCR where required, and code extraction. `--specs LAYOUTS` instead consumes reviewed, fingerprinted source references without invoking the model or OCR. Missing layouts in that mode produce document-level `needs_layout` flags, both output files, and exit 1. Missing fields produce null values with reason flags. Bad documents are isolated in `_failures.json`. An unreadable input can have a failure diagnostic without a workbook. Completeness cannot be certified merely because a supplied spec omits no fields.
 
-`python -m carth.resolve` runs model layout inference and code extraction. It writes both outputs, source-reference specs and local evaluator predictions using collision-safe IDs. Successful documents remain saved when another fails. `_batch.json` records every selected document; `_failures.json` records failures and incomplete results. Failed/incomplete batches and empty selections exit 1. OCR-cache attachment is available; this command does not run new OCR inference. Live model/OCR quality and full source completeness are not established by its exit status.
+`python -m carth.resolve` runs the same automatic extraction path. It writes both outputs, source-reference specs and local evaluator predictions using collision-safe IDs. Successful documents remain saved when another fails. `_batch.json` records every selected document; `_failures.json` records failures and incomplete results. Failed/incomplete batches and empty selections exit 1. Compatible docTR caches avoid recomputing OCR; missing or incompatible caches trigger live OCR. Live model/OCR quality and full source completeness are not established by its exit status.
 
 ## Resolver contract
 
 Sections sharing a sheet/page must select their exact `line_ids` or an inclusive `start_line`/`end_line` range. Source IDs are shown in the model prompt, such as `Sheet1!12` or `p2l4`; multiple reading frames use distinct IDs. A section without boundaries is accepted only where ownership is unambiguous. Parallel tables on the same lines require explicit selection and disjoint source columns. PDF continuation pages must be listed; unlisted pages are excluded. Records cannot join across excluded source lines or incompatible reading frames.
+
+Ambiguous shared lines are withheld from all conflicting sections. Diagnostics belong to that document, survive into JSON and the workbook's `Offene Punkte` sheet, and make the batch incomplete. There is no process-global conflict accumulator. Exact captured identity codes are preserved; suffixes and sub-numbers are never inferred by stripping characters because a description shares a numeric prefix.
+
+Source coverage checks flag unassigned amount rows in identified columns, including rows outside selected ranges, and amount-shaped tokens on omitted pages/sheets. Explicit noise pages and header/noise/heading roles are excluded. These checks detect omitted candidate rows but cannot certify semantic completeness, discover every omitted financial column, or independently verify that the model's noise classification is correct. The `complete` status means no detected blanks, conflicts or coverage problems, not an official correctness/completeness result.
+
+## OCR cache contract
+
+Automatic extraction honors ingestion's `needs_ocr` decision, including image tables with selectable headings. Native PDF text remains separate from OCR evidence. Cache reuse requires the exact source SHA-256, page metadata, reading-frame version, docTR model configuration, 300 DPI, OCR pipeline version, requested-page coverage and boolean orientation uncertainty flags. Cache records from other engines are not equivalent to the live docTR path. Uncertain orientation still causes a flagged blank when amounts are materialized.
+
+Old/unfingerprinted or malformed caches are left intact and rejected; live OCR is attempted instead. OCR failure and pages without OCR evidence become document flags, even when another part of the document has readable native amounts. Rebuild reusable caches in a separate output directory with:
+
+```sh
+uv run carth ocr INPUT --engine doctr --dpi 300 --out out/tokens_doctr_current --workers 1
+uv run carth run INPUT out/results_current --ocr-tokens out/tokens_doctr_current
+```
 
 Each resolved row retains its section's `unit`. A mixed-unit document has no guessed global unit; each source value is converted using its row unit, and its trace records that conversion. Legacy reviewed reference files may still supply one global unit. A missing year is inferred only from a unique period year inside the owning section, excluding noise. An unresolved year remains JSON null, with flagged blank values; no placeholder year is invented.
 
@@ -48,7 +63,7 @@ Spec validation rejects negative/out-of-record offsets, nonpositive record lengt
 
 `tests/test_resolver_regressions.py` covers the ten current-code findings: mixed units through JSON/XLSX; same-sheet/page and parallel sections; scoped/unknown years; collision-safe automatic outputs; failed/incomplete/empty batch exits; prediction granularity; mixed text directions; missing summary identities; invalid model references; and source-scoped metric votes. The spec metric preserves line/sheet/frame context and counts every vote, including conflicts. Record-length checks are scoped to the relevant sections.
 
-The full existing-environment suite passes 44 tests. Corpus schema validation passes 72 documents, 4,002 rows, 36,081 standard amounts and 306 net amounts. These checks use synthetic fixtures and source/schema checks; they are not official scores or a fresh model/OCR benchmark. Live inference and corpus extraction accuracy were not rerun for these fixes.
+The full existing-environment suite passes 60 tests. Corpus schema validation covers 72 documents, 4,002 rows, 36,081 standard amounts and 306 net amounts. Tests include concurrent conflict isolation, omitted-row/sheet detection, cache rejection/live fallback, mixed-page OCR selection, independent workbook routing and composite asset identities. These checks use synthetic fixtures and source/schema checks; they are not official scores or a fresh model/OCR benchmark. Live inference and full-corpus extraction accuracy were not rerun.
 
 `check` and `recall` require all selected documents by default. `--partial` explicitly requests partial diagnostics. `check` retains the organiser's integrity checks, which cannot establish financial truth or source completeness. `recall` counts missing cache documents as missing values. Neither is an official leaderboard score.
 
@@ -84,6 +99,8 @@ Runtime JSON is separate from `corpus.schema.json`, which still describes suppli
 The writer copies `challenge/Arbeitsversion-merged-layout-20.xlsx` into the output directory. It retains the 27 template sheets/catalogs and defined names. It writes individual assets into `Anlagenverzeichnis`; summary, subtotal and total rows go into the appropriate class/position grid in source order. Account-level source identities remain accounts; supplemental columns Y/Z identify source granularity and account. Multiple years get separate annual copies of the relevant sheets inside one document workbook. Unknown fiscal end dates remain blank.
 
 Register total `afa_gj` goes into supplemental column AR, labelled as source total, because AC/AD require a supported planned/unplanned split. Book-value disposals use supplemental grid AA/register AS rather than cost disposals. Signed net movements remain separate from gross components; unmapped fields remain in the `Quellwerte` ledger. That ledger also retains all blank/problem records. Cell comments retain source/conversion traces. Imported cells are literal EUR values; unrelated template formulas are not claimed as extracted values and no formula caches are recalculated. Printed errors remain unchanged. Source occurrence reuse is flagged rather than counted twice.
+
+Position subtotals go to `Gitter nach Bilanzposition` regardless of the containing section's leaf granularity; class/account subtotals stay in the class grid. Asset sub-numbers are explicit in register column AT and in `Quellwerte` alongside asset number, class, account and position. Amount-only checks at JSON-provided destinations do not verify these identities or worksheet meanings; regression checks assert those independently.
 
 ## Reference benchmark
 

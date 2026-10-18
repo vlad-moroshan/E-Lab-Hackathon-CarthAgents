@@ -148,7 +148,9 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"FAIL {path}: {toks['error']}", flush=True)
                 continue
             doc["tokens"] = [t for t in doc["tokens"] if t["page"] not in todo or t.get("src") == "pdf"] + toks
-            doc["ocr"] = {"engine": a.engine, "model": a.model, "dpi": a.dpi, "pages": todo}
+            doc["ocr"] = {"engine": a.engine, "model": ingest.DOCTR_MODEL if a.engine == 'doctr' else a.model,
+                          "dpi": a.dpi, "pages": todo,
+                          "pipeline_version": ingest.OCR_PIPELINE_VERSION}
             for i, t in enumerate(doc["tokens"]):
                 t["id"] = f"t{i}"
             doc["doc_id"] = doc_id

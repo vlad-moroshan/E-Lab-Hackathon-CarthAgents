@@ -110,18 +110,6 @@ def validate_references(doc, lay, spec):
             raise ValueError(f'{s.name}: section includes noise pages')
 
 
-def _unglue(code: str, view: dict, toks: dict) -> tuple[str, str | None]:
-    """An id printed glued to its description ("143Bürostuhl", "91aFabrikhalle") is captured with a stray letter.
-    Only when the source token really continues past the code: digits are the id, a single lowercase letter right
-    before the (capitalised) description is the sub-number."""
-    m = re.match(r"^(\d+)([a-z]?)[A-ZÄÖÜ]?$", code)
-    if not m:
-        return code, None
-    glued = any(toks[c["tid"]]["text"].startswith(m.group(1)) and len(toks[c["tid"]]["text"]) > len(code)
-                for c in view["cells"])
-    return (m.group(1), m.group(2) or None) if glued else (code, None)
-
-
 def resolve(doc: dict, lay: dict, spec) -> dict:
     """References in the carth.output layout-spec format: {"sha256", "unit", "rows": [...]}."""
     toks = lay["tokens"]
@@ -135,9 +123,11 @@ def resolve(doc: dict, lay: dict, spec) -> dict:
     views = [v for v in _views(lay) if v["page"] not in set(spec.noise_pages)]
     compiled = {id(s): (_rx(s.record_start), [(_rx(r.regex), r.role) for r in s.roles],
                         [(_rx(i.regex), i.field, i.scope) for i in s.ids]) for s in spec.sections}
-    owned = section_views(spec, views)
+    owned = section_views(spec, views, out['notes'])
     if lay['kind'] != 'xlsx':
         for s in spec.sections:
+            if not owned[id(s)]:
+                continue  # ambiguous source lines are withheld and reported in this document's notes
             frames = {v.get('frame', 'page') for v in owned[id(s)]}
             bands = {b['id'] for p in lay['pages'] if p['page'] in s.pages
                      for b in p['bands'] if b.get('frame', 'page') in frames}
@@ -191,10 +181,7 @@ def resolve(doc: dict, lay: dict, spec) -> dict:
         if kind != "asset":  # a sum line carries only its own level's code; no asset numbers
             ident = {f: c for f, c in ident.items() if f in LEVEL_IDS[kind]}
         asset_no = ident.get("asset_no")
-        if asset_no:
-            asset_no, sub = _unglue(asset_no, first, toks)
-            if sub and not ident.get("sub_no"):
-                ident["sub_no"] = sub
+        # Identity regex captures are source facts. Never infer suffix removal from another token.
         year = years[id(s)]
         name = " ".join(toks[c["tid"]]["text"] for c in first["cells"] if c["type"] == "text") or None
         row = {"id": f"r{k}:{first['id']}", "year": year, "unit": s.unit, "kind": kind, "granularity": s.granularity,
@@ -233,7 +220,41 @@ def resolve(doc: dict, lay: dict, spec) -> dict:
                                                                             "PDF: no evidence box yet)"})
         if row["fields"]:
             out["rows"].append(row)
+    _check_coverage(views, records, spec, compiled, out['notes'])
     return out
+
+
+def _check_coverage(views, records, spec, compiled, notes):
+    """Flag unassigned candidate amount rows, including lines outside explicit table bounds.
+
+    This is a source-coverage diagnostic, not proof of semantic completeness. Identified amount
+    bands/columns and amount-shaped tokens on omitted containers are considered; explicit noise/
+    headings and record continuation lines are excluded.
+    """
+    covered = {v['id'] for rec in records if rec['role'] != 'heading' for v in rec['lines']}
+    missing = set()
+    for s in spec.sections:
+        _, roles, _ = compiled[id(s)]
+        bands = {f.band for f in s.fields if f.field != 'ignore'}
+        for v in views:
+            if v['id'] in covered:
+                continue
+            if not (v['sheet'] == s.sheet if s.sheet is not None else
+                    v['sheet'] is None and v['page'] in s.pages):
+                continue
+            if any(role in ('noise', 'header', 'heading') and _match(rx, v) for rx,role in roles):
+                continue
+            if any(c['band'] in bands and c['type'] in ('amount', 'int', 'glued') for c in v['cells']):
+                missing.add(v['id'])
+    # An omitted sheet/page has no section whose columns we could inspect. Amount-shaped tokens
+    # still require explicit review; do not equate absence from the model's spec with irrelevance.
+    for v in views:
+        in_container = any(v['sheet'] == s.sheet if s.sheet is not None else
+                           v['sheet'] is None and v['page'] in s.pages for s in spec.sections)
+        if not in_container and any(c['type'] in ('amount', 'glued') for c in v['cells']):
+            missing.add(v['id'])
+    if missing:
+        notes.append('source coverage unresolved: unassigned candidate amount lines: ' + ', '.join(sorted(missing)))
 
 
 def to_pred(result: dict) -> dict:
@@ -284,39 +305,61 @@ def _live_ocr(path: Path, pages: list[int]) -> list[dict]:
 
 
 def attach_ocr(doc: dict, path: Path, ocr_dir: Path | None) -> str:
-    """Words for pages without a text layer, from a `carth ocr` cache (<stem>.json). The cache must describe the same
-    file (same resolved path and page count; same SHA-256 when the cache records one). Text-layer pages keep their exact
-    words. Records the provenance in doc["ocr_cache"]; returns a short note for the run log."""
-    todo = [p["page"] for p in doc.get("pages", []) if not p["has_text"]]
+    """Attach current docTR evidence, preserving native text on mixed image/text pages.
+
+    Incompatible caches are never used as source evidence; live OCR is attempted instead. Existing
+    caches are left intact. Provenance and any unreadable pages remain document-level diagnostics.
+    """
+    from carth import ingest
+
+    todo = [p["page"] for p in doc.get("pages", []) if p.get('needs_ocr', not p['has_text'])]
     if not todo:
         return ""
     cp = ocr_dir / f"{Path(path).stem}.json" if ocr_dir else None
-    if not cp or not cp.exists():  # unattended run: OCR now (docTR on CPU)
+    ocr, rejected = None, None
+    if cp and cp.exists():
+        try:
+            c = ingest.load(cp)
+            meta = c.get('ocr') or {}
+            same = (Path(c.get('source', '')).resolve() == Path(path).resolve()
+                    and c.get('sha256') == doc['sha256']
+                    and c.get('frame_version') == ingest.FRAME_VERSION
+                    and c.get('pages') == doc['pages']
+                    and meta.get('engine') == 'doctr' and meta.get('dpi') == 300
+                    and meta.get('model') == ingest.DOCTR_MODEL
+                    and meta.get('pipeline_version') == ingest.OCR_PIPELINE_VERSION
+                    and set(todo) <= set(meta.get('pages', [])))
+            words = [dict(t) for t in c['tokens'] if t.get('page') in todo and t.get('src', '').startswith('ocr:')]
+            if same and all(isinstance(t.get('orientation_uncertain'), bool) for t in words):
+                ocr = words
+            else:
+                rejected = 'incompatible source or OCR provenance'
+        except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+            rejected = f'invalid cache ({type(exc).__name__})'
+    live = ocr is None
+    if live:
         try:
             ocr = _live_ocr(path, todo)
-        except Exception as e:
-            doc["ocr_cache"] = f"ocr unavailable: {type(e).__name__}"
-            return f"ocr: unavailable ({type(e).__name__}: {str(e)[:80]})"
-        for i, t in enumerate(ocr):
-            t["id"] = f"o{i}"
-        doc["tokens"] = [t for t in doc["tokens"] if t["page"] not in todo] + ocr
-        doc["ocr_cache"] = {"engine": "doctr (live)", "pages": todo, "verified": "computed in this run"}
-        return f"ocr doctr live: {len(todo)} pages, {len(ocr)} words"
-    from carth import ingest
-
-    c = ingest.load(cp)
-    same = (Path(c.get("source", "")).resolve() == Path(path).resolve() and len(c.get("pages", [])) == len(doc["pages"])
-            and c.get("sha256") in (None, doc["sha256"]))
-    if not same:
-        doc["ocr_cache"] = "rejected: different source"
-        return "ocr: cache rejected"
-    ocr = [dict(t) for t in c["tokens"] if t["page"] in todo]
+        except Exception as exc:
+            reason = f'OCR unavailable: {type(exc).__name__}'
+            if rejected:
+                reason += f'; cache rejected: {rejected}'
+            doc.setdefault('flags', []).append(reason)
+            doc['ocr_cache'] = {'verified': False, 'error': reason, 'pages': todo}
+            return reason
     for i, t in enumerate(ocr):
         t["id"] = f"o{i}"
-    doc["tokens"] = [t for t in doc["tokens"] if t["page"] not in todo] + ocr
-    doc["ocr_cache"] = {"engine": (c.get("ocr") or {}).get("engine"), "pages": todo,
-                        "verified": "sha256" if c.get("sha256") else "legacy: path + page count only"}
-    return f"ocr {doc['ocr_cache']['engine']}: {len(todo)} pages, {len(ocr)} words"
+    # Preserve the native text layer. Native and OCR reading frames are kept separate by layout().
+    doc['tokens'] = [t for t in doc['tokens'] if t.get('page') not in todo or t.get('src') == 'pdf'] + ocr
+    empty = set(todo) - {t['page'] for t in ocr}
+    if empty:
+        doc.setdefault('flags', []).append('OCR produced no evidence for pages: ' + ', '.join(map(str, sorted(empty))))
+    doc['ocr_cache'] = {'engine': 'doctr', 'model': ingest.DOCTR_MODEL, 'dpi': 300,
+                        'pages': todo, 'pipeline_version': ingest.OCR_PIPELINE_VERSION,
+                        'verified': 'computed in this run' if live else 'sha256 + current OCR contract'}
+    if rejected:
+        doc['ocr_cache']['rejected_cache'] = rejected
+    return f"ocr doctr {'live' if live else 'cache'}: {len(todo)} pages, {len(ocr)} words"
 
 
 def _one(path: Path, out: Path, model: str | None, doc_id: str, ocr_dir: Path | None = None) -> dict:

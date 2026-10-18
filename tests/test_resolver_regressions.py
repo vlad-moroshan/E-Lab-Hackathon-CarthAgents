@@ -66,16 +66,19 @@ class ResolverRegressionTests(unittest.TestCase):
         _,r=self.materialize(p,spec(section(year=2024,start_line='Sheet!1',end_line='Sheet!1'),
                                    section(year=2025,line_ids=['Sheet!2'])))
         self.assertEqual([(row['asset_no'],row['year']) for row in r['rows']],[('A',2024),('B',2025)])
-        with self.assertRaisesRegex(ValueError,'ambiguous section'):
-            self.materialize(p,spec(section(year=2024),section(year=2025)))
+        # Still write the document, but withhold ambiguous evidence and report its conflict locally.
+        _,r=self.materialize(p,spec(section(year=2024),section(year=2025)))
+        self.assertFalse(r['rows'])
+        self.assertTrue(any('ambiguous section ownership' in flag for flag in r['flags']))
 
     def test_02_parallel_tables_require_disjoint_columns(self):
         p=self.workbook(sheets={'Sheet':{'A1':'Asset A','B1':1,'C1':2}})
         _,r=self.materialize(p,spec(section(year=2024,line_ids=['Sheet!1']),
              section(year=2025,line_ids=['Sheet!1'],fields=[dict(line=0,band=3,field='zugang')])))
         self.assertEqual([v['value'] for v in r['values']],[100,200])
-        with self.assertRaisesRegex(ValueError,'ambiguous section'):
-            self.materialize(p,spec(section(line_ids=['Sheet!1']),section(line_ids=['Sheet!1'])))
+        _,r=self.materialize(p,spec(section(line_ids=['Sheet!1']),section(line_ids=['Sheet!1'])))
+        self.assertFalse(r['rows'])
+        self.assertTrue(any('ambiguous section ownership' in flag for flag in r['flags']))
 
     def test_03_year_fallback_stays_in_its_section(self):
         p=self.workbook(sheets={'Cover':{'A1':'zum 31.12.2024','A2':'zum 31.12.2024'},

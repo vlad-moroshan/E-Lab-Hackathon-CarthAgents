@@ -18,6 +18,8 @@ from carth.ingest.xlsx import xlsx_tokens
 
 DOC_SUFFIXES = {".pdf", ".xlsx", ".xlsm"}
 FRAME_VERSION = 2
+OCR_PIPELINE_VERSION = 1  # orientation selection/uncertainty contract for reusable OCR evidence
+DOCTR_MODEL = dict(det_arch='db_resnet50', reco_arch='parseq', assume_straight_pages=True)
 
 
 def find_documents(root: Path) -> list[Path]:

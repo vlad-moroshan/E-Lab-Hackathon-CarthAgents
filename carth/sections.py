@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 
-def section_views(spec, views):
+def section_views(spec, views, diagnostics=None):
     """Select explicit source lines/ranges inside a sheet or listed pages. Reject ambiguous ownership.
 
     Legacy sections without boundaries are supported only where their container has a unique owner.
     Parallel tables may share lines if they explicitly select them and use disjoint source columns.
     """
+    diagnostics = diagnostics if diagnostics is not None else []
     selected = {}
     owners = {}
     for section in spec.sections:
@@ -40,10 +41,15 @@ def section_views(spec, views):
         if len(sections) < 2:
             continue
         coordinates = set()
+        ambiguous = False
         for section in sections:
             explicit = section.line_ids is not None or section.start_line is not None
             fields = {(f.line,f.band) for f in section.fields if f.field != 'ignore'}
             if not explicit or coordinates & fields:
-                raise ValueError(f'ambiguous section ownership at {line_id}')
+                ambiguous = True
             coordinates.update(fields)
+        if ambiguous:
+            for section in sections:
+                selected[id(section)] = [v for v in selected[id(section)] if v['id'] != line_id]
+            diagnostics.append(f'ambiguous section ownership at {line_id}: source line withheld')
     return selected

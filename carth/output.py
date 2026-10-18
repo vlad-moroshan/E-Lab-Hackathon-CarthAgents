@@ -65,12 +65,13 @@ def validate(result):
 def extract(doc: dict, spec: dict | None, doc_id: str) -> dict:
     """Materialize a reviewed layout hypothesis using token IDs or identified empty workbook cells."""
     result = dict(version=1, document=dict(id=doc_id, source=doc['source'], sha256=doc['sha256']),
-                  rows=[], values=[], flags=[])
+                  rows=[], values=[], flags=list(doc.get('flags', [])))
     if spec is None:
-        result['flags'] = ['needs_layout: no verified row/column references supplied']
+        result['flags'].append('needs_layout: no verified row/column references supplied')
         return result
     if spec.get('sha256') != doc['sha256']:
         raise ValueError('layout spec fingerprint does not match source')
+    result['flags'].extend(spec.get('notes', []))
     at = {t['id']: t for t in doc['tokens']}
     cells = {(t.get('sheet'), t.get('cell')): t for t in doc['tokens']}
     used = set()
@@ -163,7 +164,8 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
     groups = {}
     for row in rows.values():
         register = row['granularity'] == 'asset' and row['kind'] == 'asset'
-        base = 'Anlagenverzeichnis' if register else ('Gitter nach Bilanzposition' if row['granularity'] == 'position' else 'Gitter nach Anlagenklasse')
+        position = row['kind'] == 'position_subtotal' or (row['kind'] not in ('class_subtotal', 'account_subtotal') and row['granularity'] == 'position')
+        base = 'Anlagenverzeichnis' if register else ('Gitter nach Bilanzposition' if position else 'Gitter nach Anlagenklasse')
         groups.setdefault((base, row['year']), []).append(row)
     for (base, year), records in groups.items():
         ws = wb[base] if len(years) <= 1 else wb.copy_worksheet(wb[base])
@@ -175,6 +177,7 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
         if start + len(records) - 1 > limit:
             ws.insert_rows(limit + 1, start + len(records) - 1 - limit)
         if register:
+            ws['AT1'] = 'Unternummer (Quelle)'
             ws['AR1'] = 'AfA GJ gesamt (Quelle; Aufteilung unbekannt)'
             ws['AS1'] = 'Abgang Buchwert (Quelle)'
         else:
@@ -195,6 +198,7 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
             if register:
                 for col, key in [('A','asset_no'), ('B','name'), ('D','class'), ('F','position'), ('H','account')]:
                     ws[f'{col}{rr}'] = row.get(key)
+                ws[f'AT{rr}'] = row.get('sub_no')
             else:
                 ws[f'B{rr}'] = row.get('position') if base.endswith('Bilanzposition') else row.get('class') or row.get('account')
                 ws[f'C{rr}'] = row.get('name')
@@ -205,7 +209,8 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
                     ws[f'W{rr}'] = row.get('position')
     # All per-value records also survive in a source ledger, including fields without a core template equivalent.
     ledger = wb.create_sheet('Quellwerte')
-    ledger.append(['Zeile', 'Jahr', 'Feld', 'EUR', 'Quelle', 'Flags', 'Original', 'Konvertierung', 'Ziel'])
+    ledger.append(['Zeile', 'Jahr', 'Feld', 'EUR', 'Quelle', 'Flags', 'Original', 'Konvertierung', 'Ziel',
+                   'Anlagen-Nr.', 'Unternummer', 'Klasse', 'Konto', 'Bilanzposition'])
     for v in result['values']:
         row = rows[v['row']]
         ws, rr, mapping = targets[v['row']]
@@ -219,7 +224,8 @@ def write_outputs(result: dict, out: Path, template: Path = TEMPLATE):
             v['workbook'] = {'sheet':ws.title, 'cell':cell.coordinate, 'scale':'cents/100'}
         ledger.append([v['row'], row['year'], v['field'], v['value']/100 if v['value'] is not None else None,
                        json.dumps(v['pointer']), '; '.join(v['flags']), (v['trace'] or {}).get('raw'),
-                       json.dumps(v['trace']), json.dumps(v['workbook'])])
+                       json.dumps(v['trace']), json.dumps(v['workbook']), row.get('asset_no'), row.get('sub_no'),
+                       row.get('class'), row.get('account'), row.get('position')])
     if result['flags']:
         wb['Offene Punkte']['A4'] = '; '.join(result['flags'])
     validate(result)
