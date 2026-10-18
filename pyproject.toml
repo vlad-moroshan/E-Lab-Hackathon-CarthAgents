@@ -11,6 +11,7 @@ dependencies = [
     "openai>=1.60",
     "pydantic>=2.7",
     "rapidfuzz>=3.9",
+    "reportlab>=4.2",  # imported by the organisers' check_corpus.py (via core.py)
 ]
 
 [project.optional-dependencies]

@@ -1,8 +1,11 @@
 """Our stand-in for the leaderboard scorer: +1 correct, 0 blank, -3 wrong (brief), matched by pointer location.
 
-Prediction file `<doc_id>.pred.json`:
-    {"meta": {"doc_id": ...}, "rows": [{"kind", "year", ..., "fields": {f: cents | None},
-                                         "pointers": {f: {"page", "bbox"} | {"sheet", "cell"}}, "flags": {...}}]}
+Prediction file `<doc_id>.pred.json`: the submission format, i.e. the `.key.json` schema (organiser answer Q2):
+    {"meta": {...}, "rows": [{"kind", "year", ..., "fields": {f: cents | None}, "printed": {f: text},
+                              "pointer": {"page", "line", "bbox"} | {"sheet", "cell", "cells": {f: coord}},
+                              "flags": {...}}], "planted": [...]}
+Optionally a row may carry "pointers": {f: {"page", "bbox"} | {"sheet", "cell"}}: a tighter per-value pointer that
+overrides the row pointer for that field.
 
 A predicted value is matched to the key row whose location holds its pointer (xlsx: the exact cell of that field;
 PDF: same page, pointer centre inside the key row's bbox). Scored per key (row, field):
@@ -62,6 +65,17 @@ def _doc_path(key_path: Path, key: dict) -> Path:
     return key_path.with_name(key["meta"]["doc_id"] + (".xlsx" if key["meta"]["format"] == "xlsx" else ".pdf"))
 
 
+def _field_pointer(prow: dict, f: str) -> dict | None:
+    if f in prow.get("pointers", {}):
+        return prow["pointers"][f]
+    p = prow.get("pointer")
+    if not p:
+        return None
+    if "sheet" in p:
+        return {"sheet": p["sheet"], "cell": p.get("cells", {}).get(f, p.get("cell"))}
+    return {"page": p.get("page"), "bbox": p.get("bbox")}
+
+
 def _rownum(coord: str) -> int:
     return int("".join(ch for ch in coord if ch.isdigit()))
 
@@ -99,7 +113,7 @@ def score_doc(key_path: Path, key: dict, pred: dict | None) -> DocScore:
         for f, v in prow.get("fields", {}).items():
             if v is None:
                 continue  # flagged blank
-            ptr = prow.get("pointers", {}).get(f)
+            ptr = _field_pointer(prow, f)
             hit = None
             if ptr and is_xlsx and "cell" in ptr:
                 loc = by_cell.get((ptr.get("sheet"), ptr["cell"]))
@@ -172,12 +186,5 @@ def report(scores: list[DocScore], verbose: bool = False) -> str:
 
 
 def oracle_pred(key: dict, mode: str = "key") -> dict:
-    """mode 'key': the answer key as a prediction (must score max). 'empty': no values (must score 0)."""
-    rows = []
-    if mode == "key":
-        for r in key["rows"]:
-            p = r["pointer"]
-            ptrs = ({f: {"sheet": p["sheet"], "cell": p.get("cells", {}).get(f, p["cell"])} for f in r.get("fields", {})}
-                    if "sheet" in p else {f: {"page": p["page"], "bbox": p["bbox"]} for f in r.get("fields", {})})
-            rows.append({"kind": r["kind"], "year": r["year"], "fields": dict(r.get("fields", {})), "pointers": ptrs})
-    return {"meta": {"doc_id": key["meta"]["doc_id"]}, "rows": rows}
+    """mode 'key': the answer key itself as a submission (must score max). 'empty': no rows (must score 0)."""
+    return {**key, "rows": key["rows"] if mode == "key" else [], "planted": key.get("planted", []) if mode == "key" else []}

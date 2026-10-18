@@ -1,6 +1,7 @@
 """carth command line.
 
     carth eval   [--corpus DIR] [--pred DIR] [--formats xlsx,pdf] [-v]   score predictions against the answer keys
+    carth check  [--corpus DIR] [--pred DIR] [--formats ...]             organisers' check_corpus checks on predictions
     carth oracle [--corpus DIR] [--pred DIR] [--mode key|empty]          write key-derived predictions (scorer check)
 """
 
@@ -26,6 +27,11 @@ def main(argv: list[str] | None = None) -> int:
     ev.add_argument("--formats", help="comma list of xlsx,pdf,scan,outline")
     ev.add_argument("-v", "--verbose", action="store_true")
 
+    ck = sub.add_parser("check", help="run the organisers' check_corpus checks on predictions")
+    ck.add_argument("--corpus", type=Path, default=CORPUS)
+    ck.add_argument("--pred", type=Path, default=PRED)
+    ck.add_argument("--formats", help="comma list of xlsx,pdf,scan,outline")
+
     orc = sub.add_parser("oracle", help="write predictions derived from the keys")
     orc.add_argument("--corpus", type=Path, default=CORPUS)
     orc.add_argument("--pred", type=Path, default=PRED)
@@ -35,6 +41,10 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "eval":
         only = set(a.formats.split(",")) if a.formats else None
         print(score.report(score.score_corpus(a.corpus, a.pred, only), a.verbose))
+    elif a.cmd == "check":
+        from carth.eval.official import check
+
+        return check(a.corpus, a.pred, set(a.formats.split(",")) if a.formats else None)
     elif a.cmd == "oracle":
         a.pred.mkdir(parents=True, exist_ok=True)
         for doc_id, (_, key) in score.load_keys(a.corpus).items():

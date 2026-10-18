@@ -87,14 +87,32 @@ We have a strong, free source of confidence: the **accounting laws**. A row whos
 
 "A value whose pointer does not show it counts as wrong": the pointer is part of the answer. Derived or "fixed" values have no honest pointer, so we should almost never invent numbers.
 
+## 4b. Organiser answers (18.10.2026)
+
+| Q | Answer | What it changes |
+|---|---|---|
+| Q1 template + scorer | The Arbeitsversion is an xlsx file (no template handed out yet). **The scorer is `_generator/check_corpus.py`.** | Our output must pass `check_corpus` checks: row laws, subtotal ties (flagged `non_tying` rows exempt), every `printed` string found on the pointer's page (text PDFs), every pointer cell holding the value (xlsx). |
+| Q2 submission | **One JSON per document in the `.key.json` schema** (e.g. `f01_net_spiegel/f01_net_spiegel_01.key.json`). The xlsx Arbeitsversion only if time allows. | Output = `{"meta", "rows", "planted"}` with key-style rows (below). xlsx becomes a stretch goal. |
+| Q5 OCR by a model | **Allowed**: OCR by a model does not break rule 01. | Any OCR model can read scans and outlines. We still prefer engines that return word boxes (PaddleOCR, docTR), because pointers need boxes. The answer did not separate OCR engines from vision LLMs, so code still parses every amount from OCR text. |
+
+**Output row contract** (copied from the keys, so `check_corpus` can read it):
+`{"kind", "year", "asset_no", "sub_no", "class", "account", "position", "name", "acq_date", "nd_months", "method", "fields": {f: cents}, "printed": {f: text as on the page}, "pointer", "flags"}`
+- `pointer` (PDF / scan / outline): `{"page", "line", "bbox": [x0, top, x1, bottom]}`, **one per row**, the row's box in points, top-left origin.
+- `pointer` (xlsx): `{"sheet", "cell": anchor, "cells": {f: coord}}`.
+- `printed` must be the exact page text: `check_corpus` searches it on the pointer's page.
+- `flags` use the key vocabulary: `{"*": "non_tying"}` for a broken client sum (exempts it from the tie check), `{f: "glued" | "cut_off"}` per field.
+- `meta` needs at least `doc_id, family, doc_type, format, unit, years, period_end, variant`; `planted` lists the problems we detected.
+
+Running `check_corpus.py` on our own output also needs a small wrapper: its `name_hits()` reads confidential client folders we don't have, so we skip that check.
+
 ## 5. Assumptions (to confirm with the organisers, marked ❓)
 
-1. ❓ **The empty Arbeitsversion template and the scorer are NOT in this repo.** The brief says we get them. We need both before building the output writer; until then the `.key.json` schema is our proxy for the output schema.
+1. ✅ ~~Template and scorer missing.~~ Answered (§4b): the scorer is `check_corpus.py`, the submission is key-schema JSON, and the xlsx Arbeitsversion is optional.
 2. ❓ Row matching: probably by `(year, asset_no, sub_no)` for assets and `(kind, year, class/account/position)` for totals. It decides how much identity extraction matters.
 3. ❓ Pointer tolerance: does the bbox need to overlap the key's row bbox, or just page + line? For xlsx, the exact cell.
 4. ❓ Class-level docs (f05/f07/f08/f01) fill only the *Anlagengitter* tab. Per-asset docs fill *Anlagenverzeichnis*. Do we also fill Anlagengitter for them, from printed class subtotals only, or from code sums (which have no single pointer)? Safer default: use printed subtotals only.
 5. ❓ Flagged fields (`glued`, `cut_off`, `non_tying`, `transfer_breaks_cost_law`): scored normally, or excluded? The cut-off and transfer cases ask for law-derived values. That conflicts with "read, never judge", so we need the organisers' ruling. Default: the code may derive a value **only** from a law with all other terms read, write it with the pointer of the truncated / empty cell, and flag it.
-6. Rule 01 means the LLM must not transcribe digits. So **GPT-vision cannot read numbers off scans**. OCR (Tesseract / PaddleOCR / docTR, all "code") must produce the numerals with bboxes. The LLM may decide *structure*: which column is `afa_gj`, which row is a subtotal, which page is noise, which class maps to which HGB position.
+6. ✅ Answered (§4b): **OCR by a model is allowed.** The numerals come from an OCR model that returns boxes, and code parses them into cents. The LLM decides *structure*: which column is `afa_gj`, which row is a subtotal, which page is noise, which class maps to which HGB position.
 7. Signs: we output magnitudes as the key does (except `umbuchung`). The printed sign only tells us which column it is.
 8. TEUR docs: report as printed × 1000 EUR (key stores `round_teur` cents); sum checks need a ± 0.5 TEUR per term tolerance.
 9. The hidden test = the same generator with **new families**. The `_intern/profiles` are descriptions of the real hand-overs the families copy; the ones not yet used as families are the best guess for the hidden layouts: SAP per-asset Gitter (`rrtvr`), wide-grid ERP export (`Book3`), **one-text-column dump** (`Book4`), Zugangsliste / Abgangsliste (`zunzun`, `qsqxsxqsx`, `everv`, `Book6`: only part of the fields), Word files (brief mentions .docx; none in the corpus). Non-asset docs (SuSa, Bilanz/GuV: `Book5/7`, `qwdqwd`, `saxqawxq`) may come as distractors and should produce **nothing**.
@@ -138,11 +156,11 @@ Generalisation guard: no per-family code. Score on the `layout-mutation` docs as
 
 ## 7. Questions for the organisers (most important first)
 
-Each question has its reason and our default if it stays unanswered. If time is short, ask **Q1 to Q5**: they change the architecture. The rest change details.
+Each question has its reason and our default if it stays unanswered. ✅ = answered (see §4b). Still open, by priority: **Q3** (row matching), **Q4** (pointer tolerance; partly answered, since `check_corpus` only checks the page text and the xlsx cell), **Q6 / Q7** (computed values, flags), then the rest.
 
-1. **Can we get the empty Arbeitsversion template and the scorer?** The brief says we get both, but neither is in the corpus folder or the repo history.
+1. ✅ **Can we get the empty Arbeitsversion template and the scorer?** *Answer: the Arbeitsversion is an xlsx file; the scorer is `check_corpus.py`.* The brief says we get both, but neither is in the corpus folder or the repo history.
    *Why:* we can't build the output writer or measure ourselves without them. *Default:* use the `.key.json` schema as the output format and write our own scorer from it.
-2. **What exactly do we submit per document?** An `.xlsx` in the template, or JSON / CSV? Where do the pointer and the flag go: extra columns, a separate sheet, or a sidecar file?
+2. ✅ **What exactly do we submit per document?** *Answer: key-schema JSON per document; the xlsx only if time allows.* An `.xlsx` in the template, or JSON / CSV? Where do the pointer and the flag go: extra columns, a separate sheet, or a sidecar file?
    *Why:* it fixes the output contract. *Default:* the template plus a pointer column per value and a flags sheet.
 3. **How are our rows matched to the answer key?** For assets, by asset number + sub-number + year? For class rows, by class code, account or name? How is an extra row we output (one that isn't in the key) scored, and how is a key row we miss scored? Is a missing row the same as a blank (0)?
    *Why:* it decides how much effort goes into identity extraction, and whether over-producing rows is dangerous. *Default:* match on `(year, asset_no, sub_no)` and `(kind, year, class/account/position)`. We treat extra rows as risky.
@@ -152,7 +170,7 @@ Each question has its reason and our default if it stays unanswered. If time is 
    - Excel: the exact cell coordinate?
 
    *Why:* a correct value with a bad pointer scores −3. *Default:* page + a value-level bbox in pdfplumber points on the page as given; the exact cell for Excel.
-5. **Does OCR by a model break rule 01 ("the model never writes a number")?** Is an OCR model fine (Tesseract, docTR, PaddleOCR)? Is a vision LLM (GPT-4o) reading the digits forbidden, even if code then checks the result?
+5. ✅ **Does OCR by a model break rule 01 ("the model never writes a number")?** *Answer: no, it is fine.* Is an OCR model fine (Tesseract, docTR, PaddleOCR)? Is a vision LLM (GPT-4o) reading the digits forbidden, even if code then checks the result?
    *Why:* ~20 of 72 documents have no text layer, so this decides the whole OCR stack. *Default:* OCR engines are allowed; LLMs never transcribe digits.
 6. **Are computed values allowed?** Two keys expect values rebuilt from the accounting rules: f05_05 / f06_06, where the last column is cut off at the page edge, and f09_05, where the transfer cell is empty but the key has the implied value. Should we:
    - (a) compute the value with code and flag it,
