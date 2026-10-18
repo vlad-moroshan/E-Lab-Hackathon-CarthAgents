@@ -18,7 +18,9 @@ Open the local URL printed by Vite. `npm run build` creates `dist/`; `npm test` 
 1. Choose a source PDF or Excel (.xlsx) file, up to 50 MB.
 2. **Process document** sends the file to the configured backend and opens its returned JSON in the review workspace. The source stays attached automatically.
 3. Select a value to see its original text and PDF region or Excel cell reference. Excel source preview is not implemented.
-4. Attach the backend-generated `.xlsx` output to enable **Download Excel**. Select the output from the same run; the frontend does not generate or verify that workbook.
+4. **Download Arbeitsversion** downloads the populated `.xlsx` output for the current result. It stays disabled with an availability message until a workbook is supplied. The frontend does not generate or verify that workbook.
+
+Automatic workbook delivery awaits the backend contract. For demo setup only, open the result filename in the review footer and load the populated backend output under **Development tools**. Select the workbook from the same run; never use the blank template or source workbook as the output. Loading a new result clears the previous workbook.
 
 Until the backend endpoint is available, real-file processing is disabled. Choose a **prepared PDF or Excel sample**, then **Review sample**, to explore the flow using its supplied answer key. These are explicitly labelled sample results, not extraction runs. Arbitrary uploads never receive a canned sample answer.
 
