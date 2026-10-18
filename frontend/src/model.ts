@@ -1,6 +1,6 @@
 export type Pointer = {page?:number; bbox?:number[]; sheet?:string; cell?:string; cells?:Record<string,string>; field_bboxes?:Record<string,number[]>};
 export type Provenance = {type:'extracted'|'calculated'; formula?:string; inputs?:string[]};
-export type Row = {kind:string; year?:number; asset_no?:string; sub_no?:string; class?:string; account?:string; position?:string; name?:string; fields:Record<string,number|null>; printed?:Record<string,string>; pointer?:Pointer; flags?:Record<string,string>; provenance?:Record<string,Provenance>; id:string};
+export type Row = {kind:string; year?:number; asset_no?:string; sub_no?:string; class?:string; account?:string; position?:string; name?:string; fields:Record<string,number|null>; printed?:Record<string,string>; pointer?:Pointer; pointers?:Record<string,Pointer>; flags?:Record<string,string>; provenance?:Record<string,Provenance>; id:string};
 export type Result = {meta:{company?:string; doc_id?:string; doc_type?:string; years?:number[]; period_end?:string; format?:string; unit?:string}; rows:Row[]};
 export const FIELDS = [
  ['ahk_open','Opening cost','AHK 01.01.','ahk_01_01'],['zugang','Additions','Zugang','ahk_zugang'],['abgang','Disposals','Abgang','ahk_abgang'],['umbuchung','Transfers','Umbuchung (±)','ahk_umbuchung'],['ahk_close','Closing cost','AHK 31.12.','ahk_31_12'],['kum_afa_open','Opening depreciation','Kum. AfA 01.01.','afa_01_01'],['afa_gj','Annual depreciation','AfA des GJ','afa_gj'],['afa_abgang','Depreciation on disposals','AfA auf Abgang','afa_abgang'],['zuschreibung','Write-ups','Zuschreibung','zuschreibung'],['kum_afa_close','Closing depreciation','Kum. AfA 31.12.','afa_31_12'],['bw_close','Closing book value','Buchwert GJ','bw_31_12_gj'],['bw_prev','Prior book value','Buchwert VJ','bw_31_12_vj'],
@@ -8,12 +8,35 @@ export const FIELDS = [
 export const money=(value:number|null|undefined)=>value==null?'—':new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}).format(value/100);
 export function parseResult(input:unknown):Result {
  if(!input || typeof input!=='object')throw new Error('Choose a JSON object containing meta and rows.');
- const data=input as Record<string,unknown>;
+ const data={...(input as Record<string,unknown>)};
  if(!data.meta || typeof data.meta!=='object' || Array.isArray(data.meta) || !Array.isArray(data.rows))throw new Error('This file needs a meta object and a rows array, like the corpus key JSONs.');
  if(!data.rows.length)throw new Error('This result has no rows to review.');
+ if(data.schema_version!==undefined){
+  if(data.schema_version!=='1.0')throw new Error('Unsupported extraction schema version.');
+  data.rows=data.rows.map((entry:unknown)=>{
+   if(!entry||typeof entry!=='object')throw new Error('Invalid extraction row.');
+   const r=entry as Record<string,unknown>;
+   if(!r.fields||typeof r.fields!=='object'||Array.isArray(r.fields))throw new Error('Extraction row needs fields.');
+   const fields:Record<string,number|null>={},printed:Record<string,string>={},pointers:Record<string,Pointer>={},flags:Record<string,string>={};
+   for(const [key,input] of Object.entries(r.fields)){
+    if(!input||typeof input!=='object')throw new Error('Extraction values must be records.');
+    const v=input as {amount:number|null;status:string;printed?:string;pointer?:Pointer;reason?:string};
+    if(!['observed','unreadable','absent','not_applicable','uncertain'].includes(v.status))throw new Error('Unknown value status.');
+    if(v.status==='observed'?(v.amount===null||!v.pointer||typeof v.printed!=='string'):(v.amount!==null||!v.reason))throw new Error('Value status, amount and evidence disagree.');
+    fields[key]=v.amount;
+    if(v.printed!==undefined)printed[key]=v.printed;
+    if(v.pointer)pointers[key]=v.pointer;
+    if(v.status!=='observed')flags[key]=v.reason||v.status;
+   }
+   for(const finding of (Array.isArray(data.findings)?data.findings:[]) as {row_id?:string;field?:string;message?:string}[]){
+    if(finding.row_id===r.row_id&&finding.message)flags[finding.field||'*']=finding.message;
+   }
+   return {...r,fields,printed,pointers,flags};
+  });
+ }
  const meta=data.meta as Record<string,unknown>;
  for(const k of ['company','doc_id','doc_type','period_end','format','unit'])if(meta[k]!==undefined&&typeof meta[k]!=='string')throw new Error(`meta.${k} must be text.`);
- const rows=data.rows.map((entry:unknown,i:number)=>{
+ const rows=(data.rows as unknown[]).map((entry:unknown,i:number)=>{
   if(!entry||typeof entry!=='object')throw new Error(`Row ${i+1} is not an object.`);
   const r=entry as Row;
   if(typeof r.kind!=='string'||!r.fields||typeof r.fields!=='object'||Array.isArray(r.fields))throw new Error(`Row ${i+1} needs a kind and a fields object.`);
@@ -36,6 +59,6 @@ export const isCalculated=(r:Row,key:string)=>r.provenance?.[key]?.type==='calcu
 export const rowLabel=(r:Row)=>r.name || (r.kind==='grand_total'?'Grand total':r.kind==='class_subtotal'?`Asset class ${r.class??''}`:r.kind==='account_subtotal'?`Account ${r.account??''}`:r.kind==='position_subtotal'?`Position ${r.position??''}`:r.kind==='carry_over'?'Carried forward':r.class?`Asset class ${r.class}`:r.position?`Position ${r.position}`:'Schedule row');
 export const issueText=(flag:string)=>({glued:'Adjacent values are joined in the source. Review the printed figures before relying on this value.',non_tying:'The source contains a reconciliation discrepancy. The supplied value has been retained.',cut_off:'The source value may be cut off. Check the original document.',transfer_incomplete:'The source transfer information is incomplete.',unresolved:'The result leaves this value unresolved. It has not been replaced with zero.'}[flag]??flag);
 export function evidence(r:Row,key:string){
- const p=r.pointer; const box=p?.field_bboxes?.[key]??p?.bbox;
- return {page:p?.page,box,cell:p?.cells?.[key]??p?.cell,sheet:p?.sheet,precision:p?.field_bboxes?.[key]?'field':p?.cells?.[key]?'cell':'row'};
+ const direct=r.pointers?.[key]; const p=direct??r.pointer; const box=p?.field_bboxes?.[key]??p?.bbox;
+ return {page:p?.page,box,cell:p?.cells?.[key]??p?.cell,sheet:p?.sheet,precision:direct?(direct.cell?'cell':'field'):p?.field_bboxes?.[key]?'field':p?.cells?.[key]?'cell':'row'};
 }
