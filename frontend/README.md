@@ -17,7 +17,7 @@ Open the local URL printed by Vite. `npm run build` creates `dist/`; `npm test` 
 
 1. Choose a source PDF or Excel (.xlsx) file, up to 50 MB.
 2. **Process document** sends the file to the configured backend and opens its returned JSON in the review workspace. The source stays attached automatically.
-3. Select a value to see its original text and PDF region or Excel cell reference. Excel source preview is not implemented.
+3. Select a value to see its original text and PDF region or Excel cell reference. Excel sources show a read-only worksheet excerpt centered on the referenced cell, with a highlight and adjacent rows/columns. Values are read from the uploaded file; formatting is simplified and formulas are never recalculated.
 4. **Download Arbeitsversion** downloads the populated `.xlsx` output for the current result. It stays disabled with an availability message until a workbook is supplied. The frontend does not generate or verify that workbook.
 
 The local bridge returns the generated Arbeitsversion with the extraction result, enabling download automatically. For offline demo setup, the result filename in the footer still opens developer attachments.
@@ -60,7 +60,7 @@ The existing corpus shape is also accepted: `{ meta, rows }`. This is a UI adapt
 - Each row: kind, year, asset_no, sub_no, class, account, position, name.
 - `fields`: amount field names mapped to integer EUR cents or `null`. Zero remains zero; null means unresolved. Absent fields display a dash without an unresolved count.
 - `printed`: field names mapped to original strings. Empty string explicitly means a blank printed cell.
-- `pointer`: PDF `{ page, bbox: [x0, top, x1, bottom] }`, with one-based pages and coordinates in PDF points from the top-left. The corpus generally supplies a row region. Optional `field_bboxes` maps field names to more precise regions. Excel `{ sheet, cell, cells: { field: "D8" } }` displays a reference; Excel source preview is not implemented.
+- `pointer`: PDF `{ page, bbox: [x0, top, x1, bottom] }`, with one-based pages and coordinates in PDF points from the top-left. The corpus generally supplies a row region. Optional `field_bboxes` maps field names to more precise regions. Excel `{ sheet, cell, cells: { field: "D8" } }` displays a reference; Excel sources show a read-only worksheet excerpt centered on the referenced cell, with a highlight and adjacent rows/columns. Values are read from the uploaded file; formatting is simplified and formulas are never recalculated.
 - `flags`: field names or `"*"` (whole row) mapped to reason strings.
 - Optional agreed extension `provenance`: field names mapped to `{ type: "extracted" | "calculated", formula?: string, inputs?: string[] }`. Missing metadata is not presented as verified extraction. Calculated values are labelled explicitly.
 
@@ -90,6 +90,7 @@ Amounts in `fields` are always EUR cents even when the source uses TEUR. The bac
 - `src/App.tsx`: review table, findings, source attachment, and workbook download.
 - `src/SourceIntake.tsx`: source upload, prepared samples, processing/cancellation, and developer JSON import.
 - `src/processing.ts`: source validation and configurable HTTP adapter.
+- `src/ExcelViewer.tsx`: local Excel worksheet excerpts, exact cell highlighting, and saved formula results.
 - `src/PdfViewer.tsx`: local PDF.js rendering and honest row/field highlights.
 - `src/style.css`: responsive CarthAgents-inspired visual styling.
 - `public/demo`: unmodified synthetic PDF and key JSON from the supplied corpus.
