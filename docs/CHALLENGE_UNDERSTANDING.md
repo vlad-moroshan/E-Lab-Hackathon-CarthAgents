@@ -84,6 +84,8 @@ After predictions exist:
 ```sh
 uv run carth check --pred out/pred
 uv run carth eval --pred out/pred -v
+uv run python json_evaluator/run_all.py out/pred
+uv run python dashboard/dashboard.py out/pred --open
 ```
 
 | Command | What it establishes | Limits |
@@ -94,5 +96,7 @@ uv run carth eval --pred out/pred -v
 | `check` | Runs supplied arithmetic and source checks on available predictions; skips the private-client name check and forces text-PDF checks for all variants. | Does not score against expected rows. Missing prediction files are skipped; a run with no predictions can pass. Scan/outline checks only verify absence of a text layer. |
 | `eval` | Local +1/0/−3 comparison by pointer location against keyed standard `fields`; missing values receive zero and extra values are penalized. | Does not score `net_fields` or independently validate visual OCR evidence. Its pointer tolerances and clipped-text exceptions are local assumptions. |
 | `oracle` | Writes predictions copied from keys (or empty rows) for checking the evaluator. | Development-only diagnostic, never an extraction result. Empty oracle output is intentionally invalid under the strict schema. |
+| [`json_evaluator/run_all.py`](../json_evaluator/README.md) | Data-quality report per document: format and flagged blanks, row laws with the suspect field, subtotal ties (client non-tying vs suspected read error), pointer re-read in the source, completeness against the source lines; with keys also +1/0/−3 with the cause and size of each wrong value, flag recall and planted-problem handling. | Key-free checks also apply to unseen documents. Scans and outline PDFs cannot be re-read or checked for completeness without OCR. Rows are matched by identity, not location; extra rows are reported, not scored, so its score differs from `eval`. |
+| [`dashboard/dashboard.py`](../dashboard/README.md) | Browser view of one evaluation run. | Reads `run_all.py` output only. |
 
 The [reference](REFERENCE.md) holds the corpus inventory, domain distinctions, paired-document relationships, workbook catalogs and sample index. [Open questions](OPEN_QUESTIONS.md) is the single review list for unresolved inconsistencies.

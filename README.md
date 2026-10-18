@@ -15,6 +15,7 @@ The `carth` package currently provides text-PDF/Excel ingestion, schema validati
 - [Open inconsistencies](docs/OPEN_QUESTIONS.md): schema gaps and unresolved requirements.
 - [Challenge materials](challenge/): short brief, detailed brief and Arbeitsversion template.
 - [JSON Schema](carth/eval/corpus.schema.json) · [Development corpus](A3-Hackathon-Corpus/).
+- [JSON evaluator](json_evaluator/README.md) · [evaluation dashboard](dashboard/README.md): data-quality checks on extraction output.
 
 From the repository root:
 
